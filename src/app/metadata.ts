@@ -1,11 +1,11 @@
 export const metadata = {
   title: 'MyLocalMasjid - Bringing Your Masjid Closer to the Community',
-  description: 'Making mosque services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masjids and their communities.',
-  keywords: 'mosque management, masjid, prayer times, islamic events, muslim community, mosque services, mosque website',
+  description: 'Making Masjid services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masjids and their communities.',
+  keywords: 'Masjid management, masjid, prayer times, islamic events, muslim community, Masjid services, Masjid website',
   authors: [{ name: 'MyLocalMasjid' }],
   openGraph: {
     title: 'MyLocalMasjid - Bringing Your Masjid Closer to the Community',
-    description: 'Making mosque services more accessible and keeping your community connected and informed.',
+    description: 'Making Masjid services more accessible and keeping your community connected and informed.',
     url: 'https://mylocalmasjid.com',
     siteName: 'MyLocalMasjid',
     images: [
@@ -22,7 +22,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'MyLocalMasjid - Bringing Your Masjid Closer to the Community',
-    description: 'Making mosque services more accessible and keeping your community connected and informed.',
+    description: 'Making Masjid services more accessible and keeping your community connected and informed.',
     images: ['/images/logo.png'],
   },
   icons: {
