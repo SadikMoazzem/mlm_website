@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/react'
 import { ThemeProvider } from '@/components/layout/theme-provider'
+import { Navbar } from '@/components/sections/navbar'
+import { Footer } from '@/components/sections/footer'
 import './globals.css'
 
 const inter = Inter({
@@ -24,6 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <title>MyLocalMasjid - Modern Masjid Management Platform</title>
+        <meta
+          name="description"
+          content="Get a stunning website and mobile app that reflects your Masjid&apos;s unique character."
+        />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
         <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
@@ -33,7 +40,11 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${aref.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <Navbar />
+          <div className="min-h-screen">
+            {children}
+          </div>
+          <Footer />
         </ThemeProvider>
         <Analytics />
       </body>
