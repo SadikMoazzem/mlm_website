@@ -209,7 +209,7 @@ export function ComprehensiveSolutionSection() {
                       {solution.isCommunityOnly ? 'Community Features' : 'For Community'}
                     </h4>
                   </div>
-                  <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="space-y-6">
                     {solution.forCommunity.map((feature, index) => (
                       <motion.div
                         key={feature.title}

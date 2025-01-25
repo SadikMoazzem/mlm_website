@@ -8,7 +8,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
-  /* Keep this for later when we have masjids onboard
+  /* Keep this for later when we have masajids onboard
   const trustedBy = [
     'UK Islamic Mission',
     'East London Masjid',
@@ -38,7 +38,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
               <div className="flex-shrink-0 rounded-2xl bg-[#E6F4F1] p-4 self-start">
                 <div className="flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-primary-600" />
-                  <span className="text-sm font-medium text-primary-600">For Masjids</span>
+                  <span className="text-sm font-medium text-primary-600">For Masajids</span>
                 </div>
               </div>
               <div className="flex-shrink-0 rounded-2xl bg-[#E6F4F1] p-4 self-start">
@@ -68,7 +68,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
               <span className="bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
                 Digital Solution
               </span>{' '}
-              for Masjids
+              for Masajid
             </motion.h1>
 
             <motion.p
@@ -77,8 +77,10 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
               transition={{ delay: 0.3 }}
               className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 lg:mx-0"
             >
-              Empower your masjid with modern technology while bringing your community closer. 
-              From digital displays to mobile apps, we handle the tech so you can focus on what matters.
+              Strengthening the bond between masajid and their communities through modern technology.
+              From <span className="font-semibold text-primary-600">prayer times</span> to{' '}
+              <span className="font-semibold text-primary-600">announcements</span> and{' '}
+              <span className="font-semibold text-primary-600">special events</span>, we help keep your community connected and informed.
             </motion.p>
 
             <motion.div
@@ -107,7 +109,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
               </div>
               
               <p className="text-gray-600">
-                Join us as one of our first 30 founding masjids and help shape the future of masjid management software. 
+                Join us as one of our first 30 founding masajid and help shape the future of masjid management software. 
                 Get free access during our beta period and be part of our journey from the beginning.
               </p>
 
@@ -132,7 +134,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
               className="mt-12"
             >
               <p className="text-sm font-medium uppercase tracking-wider text-gray-500">
-                Trusted by Leading Masjids
+                Trusted by Leading Masajids
               </p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
                 {trustedBy.map((Masjid) => (
@@ -156,33 +158,99 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
           >
             <div className="relative rounded-3xl bg-gradient-to-br from-primary-500 to-primary-600 p-1 shadow-2xl">
               <div className="aspect-[4/3] overflow-hidden rounded-[22px] bg-white">
-                <div className="grid h-full grid-cols-2 gap-1 bg-gray-50 p-4">
-                  {/* App Preview Mockup */}
-                  <div className="space-y-4 rounded-2xl bg-white p-4 shadow-lg">
-                    <div className="h-4 w-12 rounded-full bg-primary-100"></div>
+                <div className="flex h-full">
+                  {/* Sidebar */}
+                  <div className="w-48 bg-white p-4 border-r border-gray-100">
+                    {/* Logo */}
+                    <div className="flex items-center gap-2 mb-8">
+                      <div className="h-8 w-8 rounded-lg bg-primary-100"></div>
+                      <div className="space-y-1">
+                        <div className="h-2 w-24 rounded bg-gray-100"></div>
+                        <div className="h-2 w-16 rounded bg-gray-100"></div>
+                      </div>
+                    </div>
+                    {/* Nav Items */}
                     <div className="space-y-2">
-                      <div className="h-2 w-full rounded bg-gray-100"></div>
-                      <div className="h-2 w-2/3 rounded bg-gray-100"></div>
+                      {Array.from({ length: 7 }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-50">
+                          <div className="h-4 w-4 rounded bg-gray-100"></div>
+                          <div className="h-2 w-20 rounded bg-gray-100"></div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  {/* Website Preview Mockup */}
-                  <div className="space-y-4 rounded-2xl bg-white p-4 shadow-lg">
-                    <div className="h-4 w-12 rounded-full bg-primary-100"></div>
-                    <div className="space-y-2">
-                      <div className="h-2 w-full rounded bg-gray-100"></div>
-                      <div className="h-2 w-2/3 rounded bg-gray-100"></div>
+
+                  {/* Main Content */}
+                  <div className="flex-1 bg-gray-50 p-4">
+                    {/* Header */}
+                    <div className="mb-4 flex items-center justify-between">
+                      <div className="h-6 w-32 rounded-lg bg-primary-100"></div>
+                      <div className="h-8 w-8 rounded-full bg-gray-100"></div>
                     </div>
-                  </div>
-                  {/* Screen Preview Mockup */}
-                  <div className="col-span-2 space-y-4 rounded-2xl bg-white p-4 shadow-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="h-4 w-20 rounded-full bg-primary-100"></div>
-                      <div className="h-4 w-12 rounded-full bg-primary-100"></div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="h-2 rounded bg-gray-100"></div>
-                      <div className="h-2 rounded bg-gray-100"></div>
-                      <div className="h-2 rounded bg-gray-100"></div>
+
+                    <div className="space-y-4">
+                      {/* Prayer Times Preview */}
+                      <div className="rounded-2xl bg-white p-4 shadow-sm">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <div className="h-5 w-40 rounded-full bg-primary-100 mb-1"></div>
+                            <div className="h-3 w-24 rounded-full bg-gray-100"></div>
+                          </div>
+                          <div className="h-4 w-24 rounded-full bg-primary-100"></div>
+                        </div>
+                        <div className="grid grid-cols-6 gap-4">
+                          {['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map((_, i) => (
+                            <div key={i} className="space-y-2">
+                              <div className="h-3 w-12 rounded bg-gray-100"></div>
+                              <div className="space-y-1">
+                                <div className="h-3 w-16 rounded bg-gray-100"></div>
+                                <div className="h-2 w-12 rounded bg-gray-100 opacity-70"></div>
+                                <div className="h-3 w-14 rounded bg-gray-100"></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Current Announcements */}
+                        <div className="rounded-2xl bg-white p-4 shadow-sm">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="h-5 w-48 rounded-full bg-primary-100"></div>
+                            <div className="h-4 w-16 rounded-full bg-primary-100"></div>
+                          </div>
+                          <div className="space-y-3">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                              <div key={i} className="space-y-2">
+                                <div className="h-3 w-24 rounded bg-gray-100 opacity-70"></div>
+                                <div className="h-4 w-full rounded bg-gray-100"></div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Special Prayers */}
+                        <div className="rounded-2xl bg-white p-4 shadow-sm">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="h-5 w-44 rounded-full bg-primary-100"></div>
+                            <div className="h-4 w-16 rounded-full bg-primary-100"></div>
+                          </div>
+                          <div className="space-y-4">
+                            {Array.from({ length: 2 }).map((_, i) => (
+                              <div key={i} className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-5 w-16 rounded-lg bg-primary-100/30 px-2"></div>
+                                  <div className="h-3 w-24 rounded bg-gray-100"></div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="h-3 w-14 rounded bg-gray-100 opacity-70"></div>
+                                  <div className="h-3 w-16 rounded bg-gray-100"></div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

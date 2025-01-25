@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Mail, MapPin } from 'lucide-react'
 
 const navigation = {
   solutions: [
@@ -15,7 +15,6 @@ const navigation = {
   ],
   support: [
     { name: 'Contact', href: '/contact' },
-    { name: 'Help Center', href: '/help' },
   ],
   social: [
     { name: 'Facebook', href: '#', icon: Facebook },
@@ -24,7 +23,6 @@ const navigation = {
   ],
   contact: [
     { name: 'info@mylocalmasjid.com', href: 'mailto:info@mylocalmasjid.com', icon: Mail },
-    { name: '+1 (555) 123-4567', href: 'tel:+15551234567', icon: Phone },
     { name: 'London, United Kingdom', href: '#', icon: MapPin },
   ],
 }
@@ -109,24 +107,10 @@ export function Footer() {
               ))}
             </div>
 
-            {/* Social Links */}
-            <div className="flex items-center gap-4">
-              {navigation.social.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="rounded-full bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
-                >
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-5 w-5" />
-                </Link>
-              ))}
+            {/* Copyright */}
+            <div className="text-center text-sm text-gray-500">
+              <p>&copy; {new Date().getFullYear()} MyLocalMasjid. All rights reserved.</p>
             </div>
-          </div>
-
-          {/* Copyright */}
-          <div className="mt-8 text-center text-sm text-gray-500">
-            <p>&copy; {new Date().getFullYear()} MyLocalMasjid. All rights reserved.</p>
           </div>
         </div>
       </div>

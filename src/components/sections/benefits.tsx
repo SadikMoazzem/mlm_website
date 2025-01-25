@@ -8,7 +8,7 @@ const phases = [
   {
     status: 'completed',
     title: 'UK Masjid Database',
-    description: 'Comprehensive database of all masjids across the United Kingdom.',
+    description: 'Comprehensive database of all masajid across the United Kingdom.',
     icon: FaMapMarkedAlt,
     details: [
       'Verified Masjid information',

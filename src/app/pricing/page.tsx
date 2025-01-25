@@ -151,7 +151,7 @@ export default function PricingPage() {
               <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">
                 <h3 className="font-semibold text-gray-900">Shape the Future</h3>
                 <p className="mt-2 text-sm text-gray-600">
-                  Your feedback will help us build the perfect solution for masjids worldwide.
+                  Your feedback will help us build the perfect solution for masajid worldwide.
                 </p>
               </div>
               <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">

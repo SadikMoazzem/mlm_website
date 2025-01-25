@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>MyLocalMasjid - Modern Masjid Management Platform</title>
+        <title>My Local Masjid - Connecting Masjids to Their Communities</title>
         <meta
           name="description"
-          content="Get a stunning website and mobile app that reflects your Masjid&apos;s unique character."
+          content="Making Masjid services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masajid and their communities."
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
