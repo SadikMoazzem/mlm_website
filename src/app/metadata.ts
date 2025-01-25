@@ -10,10 +10,10 @@ export const metadata = {
     siteName: 'MyLocalMasjid',
     images: [
       {
-        url: '/images/logo.png',
-        width: 600,
-        height: 600,
-        alt: 'MyLocalMasjid Logo',
+        url: '/preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'MyLocalMasjid - Modern Masjid Management Platform',
       },
     ],
     locale: 'en_GB',
@@ -23,7 +23,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
     description: 'Making Masjid services more accessible and keeping your community connected and informed.',
-    images: ['/images/logo.png'],
+    images: ['/preview.png'],
   },
   icons: {
     icon: [
