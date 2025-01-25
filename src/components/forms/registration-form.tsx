@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FaMasjid, FaMapMarkerAlt, FaEnvelope, FaCommentAlt, FaSpinner } from 'react-icons/fa'
+import { FaMosque, FaMapMarkerAlt, FaEnvelope, FaCommentAlt, FaSpinner } from 'react-icons/fa'
 
 interface RegistrationFormProps {
   onSubmit: (data: {
@@ -64,7 +64,7 @@ export function RegistrationForm({ onSubmit, isSubmitting = false }: Registratio
       <div>
         <label className="relative block">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-            <FaMasjid className="h-5 w-5" />
+            <FaMosque className="h-5 w-5" />
           </span>
           <input
             type="text"
