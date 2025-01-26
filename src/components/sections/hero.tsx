@@ -158,9 +158,9 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
           >
             <div className="relative rounded-3xl bg-gradient-to-br from-primary-500 to-primary-600 p-1 shadow-2xl">
               <div className="aspect-[4/3] overflow-hidden rounded-[22px] bg-white">
-                <div className="flex h-full">
+                <div className="flex h-full flex-col md:flex-row">
                   {/* Sidebar */}
-                  <div className="w-48 bg-white p-4 border-r border-gray-100">
+                  <div className="w-full border-b md:w-48 md:border-b-0 md:border-r border-gray-100 bg-white p-4">
                     {/* Logo */}
                     <div className="flex items-center gap-2 mb-8">
                       <div className="h-8 w-8 rounded-lg bg-primary-100"></div>
@@ -170,7 +170,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
                       </div>
                     </div>
                     {/* Nav Items */}
-                    <div className="space-y-2">
+                    <div className="hidden md:block space-y-2">
                       {Array.from({ length: 7 }).map((_, i) => (
                         <div key={i} className="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-50">
                           <div className="h-4 w-4 rounded bg-gray-100"></div>
@@ -181,7 +181,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
                   </div>
 
                   {/* Main Content */}
-                  <div className="flex-1 bg-gray-50 p-4">
+                  <div className="flex-1 bg-gray-50 p-4 overflow-auto">
                     {/* Header */}
                     <div className="mb-4 flex items-center justify-between">
                       <div className="h-6 w-32 rounded-lg bg-primary-100"></div>
@@ -198,7 +198,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
                           </div>
                           <div className="h-4 w-24 rounded-full bg-primary-100"></div>
                         </div>
-                        <div className="grid grid-cols-6 gap-4">
+                        <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                           {['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map((_, i) => (
                             <div key={i} className="space-y-2">
                               <div className="h-3 w-12 rounded bg-gray-100"></div>
@@ -212,7 +212,7 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Current Announcements */}
                         <div className="rounded-2xl bg-white p-4 shadow-sm">
                           <div className="flex items-center justify-between mb-4">

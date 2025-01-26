@@ -1,29 +1,31 @@
-export const metadata = {
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://mylocalmasjid.com'),
   title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
   description: 'Making Masjid services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masajid and their communities.',
-  keywords: 'Masjid management, masjid, prayer times, islamic events, muslim community, Masjid services, Masjid website',
+  keywords: ['Masjid management', 'masjid', 'prayer times', 'islamic events', 'muslim community', 'Masjid services', 'Masjid website'],
   authors: [{ name: 'MyLocalMasjid' }],
   openGraph: {
+    type: 'website',
+    locale: 'en_GB',
+    url: '/',
+    siteName: 'MyLocalMasjid',
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
     description: 'Making Masjid services more accessible and keeping your community connected and informed.',
-    url: 'https://mylocalmasjid.com',
-    siteName: 'MyLocalMasjid',
-    images: [
-      {
-        url: '/preview.png',
-        width: 1200,
-        height: 630,
-        alt: 'MyLocalMasjid - Modern Masjid Management Platform',
-      },
-    ],
-    locale: 'en_GB',
-    type: 'website',
+    images: [{
+      url: '/images/preview.png',
+      width: 1200,
+      height: 630,
+      alt: 'MyLocalMasjid - Modern Masjid Management Platform',
+    }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
     description: 'Making Masjid services more accessible and keeping your community connected and informed.',
-    images: ['/preview.png'],
+    images: ['/images/preview.png'],
+    creator: '@SadikMozzo',
   },
   icons: {
     icon: [
@@ -36,6 +38,10 @@ export const metadata = {
     ],
   },
   manifest: '/site.webmanifest',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
   themeColor: '#1D8A77',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 } 

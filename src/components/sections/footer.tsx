@@ -29,7 +29,7 @@ const navigation = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-100 bg-white">
+    <footer className="border-t border-gray-100 bg-gray-50">
       <div className="container mx-auto max-w-8xl px-6 py-12 lg:py-16">
         <div className="grid gap-12 lg:grid-cols-5">
           {/* Brand */}
