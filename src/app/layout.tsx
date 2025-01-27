@@ -30,12 +30,20 @@ export const metadata: Metadata = {
     siteName: 'MyLocalMasjid',
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
     description: 'Making Masjid services more accessible and keeping your community connected and informed.',
-    images: [{
-      url: '/images/preview.png',
-      width: 1200,
-      height: 630,
-      alt: 'MyLocalMasjid - Modern Masjid Management Platform',
-    }],
+    images: [
+      {
+        url: '/images/preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'MyLocalMasjid - Modern Masjid Management Platform',
+      },
+      {
+        url: '/images/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'MyLocalMasjid Logo',
+      }
+    ],
   },
   twitter: {
     card: 'summary_large_image',
