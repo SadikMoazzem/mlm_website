@@ -36,13 +36,22 @@ export default function MobileAppPage() {
         
         <div className="container relative mx-auto max-w-7xl px-4">
           <div className="mx-auto max-w-3xl text-center">
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 inline-block rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-600"
-            >
-              Mobile App
-            </motion.span>
+            <div className="flex items-center justify-center gap-3">
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 inline-block rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-600"
+              >
+                Mobile App
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 inline-block rounded-full bg-yellow-50 px-4 py-2 text-sm font-semibold text-yellow-600"
+              >
+                Coming Soon
+              </motion.span>
+            </div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -93,10 +102,10 @@ export default function MobileAppPage() {
               href="/register"
               className="inline-flex items-center justify-center rounded-full bg-primary-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg"
             >
-              Get the App
+              Join Beta Programme
             </Link>
             <p className="mt-4 text-sm text-gray-500">
-              Available for iOS and Android devices.
+              Be among the first to try our mobile app
             </p>
           </motion.div>
         </div>

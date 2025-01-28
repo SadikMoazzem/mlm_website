@@ -7,7 +7,7 @@ const navigation = {
   solutions: [
     { name: 'Admin Portal', href: '/solutions/admin' },
     { name: 'Masjid Website', href: '/solutions/website' },
-    { name: 'Mobile App', href: '/solutions/app' },
+    { name: 'Mobile App', href: '/solutions/app', comingSoon: true },
   ],
   company: [
     { name: 'Our Journey', href: '/journey' },
@@ -57,8 +57,16 @@ export function Footer() {
               <ul className="mt-4 space-y-3">
                 {navigation.solutions.map((item) => (
                   <li key={item.name}>
-                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600">
+                    <Link
+                      href={item.href}
+                      className="flex items-center gap-2 text-sm leading-6 text-gray-600 hover:text-primary-600"
+                    >
                       {item.name}
+                      {item.comingSoon && (
+                        <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                          Coming Soon
+                        </span>
+                      )}
                     </Link>
                   </li>
                 ))}

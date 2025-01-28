@@ -12,9 +12,7 @@ const phases = [
     icon: FaMapMarkedAlt,
     details: [
       'Verified Masjid information',
-      'Prayer times data',
       'Location mapping',
-      'Contact details',
     ],
   },
   {
@@ -26,7 +24,7 @@ const phases = [
       'Prayer times management',
       'Announcements system',
       'Events calendar',
-      'Digital display control',
+      'Service management',
     ],
   },
   {
@@ -43,7 +41,7 @@ const phases = [
   },
   {
     status: 'current',
-    title: 'Alpha Testing',
+    title: 'Beta Release',
     description: 'Onboarding initial Masjids for testing and feedback.',
     icon: FaCheck,
     details: [
@@ -51,18 +49,6 @@ const phases = [
       'System optimization',
       'Feature refinement',
       'Performance testing',
-    ],
-  },
-  {
-    status: 'upcoming',
-    title: 'Masjid TV View',
-    description: 'Digital displays for prayer times and announcements.',
-    icon: FaTv,
-    details: [
-      'Prayer time displays',
-      'Announcement boards',
-      'Event schedules',
-      'Multi-screen support',
     ],
   },
   {
@@ -75,6 +61,19 @@ const phases = [
       'Masjid finder',
       'Event registration',
       'Community updates',
+    ],
+    comingSoon: true,
+  },
+  {
+    status: 'upcoming',
+    title: 'Masjid TV View',
+    description: 'Digital displays for prayer times and announcements.',
+    icon: FaTv,
+    details: [
+      'Prayer time displays',
+      'Announcement boards',
+      'Event schedules',
+      'Multi-screen support',
     ],
   },
   {
@@ -166,7 +165,16 @@ export function BenefitsSection() {
                       >
                         <phase.icon className="h-8 w-8" />
                       </div>
-                      <h3 className="mb-2 text-xl font-bold text-gray-900">{phase.title}</h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+                          {phase.title}
+                          {phase.comingSoon && (
+                            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                              Coming Soon
+                            </span>
+                          )}
+                        </h3>
+                      </div>
                       <p className="text-gray-600">{phase.description}</p>
                     </motion.div>
                   </div>

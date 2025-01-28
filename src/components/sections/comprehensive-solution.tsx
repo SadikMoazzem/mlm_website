@@ -208,6 +208,11 @@ export function ComprehensiveSolutionSection() {
                     <h4 className="text-xl font-bold text-gray-900">
                       {solution.isCommunityOnly ? 'Community Features' : 'For Community'}
                     </h4>
+                    {solution.title === 'All-in-One Mylocalmasjid App' && (
+                      <span className="ml-2 rounded-full bg-yellow-50 px-3 py-1 text-xs font-semibold text-yellow-600">
+                        Coming Soon
+                      </span>
+                    )}
                   </div>
                   <div className="space-y-6">
                     {solution.forCommunity.map((feature, index) => (

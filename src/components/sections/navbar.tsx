@@ -24,9 +24,10 @@ export function Navbar() {
     },
     {
       name: 'Mobile App',
-      description: 'Stay connected with your Masjid on the go',
+      description: 'Access prayer times and updates on the go.',
       href: '/solutions/app',
       icon: Smartphone,
+      comingSoon: true,
     },
   ]
 
@@ -86,9 +87,16 @@ export function Navbar() {
                           <item.icon className="h-5 w-5" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 group-hover:text-primary-600">
-                            {item.name}
-                          </p>
+                          <div className="flex">
+                            <span className="text-sm font-semibold text-gray-900">
+                              {item.name}
+                            </span>
+                            {item.comingSoon && (
+                              <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                                Coming Soon
+                              </span>
+                            )}
+                          </div>
                           <p className="text-sm text-gray-500">{item.description}</p>
                         </div>
                       </Link>
@@ -158,7 +166,16 @@ export function Navbar() {
                       <item.icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{item.name}</p>
+                      <div className="flex">
+                        <span className="text-sm font-semibold text-gray-900">
+                          {item.name}
+                        </span>
+                        {item.comingSoon && (
+                          <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                            Coming Soon
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-500">{item.description}</p>
                     </div>
                   </Link>
