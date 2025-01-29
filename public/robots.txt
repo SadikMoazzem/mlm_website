@@ -1,0 +1,16 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.mylocalmasjid.com/sitemap.xml
+
+# Specific paths to ensure indexing
+Allow: /solutions
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /blog
+
+# Crawl-delay to be nice to search engines
+Crawl-delay: 1 

@@ -70,6 +70,36 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "MyLocalMasjid",
+              "applicationCategory": "Management Software",
+              "operatingSystem": "Web-based",
+              "description": "Comprehensive masjid management solution featuring prayer times, event management, and community engagement tools",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "5",
+                "ratingCount": "10"
+              },
+              "keywords": "mosque management, masjid management, prayer times, islamic events, muslim community",
+              "sameAs": [
+                "https://www.mylocalmasjid.com",
+                "https://twitter.com/SadikMozzo"
+              ]
+            })
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${aref.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
