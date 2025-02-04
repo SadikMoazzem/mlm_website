@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/layout/theme-provider'
 import { Navbar } from '@/components/sections/navbar'
 import { Footer } from '@/components/sections/footer'
@@ -109,6 +110,7 @@ export default function RootLayout({
           <Footer />
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
         {/* 100% privacy-first analytics */}
         <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
       </body>
