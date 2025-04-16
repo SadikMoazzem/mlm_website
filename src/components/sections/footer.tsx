@@ -16,6 +16,9 @@ const navigation = {
   support: [
     { name: 'Contact', href: '/contact' },
   ],
+  legal: [
+    { name: 'Terms & Conditions', href: '/terms' },
+  ],
   social: [
     { name: 'Facebook', href: '#', icon: Facebook },
     { name: 'Twitter', href: '#', icon: Twitter },
@@ -118,6 +121,17 @@ export function Footer() {
             {/* Copyright */}
             <div className="text-center text-sm text-gray-500">
               <p>&copy; {new Date().getFullYear()} MyLocalMasjid. All rights reserved.</p>
+              <div className="mt-2 flex justify-center space-x-4">
+                {navigation.legal.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-sm text-gray-500 hover:text-primary-600"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
