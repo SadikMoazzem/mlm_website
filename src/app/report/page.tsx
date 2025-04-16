@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export default function ContactPage() {
+export default function ReportPage() {
   useEffect(() => {
     // Load JotForm script after component mounts
     const script = document.createElement('script')
@@ -19,7 +19,7 @@ export default function ContactPage() {
     script.onload = () => {
       // Run the JotForm handler script after the library loads
       window.jotformEmbedHandler(
-        "iframe[id='JotFormIFrame-251053744841354']", 
+        "iframe[id='JotFormIFrame-251053531218346']", 
         "https://form.jotform.com/"
       )
     }
@@ -44,7 +44,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl font-bold text-gray-900"
           >
-            Contact Us
+            Report an Issue
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -52,7 +52,7 @@ export default function ContactPage() {
             transition={{ delay: 0.2 }}
             className="mt-3 text-lg text-gray-600"
           >
-            Have questions or need assistance? Reach out to our team and we&apos;ll be happy to help.
+            Help us improve MyLocalMasjid by reporting any bugs or issues you encounter
           </motion.p>
         </div>
         
@@ -63,12 +63,12 @@ export default function ContactPage() {
           className="bg-white rounded-xl shadow-xl p-6 md:p-8"
         >
           <iframe
-            id="JotFormIFrame-251053744841354"
-            title="MyLocalMasjid Contact Us"
+            id="JotFormIFrame-251053531218346"
+            title="MyLocalMasjid Report Bug Form"
             onLoad={() => window.parent.scrollTo(0, 0)}
             allowTransparency={true}
             allow="geolocation; microphone; camera; fullscreen"
-            src="https://form.jotform.com/251053744841354"
+            src="https://form.jotform.com/251053531218346"
             frameBorder="0"
             style={{ 
               minWidth: '100%',

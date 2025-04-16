@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Menu, X, LayoutDashboard, Globe, Smartphone, ChevronDown } from 'lucide-react'
+import { Menu, X, LayoutDashboard, Globe, Smartphone, ChevronDown, Monitor } from 'lucide-react'
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -27,13 +27,21 @@ export function Navbar() {
       description: 'Access prayer times and updates on the go.',
       href: '/solutions/app',
       icon: Smartphone,
+    },
+    {
+      name: 'Masjid Screen',
+      description: 'Digital displays for your masjid prayer hall and entrance.',
+      href: '#',
+      icon: Monitor,
       comingSoon: true,
+      disabled: true,
     },
   ]
 
   const navItems = [
     { name: 'Our Journey', href: '/journey' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Contact Us', href: '/contact' },
   ]
 
   return (
@@ -78,28 +86,52 @@ export function Navbar() {
                 >
                   <div className="space-y-3">
                     {solutions.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="group flex items-start gap-4 rounded-lg p-3 transition-colors hover:bg-primary-50"
-                      >
-                        <div className="rounded-lg bg-primary-100 p-2 text-primary-600">
-                          <item.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <div className="flex">
-                            <span className="text-sm font-semibold text-gray-900">
-                              {item.name}
-                            </span>
-                            {item.comingSoon && (
-                              <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
-                                Coming Soon
-                              </span>
-                            )}
+                      item.disabled ? (
+                        <div
+                          key={item.name}
+                          className="group flex items-start gap-4 rounded-lg p-3 transition-colors cursor-default opacity-80"
+                        >
+                          <div className="rounded-lg bg-primary-100 p-2 text-primary-600">
+                            <item.icon className="h-5 w-5" />
                           </div>
-                          <p className="text-sm text-gray-500">{item.description}</p>
+                          <div>
+                            <div className="flex">
+                              <span className="text-sm font-semibold text-gray-900">
+                                {item.name}
+                              </span>
+                              {item.comingSoon && (
+                                <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                                  Coming Soon
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-500">{item.description}</p>
+                          </div>
                         </div>
-                      </Link>
+                      ) : (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className="group flex items-start gap-4 rounded-lg p-3 transition-colors hover:bg-primary-50"
+                        >
+                          <div className="rounded-lg bg-primary-100 p-2 text-primary-600">
+                            <item.icon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <div className="flex">
+                              <span className="text-sm font-semibold text-gray-900">
+                                {item.name}
+                              </span>
+                              {item.comingSoon && (
+                                <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                                  Coming Soon
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-500">{item.description}</p>
+                          </div>
+                        </Link>
+                      )
                     ))}
                   </div>
                 </div>
@@ -156,29 +188,53 @@ export function Navbar() {
               <div className="space-y-4">
                 <p className="text-sm font-semibold uppercase text-gray-500">Solutions</p>
                 {solutions.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-primary-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <div className="rounded-lg bg-primary-100 p-2 text-primary-600">
-                      <item.icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="flex">
-                        <span className="text-sm font-semibold text-gray-900">
-                          {item.name}
-                        </span>
-                        {item.comingSoon && (
-                          <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
-                            Coming Soon
-                          </span>
-                        )}
+                  item.disabled ? (
+                    <div
+                      key={item.name}
+                      className="flex items-center gap-3 rounded-lg p-2 transition-colors cursor-default opacity-80"
+                    >
+                      <div className="rounded-lg bg-primary-100 p-2 text-primary-600">
+                        <item.icon className="h-5 w-5" />
                       </div>
-                      <p className="text-sm text-gray-500">{item.description}</p>
+                      <div>
+                        <div className="flex">
+                          <span className="text-sm font-semibold text-gray-900">
+                            {item.name}
+                          </span>
+                          {item.comingSoon && (
+                            <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                              Coming Soon
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500">{item.description}</p>
+                      </div>
                     </div>
-                  </Link>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-primary-50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <div className="rounded-lg bg-primary-100 p-2 text-primary-600">
+                        <item.icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="flex">
+                          <span className="text-sm font-semibold text-gray-900">
+                            {item.name}
+                          </span>
+                          {item.comingSoon && (
+                            <span className="ml-2 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                              Coming Soon
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500">{item.description}</p>
+                      </div>
+                    </Link>
+                  )
                 ))}
               </div>
 

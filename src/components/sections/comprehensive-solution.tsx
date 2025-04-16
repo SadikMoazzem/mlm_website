@@ -13,13 +13,19 @@ import {
   Search,
   Navigation,
   Laptop,
+  ArrowRight,
 } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export function ComprehensiveSolutionSection() {
   const solutions = [
     {
       icon: LayoutDashboard,
-      title: 'Admin Platform',
+      title: 'Admin Portal',
+      link: '/solutions/admin',
+      subtitle: 'Complete management platform for your masjid',
+      description: 'Streamline your masjid administration with our intuitive platform designed for ease of use.',
       forMasjid: [
         {
           icon: Clock,
@@ -53,6 +59,10 @@ export function ComprehensiveSolutionSection() {
     {
       icon: Globe,
       title: 'Masjid Website',
+      link: '/solutions/website',
+      demoLink: 'https://masjid-demo.mylocalmasjid.com',
+      subtitle: 'Beautiful, responsive web presence',
+      description: 'Provide your community with a modern, mobile-friendly website featuring essential information and services.',
       forMasjid: [
         {
           icon: Globe,
@@ -85,7 +95,10 @@ export function ComprehensiveSolutionSection() {
     },
     {
       icon: Smartphone,
-      title: 'All-in-One Mylocalmasjid App',
+      title: 'All-in-One MyLocalMasjid App',
+      link: '/solutions/app',
+      subtitle: 'Connect with your masjid on mobile',
+      description: 'Access prayer times, events, and masjid information conveniently from your smartphone.',
       isCommunityOnly: true,
       forMasjid: [],
       forCommunity: [
@@ -164,7 +177,90 @@ export function ComprehensiveSolutionSection() {
                 <span className="text-lg font-semibold">{solution.title}</span>
               </div>
 
-              <div className={`mt-12 grid gap-12 ${solution.isCommunityOnly ? '' : 'lg:grid-cols-2'}`}>
+              {/* Solution description and links */}
+              <div className="mt-12 mb-8">
+                <h3 className="text-xl font-bold text-gray-900">{solution.subtitle}</h3>
+                <p className="mt-2 text-gray-600">{solution.description}</p>
+                
+                <div className="mt-6 flex flex-wrap gap-4">
+                  {solution.link && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <Link href={solution.link} className="inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-base font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg">
+                        Learn More
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </motion.div>
+                  )}
+                  
+                  {solution.demoLink && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <Link 
+                        href={solution.demoLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-full bg-white border border-primary-600 px-6 py-3 text-base font-semibold text-primary-600 transition-all hover:bg-primary-50 hover:shadow-lg"
+                      >
+                        View Demo
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </motion.div>
+                  )}
+
+                  {solution.title === 'All-in-One MyLocalMasjid App' && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 }}
+                      className="flex gap-4"
+                    >
+                      <Link 
+                        href="https://play.google.com/store/apps/details?id=com.mylocalmadsjid.app" 
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 transition-all hover:shadow-md"
+                      >
+                        <Image
+                          src="/images/google-play.svg"
+                          alt="Google Play"
+                          width={20}
+                          height={20}
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-slate-600">GET IT ON</span>
+                          <span className="text-sm font-semibold">Google Play</span>
+                        </div>
+                      </Link>
+
+                      <Link 
+                        href="https://apps.apple.com/app/mylocalmadsjid/id1234567890" 
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 transition-all hover:shadow-md"
+                      >
+                        <Image
+                          src="/images/app-store.svg"
+                          alt="App Store"
+                          width={20}
+                          height={20}
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-slate-600">Download on the</span>
+                          <span className="text-sm font-semibold">App Store</span>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+
+              <div className={`grid gap-12 ${solution.isCommunityOnly ? '' : 'lg:grid-cols-2'}`}>
                 {/* Masjid Benefits */}
                 {!solution.isCommunityOnly && (
                   <div>
@@ -208,11 +304,6 @@ export function ComprehensiveSolutionSection() {
                     <h4 className="text-xl font-bold text-gray-900">
                       {solution.isCommunityOnly ? 'Community Features' : 'For Community'}
                     </h4>
-                    {solution.title === 'All-in-One Mylocalmasjid App' && (
-                      <span className="ml-2 rounded-full bg-yellow-50 px-3 py-1 text-xs font-semibold text-yellow-600">
-                        Coming Soon
-                      </span>
-                    )}
                   </div>
                   <div className="space-y-6">
                     {solution.forCommunity.map((feature, index) => (
