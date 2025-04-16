@@ -2,12 +2,9 @@
 
 import { motion } from 'framer-motion'
 import { ArrowRight, Building2, Users, Smartphone } from 'lucide-react'
+import Link from 'next/link'
 
-interface HeroSectionProps {
-  onOpenRegistration: () => void
-}
-
-export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
+export function HeroSection() {
   /* Keep this for later when we have masajids onboard
   const trustedBy = [
     'UK Islamic Mission',
@@ -89,13 +86,13 @@ export function HeroSection({ onOpenRegistration }: HeroSectionProps) {
               transition={{ delay: 0.4 }}
               className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
             >
-              <button
-                onClick={onOpenRegistration}
+              <Link
+                href="/register"
                 className="group inline-flex items-center gap-2 rounded-full bg-primary-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg"
               >
                 Join Beta Program
                 <ArrowRight className="transition-transform group-hover:translate-x-1" />
-              </button>
+              </Link>
             </motion.div>
 
             <motion.div

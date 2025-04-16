@@ -104,7 +104,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${aref.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
-          <div className="min-h-screen pt-20">
+          <div className="min-h-screen pt-20 bg-white">
             {children}
           </div>
           <Footer />

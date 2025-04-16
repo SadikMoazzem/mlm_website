@@ -154,9 +154,9 @@ const audienceGroups = [
 
 export default function MasjidWebsitePage() {
   return (
-    <main className="flex min-h-screen flex-col">
+    <main>
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden bg-white pt-32 pb-16">
+      <section className="relative w-full overflow-hidden pt-32 pb-16">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary-50/50 via-white to-white"></div>
         
         <div className="container relative mx-auto max-w-7xl px-4">
@@ -209,7 +209,7 @@ export default function MasjidWebsitePage() {
       </section>
 
       {/* Key Features Section - PRIMARY */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -217,7 +217,7 @@ export default function MasjidWebsitePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 flex items-center justify-center gap-3">
               <span className="text-primary-600 text-5xl">🕌</span> 
               Key Features
             </h2>
@@ -280,7 +280,7 @@ export default function MasjidWebsitePage() {
       </section>
 
       {/* For Everyone Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -288,7 +288,7 @@ export default function MasjidWebsitePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 flex items-center justify-center gap-3">
               <span className="text-primary-600 text-4xl">👨‍👩‍👧‍👦</span> 
               For Everyone in the Community
             </h2>
@@ -321,7 +321,7 @@ export default function MasjidWebsitePage() {
       </section>
 
       {/* Key Features Section - SECONDARY */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -329,7 +329,7 @@ export default function MasjidWebsitePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h3 className="text-3xl font-bold text-gray-800">
+            <h3 className="text-3xl font-bold text-gray-900">
               Additional Features
             </h3>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
@@ -372,7 +372,7 @@ export default function MasjidWebsitePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div 
             initial={{ opacity: 0 }}

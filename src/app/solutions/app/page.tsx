@@ -192,9 +192,9 @@ const benefitsGroups = [
 
 export default function MobileAppPage() {
   return (
-    <main className="flex min-h-screen flex-col">
+    <main>
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden bg-white pt-32 pb-16">
+      <section className="relative w-full overflow-hidden pt-32 pb-16">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary-50/50 via-white to-white"></div>
         
         <div className="container relative mx-auto max-w-7xl px-4">
@@ -231,60 +231,69 @@ export default function MobileAppPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="mt-8 flex flex-wrap gap-4"
+              className="mt-8 flex flex-wrap gap-4 justify-center"
             >
-              <Link
-                href="https://play.google.com/store/apps/details?id=com.mylocalmasjid.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-play"
-                >
-                  <path d="m5 3 14 9-14 9V3z" />
-                </svg>
-                Google Play
-              </Link>
-              <Link
-                href="https://apps.apple.com/app/mylocalmasjid/id1620390669"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-apple"
-                >
-                  <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
-                  <path d="M10 2c1 .5 2 2 2 5" />
-                </svg>
-                App Store
-              </Link>
+              <div className="flex flex-col items-center">
+                <span className="mb-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+                  Coming Soon
+                </span>
+                <div className="opacity-50 cursor-not-allowed">
+                  <span
+                    className="inline-flex items-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-play"
+                    >
+                      <path d="m5 3 14 9-14 9V3z" />
+                    </svg>
+                    Google Play
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex flex-col items-center">
+                <span className="mb-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+                  Coming Soon
+                </span>
+                <div className="opacity-50 cursor-not-allowed">
+                  <span
+                    className="inline-flex items-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-apple"
+                    >
+                      <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
+                      <path d="M10 2c1 .5 2 2 2 5" />
+                    </svg>
+                    App Store
+                  </span>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section - Moved up */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -292,7 +301,7 @@ export default function MobileAppPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-black flex items-center justify-center gap-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 flex items-center justify-center gap-3">
               <span className="text-primary-600 text-4xl">💎</span> 
               Benefits <span className="text-primary-600">for You</span>
             </h2>
@@ -343,7 +352,7 @@ export default function MobileAppPage() {
       </section>
 
       {/* Feature Categories Section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -351,7 +360,7 @@ export default function MobileAppPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-black flex items-center justify-center gap-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 flex items-center justify-center gap-3">
               <span className="text-primary-600 text-5xl">📱</span> 
               App <span className="text-primary-600">Features</span>
             </h2>
@@ -375,7 +384,7 @@ export default function MobileAppPage() {
                   <div className="bg-primary-50 rounded-xl p-3">
                     <category.icon className="h-6 w-6 text-primary-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-black">
+                  <h3 className="text-2xl font-bold text-gray-900">
                     {category.title.includes(' ') 
                       ? category.title.split(' ').map((word, i, arr) => 
                           i === arr.length - 1 
@@ -415,7 +424,7 @@ export default function MobileAppPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="container mx-auto max-w-7xl px-4">
           <motion.div 
             initial={{ opacity: 0 }}
@@ -457,7 +466,7 @@ export default function MobileAppPage() {
                   href="/register"
                   className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 transition-all hover:bg-primary-50 hover:shadow-lg"
                 >
-                  Join Beta Programme
+                  Register Your Masjid
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </motion.div>
