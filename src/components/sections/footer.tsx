@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Mail, MapPin } from 'lucide-react'
 
 const navigation = {
@@ -38,9 +39,11 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center space-x-4">
-              <img
+              <Image
                 src="/logo.png"
                 alt="Mylocalmasjid"
+                width={48}
+                height={48}
                 className="h-12 w-auto"
               />
               <span className="text-2xl font-bold text-gray-900">

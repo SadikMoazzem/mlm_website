@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Menu, X, LayoutDashboard, Globe, Smartphone, ChevronDown, Monitor } from 'lucide-react'
 
@@ -49,9 +50,11 @@ export function Navbar() {
       <div className="container mx-auto max-w-8xl px-6">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center space-x-4">
-            <img
+            <Image
               src="/logo.png"
               alt="Mylocalmasjid"
+              width={48}
+              height={48}
               className="h-12 w-auto"
             />
             <span className="text-2xl font-bold text-gray-900">
