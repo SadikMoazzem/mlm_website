@@ -25,7 +25,7 @@ export default function RegisterPage() {
             transition={{ delay: 0.2 }}
             className="mt-3 text-lg text-gray-600"
           >
-            Join our platform and enhance your Masjid&apos;s digital presence
+            Join our platform and enhance your Masjid's digital presence
           </motion.p>
         </div>
 

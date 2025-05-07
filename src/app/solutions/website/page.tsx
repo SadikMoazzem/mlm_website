@@ -26,7 +26,7 @@ const features = [
     subtitle: 'Never miss a prayer again!',
     icon: Clock,
     description: 'Access up-to-date prayer times for all daily prayers with monthly and weekly views.',
-    benefits: 'Plan your day around prayer times with ease, whether you&apos;re at home or on the go.',
+    benefits: "Plan your day around prayer times with ease, whether you're at home or on the go.",
     details: [
       'Accurate Prayer Timetable for Fajr, Dhuhr, Asr, Maghrib, and Isha',
       'Monthly View to plan ahead',
@@ -83,7 +83,7 @@ const features = [
     subtitle: 'Access from anywhere, anytime',
     icon: Smartphone,
     description: 'Our responsive design ensures a perfect experience on all devices.',
-    benefits: 'Stay connected to the masjid whether you&apos;re at home, work, or traveling.',
+    benefits: "Stay connected to the masjid whether you're at home, work, or traveling.",
     details: [
       'Responsive Layout for phones, tablets, and desktops',
       'Fast Loading even on slower connections',
@@ -95,12 +95,12 @@ const features = [
     title: 'Donations',
     subtitle: 'Support your masjid with ease',
     icon: HeartHandshake,
-    description: 'Contribute to masjid operations and projects through secure online donations.',
-    benefits: 'Contribute to your community and earn rewards even when you can&apos;t physically visit the masjid.',
+    description: 'Find out how to support your masjid with clear donation details provided by the administration.',
+    benefits: 'Easily access information on how to contribute to your community, including bank details and donation instructions.',
     details: [
-      'Online Donations system',
-      'Donation Categories for different initiatives',
-      'Secure Transactions processing'
+      'Donation Details (bank account, reference, etc.)',
+      'Categories for different initiatives',
+      'Contact information for donation queries'
     ]
   },
   {

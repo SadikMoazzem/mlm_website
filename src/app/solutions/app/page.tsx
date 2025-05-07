@@ -61,7 +61,7 @@ const featureCategories = [
       },
       {
         title: 'Offline Access',
-        description: 'View prayer times even when you don&apos;t have internet connection - perfect for travel!',
+        description: "View prayer times even when you don't have internet connection - perfect for travel!",
         icon: Smartphone
       }
     ]
@@ -83,7 +83,7 @@ const featureCategories = [
       },
       {
         title: 'Location-Based Times',
-        description: 'When you&apos;re away from a masjid, get prayer times calculated for your exact location',
+        description: "When you're away from a masjid, get prayer times calculated for your exact location",
         icon: Map
       }
     ]
@@ -117,7 +117,7 @@ const featureCategories = [
       },
       {
         title: 'User-Friendly Interface',
-        description: 'Simple, clean design that&apos;s easy for everyone to use, regardless of tech experience',
+        description: "Simple, clean design that's easy for everyone to use, regardless of tech experience",
         icon: LayoutDashboard
       }
     ]
@@ -154,7 +154,7 @@ const benefitsGroups = [
     icon: Clock,
     benefits: [
       'Never Miss a Prayer: Clear notifications and easy access to prayer times help you stay on schedule',
-      'Prayer Time Confidence: Trust that you&apos;re getting accurate, verified times from your actual masjid',
+      "Prayer Time Confidence: Trust that you're getting accurate, verified times from your actual masjid",
       'Reduced Anxiety: No more wondering or searching for prayer times when traveling'
     ]
   },
@@ -165,7 +165,7 @@ const benefitsGroups = [
     benefits: [
       'Time-Saving: Get prayer times instantly without having to search online or call your masjid',
       'Better Planning: Knowing prayer times in advance helps you schedule your day more effectively',
-      'On-the-Go Access: Whether you&apos;re at work, shopping, or traveling, prayer times are always with you'
+      "On-the-Go Access: Whether you're at work, shopping, or traveling, prayer times are always with you"
     ]
   },
   {
@@ -223,7 +223,7 @@ export default function MobileAppPage() {
               className="mt-6 text-lg text-gray-600"
             >
               MyLocalMasjid is a user-friendly mobile app designed to connect you with your local mosque (masjid) 
-              and help you stay on top of your daily prayers. Whether you&apos;re at home, traveling, or visiting a 
+              and help you stay on top of your daily prayers. Whether you're at home, traveling, or visiting a 
               new area, this app makes it easy to find prayer times and stay connected to your faith.
             </motion.p>
 
@@ -239,54 +239,33 @@ export default function MobileAppPage() {
                 </span>
                 <div className="opacity-50 cursor-not-allowed">
                   <span
-                    className="inline-flex items-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition-all"
+                    className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 border border-slate-200 transition-all"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-play"
-                    >
-                      <path d="m5 3 14 9-14 9V3z" />
-                    </svg>
-                    Google Play
+                    <img
+                      src="/images/google-play.png"
+                      alt="Get it on Google Play"
+                      width={120}
+                      height={36}
+                      style={{ objectFit: 'contain' }}
+                    />
                   </span>
                 </div>
               </div>
               
-              <div className="flex flex-col items-center">
-                <span className="mb-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
-                  Coming Soon
-                </span>
-                <div className="opacity-50 cursor-not-allowed">
-                  <span
-                    className="inline-flex items-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition-all"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-apple"
-                    >
-                      <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
-                      <path d="M10 2c1 .5 2 2 2 5" />
-                    </svg>
-                    App Store
-                  </span>
-                </div>
-              </div>
+              <Link 
+                href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 border border-slate-200 transition-all hover:shadow-md"
+              >
+                <img
+                  src="/images/app-store.png"
+                  alt="Download on the App Store"
+                  width={120}
+                  height={36}
+                  style={{ objectFit: 'contain' }}
+                />
+              </Link>
             </motion.div>
           </div>
         </div>
@@ -448,7 +427,7 @@ export default function MobileAppPage() {
                 transition={{ delay: 0.1 }}
                 className="text-primary-100 text-lg max-w-3xl mx-auto mb-10"
               >
-                MyLocalMasjid is more than just an app – it&apos;s a tool designed to strengthen your connection to your faith and local community. 
+                MyLocalMasjid is more than just an app – it's a tool designed to strengthen your connection to your faith and local community. 
                 Download today and experience a more organized approach to your daily prayers.
               </motion.p>
               <motion.div

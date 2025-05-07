@@ -158,7 +158,7 @@ export function ComprehensiveSolutionSection() {
             className="mt-6 text-lg leading-relaxed text-gray-600"
           >
             Our mission is to help you go digital with as little work on your part as possible.
-            No technical skills needed — that&apos;s our job.
+            No technical skills needed — that's our job.
           </motion.p>
         </div>
 
@@ -224,37 +224,24 @@ export function ComprehensiveSolutionSection() {
                       transition={{ delay: 0.3 }}
                       className="flex gap-4"
                     >
-                      <Link 
-                        href="https://play.google.com/store/apps/details?id=com.mylocalmadsjid.app" 
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 transition-all hover:shadow-md"
-                      >
-                        <Image
-                          src="/images/google-play.svg"
-                          alt="Google Play"
-                          width={20}
-                          height={20}
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-xs text-slate-600">GET IT ON</span>
-                          <span className="text-sm font-semibold">Google Play</span>
+                      <div className="flex flex-col items-center">
+                        <span className="mb-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+                          Coming Soon
+                        </span>
+                        <div className="opacity-50 cursor-not-allowed">
+                          <div className="flex items-center justify-center rounded-lg bg-white px-6 py-4 border border-slate-200 w-[180px] h-[48px]">
+                            <span className="text-base font-semibold text-slate-400">Get it on Google Play</span>
+                          </div>
                         </div>
-                      </Link>
-
-                      <Link 
-                        href="https://apps.apple.com/app/mylocalmadsjid/id1234567890" 
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 transition-all hover:shadow-md"
+                      </div>
+                      <a
+                        href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center rounded-lg bg-white px-6 py-4 border border-slate-200 w-[180px] h-[48px] hover:shadow-md transition-all"
                       >
-                        <Image
-                          src="/images/app-store.svg"
-                          alt="App Store"
-                          width={20}
-                          height={20}
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-xs text-slate-600">Download on the</span>
-                          <span className="text-sm font-semibold">App Store</span>
-                        </div>
-                      </Link>
+                        <span className="text-base font-semibold text-slate-700">Download on the App Store</span>
+                      </a>
                     </motion.div>
                   )}
                 </div>

@@ -12,7 +12,6 @@ import {
   Building2,
   Briefcase,
   Handshake,
-  BarChart3,
   RefreshCw,
   ArrowRight
 } from 'lucide-react'
@@ -25,7 +24,7 @@ const primaryFeatures = [
     subtitle: 'Everything you need in a single platform',
     icon: LayoutDashboard,
     description: 'Manage all aspects of your masjid from one intuitive, mobile-responsive platform.',
-    benefits: 'Get a quick snapshot of your masjid&apos;s key information and manage everything on the go.',
+    benefits: "Get a quick snapshot of your masjid's key information and manage everything on the go.",
     details: [
       'Dashboard Overview with key information',
       'User-Friendly Interface for all technical abilities',
@@ -80,8 +79,8 @@ const secondaryFeatures = [
     title: 'Facilities Management',
     subtitle: 'Manage masjid spaces efficiently',
     icon: Building,
-    description: 'Coordinate the use of your masjid&apos;s spaces and facilities with an intuitive booking system.',
-    benefits: 'Maximize the use of your masjid&apos;s physical resources and avoid scheduling conflicts.',
+    description: "Coordinate the use of your masjid's spaces and facilities with an intuitive booking system.",
+    benefits: "Maximize the use of your masjid's physical resources and avoid scheduling conflicts.",
     details: [
       'Room Booking System',
       'Availability Calendar',
@@ -106,8 +105,8 @@ const secondaryFeatures = [
     title: 'Masjid Profile Management',
     subtitle: 'Complete control of your digital presence',
     icon: Building2,
-    description: 'Update your masjid&apos;s information, branding, and location services.',
-    benefits: 'Maintain accurate, up-to-date information about your masjid for the community.',
+    description: "Update your masjid's information, branding, and location services.",
+    benefits: "Maintain accurate, up-to-date information about your masjid for the community.",
     details: [
       'Complete Profile Control',
       'Custom Branding',
@@ -121,17 +120,12 @@ const benefitsGroups = [
   {
     title: 'Administrative Efficiency',
     icon: Briefcase,
-    description: 'Save time, reduce errors, and improve coordination among your administrative team'
+    description: 'Streamline your masjid administration with our intuitive platform'
   },
   {
     title: 'Enhanced Community Engagement',
     icon: Handshake,
     description: 'Keep your community informed and engaged with modern digital experiences'
-  },
-  {
-    title: 'Organizational Insights',
-    icon: BarChart3,
-    description: 'Access historical data for better planning and resource optimization'
   },
   {
     title: 'Continuous Improvement',
@@ -173,7 +167,7 @@ export default function AdminPlatformPage() {
             >
               Welcome to the MyLocalMasjid Admin Portal - a comprehensive solution designed to streamline 
               mosque administration and enhance community engagement. This user-friendly platform provides 
-              everything you need to manage your masjid&apos;s digital presence with ease, no technical 
+              everything you need to manage your masjid's digital presence with ease, no technical 
               expertise required!
             </motion.p>
           </div>
