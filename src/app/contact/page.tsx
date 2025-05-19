@@ -52,7 +52,7 @@ export default function ContactPage() {
             transition={{ delay: 0.2 }}
             className="mt-3 text-lg text-gray-600"
           >
-            Have questions or need assistance? Reach out to our team and we'll be happy to help.
+            Have questions or need assistance? Reach out to our team and we&apos;ll be happy to help.
           </motion.p>
         </div>
         

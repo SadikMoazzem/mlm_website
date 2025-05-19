@@ -25,7 +25,7 @@ export default function AddPrayerTimesPage() {
             transition={{ delay: 0.2 }}
             className="mt-3 text-lg text-gray-600"
           >
-            Submit your Masjid's prayer schedule to keep your community informed
+            Submit your Masjid&apos;s prayer schedule to keep your community informed
           </motion.p>
         </div>
 

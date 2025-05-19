@@ -165,7 +165,7 @@ export default function PrivacyPage() {
             <ul className="space-y-5 list-none pl-0 md:pl-6">
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
-                <span>The app requests access to your <strong>device's location</strong> in order to show nearby masjids and prayer times.</span>
+                <span>The app requests access to your <strong>device&apos;s location</strong> in order to show nearby masjids and prayer times.</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
@@ -288,7 +288,7 @@ export default function PrivacyPage() {
             
             <div className="mt-12 p-6 bg-primary-50 rounded-lg border border-primary-100 text-center">
               <p className="italic text-lg mb-0">
-                Thank you for trusting MyLocalMasjid with your data. We're committed to respecting your privacy.
+                Thank you for trusting MyLocalMasjid with your data. We&apos;re committed to respecting your privacy.
               </p>
             </div>
           </div>

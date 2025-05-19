@@ -167,7 +167,7 @@ export default function AdminPlatformPage() {
             >
               Welcome to the MyLocalMasjid Admin Portal - a comprehensive solution designed to streamline 
               mosque administration and enhance community engagement. This user-friendly platform provides 
-              everything you need to manage your masjid's digital presence with ease, no technical 
+              everything you need to manage your masjid&apos;s digital presence with ease, no technical 
               expertise required!
             </motion.p>
           </div>

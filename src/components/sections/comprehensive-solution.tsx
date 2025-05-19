@@ -2,21 +2,20 @@
 
 import { motion } from 'framer-motion'
 import {
-  Building2,
-  Users,
-  Smartphone,
-  Clock,
-  Calendar,
-  Megaphone,
-  Globe,
   LayoutDashboard,
+  Clock,
+  Megaphone,
+  Calendar,
+  Globe,
   Search,
-  Navigation,
   Laptop,
+  Smartphone,
+  Navigation,
   ArrowRight,
+  Building2,
+  Users
 } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export function ComprehensiveSolutionSection() {
   const solutions = [
@@ -158,7 +157,7 @@ export function ComprehensiveSolutionSection() {
             className="mt-6 text-lg leading-relaxed text-gray-600"
           >
             Our mission is to help you go digital with as little work on your part as possible.
-            No technical skills needed — that's our job.
+            No technical skills needed — that&apos;s our job.
           </motion.p>
         </div>
 

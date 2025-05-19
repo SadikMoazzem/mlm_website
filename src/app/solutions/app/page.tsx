@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { 
   Clock, 
   MapPin, 
@@ -223,7 +224,7 @@ export default function MobileAppPage() {
               className="mt-6 text-lg text-gray-600"
             >
               MyLocalMasjid is a user-friendly mobile app designed to connect you with your local mosque (masjid) 
-              and help you stay on top of your daily prayers. Whether you're at home, traveling, or visiting a 
+              and help you stay on top of your daily prayers. Whether you&apos;re at home, traveling, or visiting a 
               new area, this app makes it easy to find prayer times and stay connected to your faith.
             </motion.p>
 
@@ -241,7 +242,7 @@ export default function MobileAppPage() {
                   <span
                     className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 border border-slate-200 transition-all"
                   >
-                    <img
+                    <Image
                       src="/images/google-play.png"
                       alt="Get it on Google Play"
                       width={120}
@@ -258,7 +259,7 @@ export default function MobileAppPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 border border-slate-200 transition-all hover:shadow-md"
               >
-                <img
+                <Image
                   src="/images/app-store.png"
                   alt="Download on the App Store"
                   width={120}
@@ -427,7 +428,7 @@ export default function MobileAppPage() {
                 transition={{ delay: 0.1 }}
                 className="text-primary-100 text-lg max-w-3xl mx-auto mb-10"
               >
-                MyLocalMasjid is more than just an app – it's a tool designed to strengthen your connection to your faith and local community. 
+                MyLocalMasjid is more than just an app – it&apos;s a tool designed to strengthen your connection to your faith and local community. 
                 Download today and experience a more organized approach to your daily prayers.
               </motion.p>
               <motion.div

@@ -182,7 +182,7 @@ export default function TermsPage() {
               </li>
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
-                <span>Understand your Masjid's public data will be visible to users via the app and website</span>
+                <span>Understand your Masjid&apos;s public data will be visible to users via the app and website</span>
               </li>
             </ul>
             
@@ -336,7 +336,7 @@ export default function TermsPage() {
               <span>8. LOCATION DATA USAGE</span>
             </h2>
             <p>
-              Our app may request access to your device's location in order to show nearby Masajid. Location data is:
+              Our app may request access to your device&apos;s location in order to show nearby Masajid. Location data is:
             </p>
             <ul className="space-y-5 list-none pl-0 md:pl-6">
               <li className="flex items-start">
@@ -507,7 +507,7 @@ export default function TermsPage() {
             
             <div className="mt-12 p-6 bg-primary-50 rounded-lg border border-primary-100 text-center">
               <p className="italic text-lg mb-0">
-                Thank you for using MyLocalMasjid. We're honoured to serve your local community.
+                Thank you for using MyLocalMasjid. We&apos;re honoured to serve your local community.
               </p>
             </div>
           </div>
