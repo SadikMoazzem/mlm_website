@@ -8,14 +8,17 @@ const navigation = {
   solutions: [
     { name: 'Admin Portal', href: '/solutions/admin' },
     { name: 'Masjid Website', href: '/solutions/website' },
-    { name: 'Mobile App', href: '/solutions/app', comingSoon: true },
+    { name: 'Mobile App', href: '/solutions/app' },
   ],
   company: [
     { name: 'Our Journey', href: '/journey' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Register Your Masjid', href: '/register' },
   ],
   support: [
     { name: 'Contact', href: '/contact' },
+    { name: 'Report an Issue', href: '/report' },
+    { name: 'Submit Prayer Times', href: '/add-prayer-times' },
   ],
   legal: [
     { name: 'Terms & Conditions', href: '/terms' },
@@ -57,8 +60,9 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Navigation */}
-          <div className="grid grid-cols-2 gap-8 lg:col-span-3">
+          {/* Navigation - Updated to 3 columns */}
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:col-span-3">
+            {/* Column 1: Solutions */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Solutions</h3>
               <ul className="mt-4 space-y-3">
@@ -69,16 +73,13 @@ export function Footer() {
                       className="flex items-center gap-2 text-sm leading-6 text-gray-600 hover:text-primary-600"
                     >
                       {item.name}
-                      {item.comingSoon && (
-                        <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
-                          Coming Soon
-                        </span>
-                      )}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
+
+            {/* Column 2: Company */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Company</h3>
               <ul className="mt-4 space-y-3">
@@ -90,10 +91,24 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
+            </div>
 
-              <h3 className="mt-8 text-sm font-semibold uppercase tracking-wider text-gray-500">Support</h3>
+            {/* Column 3: Support & Legal */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Support</h3>
               <ul className="mt-4 space-y-3">
                 {navigation.support.map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600">
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <h3 className="mt-8 text-sm font-semibold uppercase tracking-wider text-gray-500">Legal</h3>
+              <ul className="mt-4 space-y-3">
+                {navigation.legal.map((item) => (
                   <li key={item.name}>
                     <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600">
                       {item.name}
@@ -105,34 +120,41 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section */}
+        {/* Bottom Section - Legal links will be removed from here */}
         <div className="mt-12 border-t border-gray-100 pt-8">
-          <div className="flex flex-col items-center justify-between gap-6 lg:flex-row">
-            {/* Contact Info */}
-            <div className="flex flex-wrap items-center gap-6">
-              {navigation.contact.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-primary-600"
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.name}</span>
-                </Link>
-              ))}
+          <div className="flex flex-col-reverse items-center justify-between gap-8 lg:flex-row">
+            {/* Copyright & Company Number - moved to appear first in flex-col-reverse for small screens */}
+            <div className="text-center text-sm text-gray-500 lg:text-left">
+              <p>&copy; {new Date().getFullYear()} MyLocalMasjid. All rights reserved.</p>
+              <p className="mt-1">Company Number: 16453040</p>
             </div>
 
-            {/* Copyright */}
-            <div className="text-center text-sm text-gray-500">
-              <p>&copy; {new Date().getFullYear()} MyLocalMasjid. All rights reserved.</p>
-              <div className="mt-2 flex justify-center space-x-4">
-                {navigation.legal.map((item) => (
+            {/* Contact Info & Social Media Icons */}
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+              {/* Contact Info */}
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:justify-start">
+                {navigation.contact.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-sm text-gray-500 hover:text-primary-600"
+                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-primary-600"
                   >
-                    {item.name}
+                    <item.icon className="h-4 w-4 flex-shrink-0" />
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Social Media Icons */}
+              <div className="flex items-center justify-center space-x-5">
+                {navigation.social.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-gray-400 hover:text-primary-600 transition-colors"
+                    aria-label={item.name}
+                  >
+                    <item.icon className="h-5 w-5" />
                   </Link>
                 ))}
               </div>

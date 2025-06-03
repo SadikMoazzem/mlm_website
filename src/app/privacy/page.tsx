@@ -1,9 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ArrowUp, Shield, Lock, Users, Share2, Cookie, Server, UserCheck, Mail } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { ArrowUp, Shield, Lock, Users, Share2, Cookie, Server, UserCheck, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function PrivacyPage() {
   const [showScrollTop, setShowScrollTop] = useState(false)

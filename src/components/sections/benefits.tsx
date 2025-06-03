@@ -1,10 +1,21 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FaCheck, FaMapMarkedAlt, FaDesktop, FaGlobe, FaMobileAlt, FaTv } from 'react-icons/fa'
-import { useState } from 'react'
+import { FaCheck, FaMapMarkedAlt, FaDesktop, FaGlobe, FaMobileAlt, FaTv, FaPray, FaPlusCircle } from 'react-icons/fa'
+import { useState, useEffect, useRef } from 'react'
 
 const phases = [
+  {
+    status: 'completed',
+    title: 'Launched Salahtimez.com (2016)',
+    description: 'A simple, fast prayer times app for London, providing quick access to daily salah schedules.',
+    icon: FaPray,
+    details: [
+      'Focused on London users',
+      'Web-based application',
+      'Minimalist design for speed',
+    ],
+  },
   {
     status: 'completed',
     title: 'UK Masjid Database',
@@ -40,29 +51,40 @@ const phases = [
     ],
   },
   {
-    status: 'current',
-    title: 'Beta Release',
-    description: 'Onboarding initial Masjids for testing and feedback.',
+    status: 'completed',
+    title: 'Initial Platform Beta',
+    description: 'Onboarded initial Masjids for testing and feedback, refining core features.',
     icon: FaCheck,
     details: [
       'User feedback collection',
       'System optimization',
-      'Feature refinement',
+      'Core feature refinement',
       'Performance testing',
     ],
   },
   {
-    status: 'upcoming',
-    title: 'Mobile App',
-    description: 'MyLocalMasjid app for the community.',
+    status: 'completed',
+    title: 'MyLocalMasjid Mobile App',
+    description: 'Launched the MyLocalMasjid app for the community.',
     icon: FaMobileAlt,
     details: [
       'Prayer time notifications',
       'Masjid finder',
-      'Event registration',
+      'iOS App Launched',
       'Community updates',
     ],
-    comingSoon: true,
+  },
+  {
+    status: 'current',
+    title: 'Platform Expansion & Hall Onboarding',
+    description: 'Expanding our services to include Masjid halls and community spaces, alongside ongoing app development (Android).',
+    icon: FaPlusCircle,
+    details: [
+      'Developing Masjid hall booking features',
+      'Onboarding community halls and event spaces',
+      'Android app development in progress',
+      'Continuous platform improvements',
+    ],
   },
   {
     status: 'upcoming',
@@ -75,23 +97,41 @@ const phases = [
       'Event schedules',
       'Multi-screen support',
     ],
+    comingSoon: true,
   },
   {
     status: 'upcoming',
-    title: 'UK Expansion',
-    description: 'Expanding services across the United Kingdom.',
+    title: 'UK Wide Coverage & Features',
+    description: 'Expanding services and features across the United Kingdom.',
     icon: FaMapMarkedAlt,
     details: [
-      'Regional rollout',
-      'Community partnerships',
-      'Support network',
-      'Local events',
+      'Full UK rollout',
+      'Advanced community partnerships',
+      'Enhanced support network',
+      'Localized features & events',
     ],
+    comingSoon: true,
   },
 ]
 
 export function BenefitsSection() {
   const [activePhase, setActivePhase] = useState<number | null>(null)
+  const currentPhaseRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Find the index of the current phase
+    const currentPhaseIndex = phases.findIndex(phase => phase.status === 'current');
+    if (currentPhaseIndex !== -1 && currentPhaseRef.current) {
+      // Scroll to the current phase element
+      // We use a small timeout to ensure the element is rendered and layout is complete
+      setTimeout(() => {
+        currentPhaseRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center' 
+        });
+      }, 100);
+    }
+  }, []);
 
   return (
     <section className="relative w-full overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100 px-4 py-32">
@@ -131,6 +171,8 @@ export function BenefitsSection() {
             {phases.map((phase, index) => (
               <motion.div
                 key={phase.title}
+                id={phase.status === 'current' ? 'current-journey-step' : undefined}
+                ref={phase.status === 'current' ? currentPhaseRef : undefined}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
