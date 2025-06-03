@@ -13,9 +13,11 @@ import {
   Navigation,
   ArrowRight,
   Building2,
-  Users
+  Users,
+  Shield
 } from 'lucide-react'
 import Link from 'next/link'
+import StoreButton from '@/components/elements/StoreButton'
 
 export function ComprehensiveSolutionSection() {
   const solutions = [
@@ -102,24 +104,24 @@ export function ComprehensiveSolutionSection() {
       forMasjid: [],
       forCommunity: [
         {
-          icon: Clock,
-          title: 'Prayer Times on the Go',
-          description: 'Access accurate prayer times for your Masjid wherever you are',
+          icon: Shield,
+          title: 'Privacy-First Design',
+          description: 'Enjoy a secure experience with no tracking, no ads, and no login required.',
         },
         {
           icon: Navigation,
-          title: 'Nearby Masjids',
-          description: 'Find Masjids and prayer times in any location',
+          title: 'Smart Masjid Finder',
+          description: "Discover masjids with filters (parking, women\'s space) & get live updates from your home masjid.",
+        },
+        {
+          icon: Clock,
+          title: 'Complete Prayer Times',
+          description: 'Accurate daily schedules, offline access, and convenient home screen widgets.',
         },
         {
           icon: Calendar,
-          title: 'Events & Classes',
-          description: 'Browse and register for Masjid events directly from your phone',
-        },
-        {
-          icon: Megaphone,
-          title: 'Push Notifications',
-          description: 'Get instant updates from your Masjid when it matters',
+          title: 'Islamic Calendar & Reminders',
+          description: 'Stay on top of Hijri dates and get timely reminders for important Islamic events.',
         },
       ],
     },
@@ -221,26 +223,10 @@ export function ComprehensiveSolutionSection() {
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.3 }}
-                      className="flex gap-4"
+                      className="flex flex-wrap gap-4 items-start"
                     >
-                      <div className="flex flex-col items-center">
-                        <span className="mb-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
-                          Coming Soon
-                        </span>
-                        <div className="opacity-50 cursor-not-allowed">
-                          <div className="flex items-center justify-center rounded-lg bg-white px-6 py-4 border border-slate-200 w-[180px] h-[48px]">
-                            <span className="text-base font-semibold text-slate-400">Get it on Google Play</span>
-                          </div>
-                        </div>
-                      </div>
-                      <a
-                        href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center rounded-lg bg-white px-6 py-4 border border-slate-200 w-[180px] h-[48px] hover:shadow-md transition-all"
-                      >
-                        <span className="text-base font-semibold text-slate-700">Download on the App Store</span>
-                      </a>
+                      <StoreButton store="GooglePlay" isComingSoon={true} />
+                      <StoreButton store="AppStore" href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734" />
                     </motion.div>
                   )}
                 </div>

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
+// import Image from 'next/image' // Removed as it's no longer directly used
 import { 
   Clock, 
   MapPin, 
@@ -18,11 +18,38 @@ import {
   BackpackIcon,
   LayoutDashboard,
   User2,
-  BookOpen
+  BookOpen,
+  Shield,
+  ShieldOff,
+  UserX,
+  Bell
 } from 'lucide-react'
+import StoreButton from '@/components/elements/StoreButton'
 
 // Features organized by category
 const featureCategories = [
+  {
+    id: 'privacy',
+    title: 'Privacy Focused',
+    icon: Shield,
+    features: [
+      {
+        title: 'No Tracking or Ads',
+        description: 'Your activity is not tracked, and there are no advertisements.',
+        icon: ShieldOff
+      },
+      {
+        title: 'No Data Collection',
+        description: 'We do not collect your personal data through the app.',
+        icon: ShieldOff
+      },
+      {
+        title: 'No Login Required',
+        description: 'Use the app freely without needing to create an account or log in.',
+        icon: UserX
+      }
+    ]
+  },
   {
     id: 'masjid',
     title: 'Find Your Local Masjid',
@@ -30,12 +57,12 @@ const featureCategories = [
     features: [
       {
         title: 'Set a Home Masjid',
-        description: 'Choose your regular mosque as your default, making it quick to access prayer times where you worship most',
+        description: 'Choose your regular mosque as your default, making it quick to access prayer times where you worship most. Stay connected with live updates (registered masjids only).',
         icon: Home
       },
       {
         title: 'Discover Nearby Masjids',
-        description: 'Find mosques in your area when traveling or moving to a new neighborhood',
+        description: 'Find mosques in your area when traveling or moving to a new neighborhood. Filter by whether it is open, it has parking or womens prayer space etc.',
         icon: Map
       },
       {
@@ -56,13 +83,13 @@ const featureCategories = [
         icon: Clock
       },
       {
-        title: 'Weekly View',
-        description: 'Plan ahead by seeing prayer times for the entire week',
-        icon: Calendar
-      },
-      {
         title: 'Offline Access',
         description: "View prayer times even when you don't have internet connection - perfect for travel!",
+        icon: Smartphone
+      },
+      {
+        title: 'Widgets',
+        description: 'Easy access to prayer times directly from your home screen.',
         icon: Smartphone
       }
     ]
@@ -103,6 +130,11 @@ const featureCategories = [
         title: 'Important Islamic Dates',
         description: 'Stay aware of significant days in the Islamic calendar',
         icon: BookOpen
+      },
+      {
+        title: 'Reminders',
+        description: 'Get reminders for important Islamic dates so you never miss them.',
+        icon: Bell
       }
     ]
   },
@@ -118,33 +150,11 @@ const featureCategories = [
       },
       {
         title: 'User-Friendly Interface',
-        description: "Simple, clean design that's easy for everyone to use, regardless of tech experience",
+        description: "Simple, clean design that's easy for everyone to use, regardless of tech experience. Beautiful UI made for users.",
         icon: LayoutDashboard
       }
     ]
   },
-  {
-    id: 'performance',
-    title: 'Quick and Reliable',
-    icon: Zap,
-    features: [
-      {
-        title: 'Fast Loading',
-        description: 'Prayer times load quickly, even on slower connections',
-        icon: Zap
-      },
-      {
-        title: 'Minimal Data Usage',
-        description: 'The app is designed to use very little of your mobile data',
-        icon: Smartphone
-      },
-      {
-        title: 'Battery Friendly',
-        description: 'Optimized to minimize battery consumption',
-        icon: Zap
-      }
-    ]
-  }
 ]
 
 // Benefits for different user groups
@@ -154,9 +164,7 @@ const benefitsGroups = [
     title: 'For Daily Prayer Management',
     icon: Clock,
     benefits: [
-      'Never Miss a Prayer: Clear notifications and easy access to prayer times help you stay on schedule',
-      "Prayer Time Confidence: Trust that you're getting accurate, verified times from your actual masjid",
-      'Reduced Anxiety: No more wondering or searching for prayer times when traveling'
+      'Helps never miss a prayer, provides confidence in accurate masjid times, and reduces anxiety when traveling.'
     ]
   },
   {
@@ -164,9 +172,7 @@ const benefitsGroups = [
     title: 'For Busy Lifestyles',
     icon: Zap,
     benefits: [
-      'Time-Saving: Get prayer times instantly without having to search online or call your masjid',
-      'Better Planning: Knowing prayer times in advance helps you schedule your day more effectively',
-      "On-the-Go Access: Whether you're at work, shopping, or traveling, prayer times are always with you"
+      'Saves time in finding prayer times, aids in daily planning, and offers on-the-go access.'
     ]
   },
   {
@@ -174,9 +180,7 @@ const benefitsGroups = [
     title: 'For Families',
     icon: Users,
     benefits: [
-      'Teach Children: Help children learn prayer schedules with an easy-to-read interface',
-      'Family Prayer Coordination: Coordinate family prayer times more easily',
-      'Peace of Mind for Parents: Know that your teenagers have access to accurate prayer times wherever they go'
+      'On the go, find masjids for the whole family with womens prayer area filters.'
     ]
   },
   {
@@ -184,9 +188,7 @@ const benefitsGroups = [
     title: 'For Travelers',
     icon: BackpackIcon,
     benefits: [
-      'Easy Adjustment: Quickly adapt to new prayer times when crossing time zones',
-      'Find Local Masjids: Discover places to pray in unfamiliar areas',
-      'Offline Functionality: Access saved prayer times even without internet connection'
+      'Allows easy adjustment to new time zones, helps find local masjids, view prayer times wherever you are, and offers offline functionality for saved times.'
     ]
   }
 ]
@@ -206,7 +208,7 @@ export default function MobileAppPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-6 inline-block rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-600"
               >
-                MyLocalMasjid App
+                Application
               </motion.span>
             </div>
             <motion.h1
@@ -215,7 +217,7 @@ export default function MobileAppPage() {
               transition={{ duration: 0.5 }}
               className="font-heading text-4xl font-bold text-gray-900 md:text-5xl lg:text-6xl"
             >
-              MyLocalMasjid Mobile App
+              My Local Masjid App
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -234,39 +236,9 @@ export default function MobileAppPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="mt-8 flex flex-wrap gap-4 justify-center"
             >
-              <div className="flex flex-col items-center">
-                <span className="mb-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
-                  Coming Soon
-                </span>
-                <div className="opacity-50 cursor-not-allowed">
-                  <span
-                    className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 border border-slate-200 transition-all"
-                  >
-                    <Image
-                      src="/images/google-play.png"
-                      alt="Get it on Google Play"
-                      width={120}
-                      height={36}
-                      style={{ objectFit: 'contain' }}
-                    />
-                  </span>
-                </div>
-              </div>
+              <StoreButton store="GooglePlay" isComingSoon={true} />
               
-              <Link 
-                href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 border border-slate-200 transition-all hover:shadow-md"
-              >
-                <Image
-                  src="/images/app-store.png"
-                  alt="Download on the App Store"
-                  width={120}
-                  height={36}
-                  style={{ objectFit: 'contain' }}
-                />
-              </Link>
+              <StoreButton store="AppStore" href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734" />
             </motion.div>
           </div>
         </div>

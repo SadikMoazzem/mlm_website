@@ -169,7 +169,7 @@ export default function PrivacyPage() {
               </li>
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
-                <span>Location data is accessed in real-time and <strong>never stored or transmitted</strong> to our servers.</span>
+                <span>Location data is sent to our API to find nearby masjids. This data is used in real-time for this purpose only and is <strong>never stored or logged</strong> on our servers.</span>
               </li>
             </ul>
             
@@ -214,7 +214,7 @@ export default function PrivacyPage() {
                 </li>
                 <li className="flex items-start">
                   <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-green-500 rounded-full flex-shrink-0"></span>
-                  <span><strong>No analytics tools</strong></span>
+                  <span>Optional, anonymized app analytics to help us improve user experience. You can opt-out of this in the app settings.</span>
                 </li>
                 <li className="flex items-start">
                   <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-green-500 rounded-full flex-shrink-0"></span>

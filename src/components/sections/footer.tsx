@@ -19,6 +19,7 @@ const navigation = {
   ],
   legal: [
     { name: 'Terms & Conditions', href: '/terms' },
+    { name: 'Privacy Policy', href: '/privacy' },
   ],
   social: [
     { name: 'Facebook', href: '#', icon: Facebook },

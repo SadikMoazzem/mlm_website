@@ -341,15 +341,15 @@ export default function TermsPage() {
             <ul className="space-y-5 list-none pl-0 md:pl-6">
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-green-500 rounded-full flex-shrink-0"></span>
-                <span>Used in real-time only</span>
+                <span>Sent to our API to find nearby Masajid and used in real-time for this purpose only.</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-green-500 rounded-full flex-shrink-0"></span>
-                <span>Not stored, tracked, or transmitted</span>
+                <span>Never stored or logged on our servers.</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-green-500 rounded-full flex-shrink-0"></span>
-                <span>Not associated with your identity</span>
+                <span>Not associated with your identity beyond the immediate request.</span>
               </li>
             </ul>
             
