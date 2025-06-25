@@ -55,7 +55,7 @@ export default function PrivacyPage() {
             transition={{ delay: 0.2 }}
             className="mt-3 text-lg text-gray-600"
           >
-            Last updated April 18, 2025
+            Last updated January 14, 2025
           </motion.p>
         </div>
       </motion.div>
@@ -171,6 +171,10 @@ export default function PrivacyPage() {
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
                 <span>Location data is sent to our API to find nearby masjids. This data is used in real-time for this purpose only and is <strong>never stored or logged</strong> on our servers.</span>
               </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span><strong>Anonymous analytics:</strong> We collect anonymized usage data to understand masjid involvement and improve the app experience. This data is completely anonymous, cannot be linked to any individual user, and you can opt-out at any time in the app settings.</span>
+              </li>
             </ul>
             
             <h2 id="use" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
@@ -189,10 +193,14 @@ export default function PrivacyPage() {
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
                 <span>Provide users with accurate, localised prayer time information.</span>
               </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span>Analyze anonymous usage patterns to understand masjid involvement and improve the app experience.</span>
+              </li>
             </ul>
             
             <p>
-              We do <strong>not</strong> use your data for advertising, tracking, analytics, or any commercial profiling.
+              We do <strong>not</strong> use your data for advertising, commercial profiling, or any tracking that can identify individual users.
             </p>
             
             <h2 id="share" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
@@ -240,6 +248,48 @@ export default function PrivacyPage() {
             <p>
               We take data protection seriously. Any data we store (admin name and email only) is handled with standard security measures to prevent unauthorised access.
             </p>
+            
+            <h3 className="text-2xl font-semibold mt-8">Data Quality & Accuracy</h3>
+            <p>
+              We are committed to providing the highest quality masjid data possible. We achieve this through:
+            </p>
+            <ul className="space-y-5 list-none pl-0 md:pl-6">
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span><strong>Direct masjid partnerships:</strong> We work directly with masjid administrators to ensure accurate and up-to-date information.</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span><strong>Automated data gathering:</strong> We use automated processes to collect masjid information directly from users and masjids to ensure comprehensive coverage.</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span><strong>Verification processes:</strong> All masjid data goes through our quality assurance processes to ensure accuracy.</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span><strong>Community feedback:</strong> We encourage users to report any inaccuracies so we can maintain the best possible data quality.</span>
+              </li>
+            </ul>
+            
+            <h3 className="text-2xl font-semibold mt-8">Legal Protections</h3>
+            <p>
+              We operate without warrant protections and are committed to transparency. In the unlikely event of legal requests for data:
+            </p>
+            <ul className="space-y-5 list-none pl-0 md:pl-6">
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span>We collect minimal data, so there is very little information that could be requested.</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span>Any anonymous analytics data cannot be linked to individual users.</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span>We do not store location data, so user location information is not available.</span>
+              </li>
+            </ul>
             
             <h2 id="rights" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
               <UserCheck className="mr-3 text-primary-600" size={32} />
