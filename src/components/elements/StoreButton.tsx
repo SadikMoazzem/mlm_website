@@ -6,7 +6,6 @@ import Link from 'next/link'
 interface StoreButtonProps {
   store: 'AppStore' | 'GooglePlay';
   href?: string;
-  isComingSoon?: boolean;
   width?: number;
   height?: number;
   className?: string;
@@ -15,7 +14,6 @@ interface StoreButtonProps {
 const StoreButton: React.FC<StoreButtonProps> = ({
   store,
   href,
-  isComingSoon = false,
   width = 135,
   height = 40,
   className = '',

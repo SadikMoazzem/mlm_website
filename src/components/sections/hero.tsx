@@ -116,7 +116,7 @@ export function HeroSection() {
               </div>
               
               <p className="text-gray-600 max-w-2xl lg:max-w-none">
-                Privacy first, accurate prayer times and masjid info, wherever you go. Find prayer times, nearby masjids, qibla direction and real jamaat times - all in one place. Whether you're traveling, commuting, or at home, staying connected to your salah and local masjid has never been easier.
+                Privacy first, accurate prayer times and masjid info, wherever you go. Find prayer times, nearby masjids, qibla direction and real jamaat times - all in one place. Whether you&apos;re traveling, commuting, or at home, staying connected to your salah and local masjid has never been easier.
               </p>
             </motion.div>
 

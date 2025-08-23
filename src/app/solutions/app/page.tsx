@@ -3,13 +3,10 @@ import { motion } from 'framer-motion'
 import { 
   Clock, 
   MapPin, 
-  Users, 
   Compass, 
   Shield, 
   Smartphone,
   Calendar,
-  Target,
-  Zap,
   Eye
 } from 'lucide-react'
 import StoreButton from '@/components/elements/StoreButton'
@@ -146,7 +143,7 @@ export default function AppPage() {
               className="text-lg text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
               MyLocalMasjid gives you accurate prayer times no matter where you are — with no setup required. 
-              Whether you're traveling, commuting, or at home, staying connected to your salah and local masjid has never been easier.
+              Whether you&apos;re traveling, commuting, or at home, staying connected to your salah and local masjid has never been easier.
             </motion.p>
 
             <motion.div
