@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Building2, Users, Smartphone } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
+import StoreButton from '@/components/elements/StoreButton'
 
 export function HeroSection() {
   /* Keep this for later when we have masajids onboard
@@ -90,38 +92,34 @@ export function HeroSection() {
                 href="/register"
                 className="group inline-flex items-center gap-2 rounded-full bg-primary-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg"
               >
-                Join Beta Program
+                Get Started
                 <ArrowRight className="transition-transform group-hover:translate-x-1" />
               </Link>
             </motion.div>
+
+
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-12 space-y-6"
+              className="mt-8 text-center lg:text-left"
             >
-              <div className="inline-flex rounded-full bg-yellow-100 px-4 py-2">
-                <span className="text-sm font-medium text-yellow-700">Limited Beta Launch</span>
+              
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Your All-in-One Prayer Times App
+              </h3>
+                
+              <div className="flex flex-wrap gap-4 mb-4">
+                <StoreButton store="GooglePlay" href="https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid" />
+                <StoreButton store="AppStore" href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734" />
               </div>
               
-              <p className="text-gray-600">
-                Join us as one of our first 30 founding masajid and help shape the future of masjid management software. 
-                Get free access during our beta period and be part of our journey from the beginning.
+              <p className="text-gray-600 max-w-2xl lg:max-w-none">
+                Privacy first, accurate prayer times and masjid info, wherever you go. Find prayer times, nearby masjids, qibla direction and real jamaat times - all in one place. Whether you're traveling, commuting, or at home, staying connected to your salah and local masjid has never been easier.
               </p>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="rounded-full bg-gray-100 px-4 py-2">
-                  <span className="text-sm font-medium text-gray-600">✓ Free during beta</span>
-                </div>
-                <div className="rounded-full bg-gray-100 px-4 py-2">
-                  <span className="text-sm font-medium text-gray-600">✓ Priority support</span>
-                </div>
-                <div className="rounded-full bg-gray-100 px-4 py-2">
-                  <span className="text-sm font-medium text-gray-600">✓ Shape the future</span>
-                </div>
-              </div>
             </motion.div>
+
 
             {/* Comment out the trusted by section for now
             <motion.div
@@ -153,6 +151,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative mx-auto w-full max-w-lg lg:mx-0"
           >
+            {/* Desktop Admin Interface */}
             <div className="relative rounded-3xl bg-gradient-to-br from-primary-500 to-primary-600 p-1 shadow-2xl">
               <div className="aspect-[4/3] overflow-hidden rounded-[22px] bg-white">
                 <div className="flex h-full flex-col md:flex-row">
@@ -253,6 +252,40 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
+
+            {/* Mobile Phone Screenshot - Positioned over bottom right */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="absolute -bottom-12 -right-16 z-10"
+            >
+              {/* iPhone Frame */}
+              <div className="relative w-48 h-96 bg-gray-900 rounded-[2rem] p-1 shadow-2xl">
+                {/* Screen Container */}
+                <div className="relative w-full h-full bg-black rounded-[1.7rem] overflow-hidden">
+                  <Image
+                    src="/images/preview_mobile.png"
+                    alt="MyLocalMasjid Mobile App"
+                    width={192}
+                    height={384}
+                    className="w-full h-full object-cover rounded-[1.5rem]"
+                    priority
+                  />
+                </div>
+                
+                {/* iPhone Camera Notch */}
+                <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-16 h-5 bg-gray-900 rounded-full"></div>
+                
+                {/* iPhone Side Button */}
+                <div className="absolute right-0 top-20 w-1 h-8 bg-gray-700 rounded-l-sm"></div>
+                <div className="absolute right-0 top-32 w-1 h-12 bg-gray-700 rounded-l-sm"></div>
+                <div className="absolute right-0 top-48 w-1 h-12 bg-gray-700 rounded-l-sm"></div>
+                
+                {/* iPhone Left Side Button */}
+                <div className="absolute left-0 top-24 w-1 h-6 bg-gray-700 rounded-r-sm"></div>
+              </div>
+            </motion.div>
 
             {/* Floating Elements */}
             <div className="absolute -right-8 -top-8 h-24 w-24 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-50 p-4 shadow-lg">

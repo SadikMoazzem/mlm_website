@@ -5,7 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/layout/theme-provider'
 import { Navbar } from '@/components/sections/navbar'
 import { Footer } from '@/components/sections/footer'
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 import './globals.css'
 
 const inter = Inter({
@@ -20,28 +20,33 @@ const aref = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mylocalmasjid.com'),
-  title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
-  description: 'Making Masjid services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masajid and their communities.',
-  keywords: ['Masjid management', 'masjid', 'prayer times', 'islamic events', 'muslim community', 'Masjid services', 'Masjid website'],
+  title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
+  description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free on iOS & Android. Perfect for Muslims wherever you go.',
+  keywords: ['prayer times app', 'islamic app', 'muslim app', 'masjid finder', 'mosque finder', 'qibla compass', 'jamaat times', 'ramadan app', 'prayer times', 'nearby mosque', 'islamic calendar'],
   authors: [{ name: 'MyLocalMasjid' }],
   openGraph: {
     type: 'website',
     locale: 'en_GB',
     url: '/',
     siteName: 'MyLocalMasjid',
-    title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
-    description: 'Making Masjid services more accessible and keeping your community connected and informed.',
+    title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
+    description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free on iOS & Android.',
     images: [{
+      url: '/images/preview_mobile.png',
+      width: 400,
+      height: 800,
+      alt: 'MyLocalMasjid Islamic App - Prayer Times and Masjid Finder',
+    }, {
       url: '/images/preview.png?v=2',
       width: 1200,
       height: 630,
-      alt: 'MyLocalMasjid - Modern Masjid Management Platform',
+      alt: 'MyLocalMasjid - Islamic App for Prayer Times',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
-    description: 'Making Masjid services more accessible and keeping your community connected and informed.',
+    title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
+    description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free!',
     images: ['/images/preview.png'],
     creator: '@SadikMozzo',
   },
@@ -51,16 +56,14 @@ export const metadata: Metadata = {
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
   },
   manifest: '/site.webmanifest',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
   themeColor: '#1D8A77',
 }
 
@@ -79,9 +82,17 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               "name": "MyLocalMasjid",
-              "applicationCategory": "Management Software",
-              "operatingSystem": "Web-based",
-              "description": "Comprehensive masjid management solution featuring prayer times, event management, and community engagement tools",
+              "applicationCategory": "Lifestyle",
+              "operatingSystem": ["iOS", "Android"],
+              "description": "Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Perfect for Muslims wherever they go.",
+              "downloadUrl": [
+                "https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid",
+                "https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
+              ],
+              "installUrl": [
+                "https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid",
+                "https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
+              ],
               "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -89,17 +100,45 @@ export default function RootLayout({
               },
               "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "5",
-                "ratingCount": "10"
+                "ratingValue": "4.8",
+                "ratingCount": "150",
+                "bestRating": "5",
+                "worstRating": "1"
               },
-              "keywords": "mosque management, masjid management, prayer times, islamic events, muslim community",
+              "screenshot": [
+                "https://mylocalmasjid.com/images/preview_mobile.png",
+                "https://mylocalmasjid.com/images/preview.png"
+              ],
+              "featureList": [
+                "Accurate prayer times",
+                "Nearby masjid finder", 
+                "Real-time jamaat times",
+                "Qibla compass",
+                "Ramadan fasting tracker",
+                "Privacy-first design",
+                "Offline prayer times",
+                "Islamic calendar"
+              ],
+              "keywords": "prayer times, mosque finder, masjid, qibla, islamic app, muslim app, jamaat times, ramadan",
               "sameAs": [
                 "https://www.mylocalmasjid.com",
-                "https://twitter.com/SadikMozzo"
+                "https://twitter.com/SadikMozzo",
+                "https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid",
+                "https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
               ]
             })
           }}
         />
+        
+        {/* Mobile App Banners for Search */}
+        <meta name="apple-itunes-app" content="app-id=6743862734, app-argument=https://mylocalmasjid.com" />
+        <meta name="google-play-app" content="app-id=com.moazzemlabs.mylocalmasjid" />
+        
+        {/* App-specific meta tags */}
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="MyLocalMasjid" />
       </head>
       <body className={`${inter.variable} ${aref.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

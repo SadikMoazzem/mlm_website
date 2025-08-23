@@ -48,8 +48,17 @@ const StoreButton: React.FC<StoreButtonProps> = ({
   }
 
   if (store === 'GooglePlay') {
+    if (!href) {
+      console.warn('StoreButton: href prop is required for GooglePlay type.');
+      return null; // Or some fallback UI
+    }
     return (
-      <div className={`relative ${className}`}>
+      <Link
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`inline-flex items-center transition-all hover:shadow-md ${className}`}
+      >
         <Image
           src={googlePlaySvg}
           alt="Get it on Google Play"
@@ -58,14 +67,7 @@ const StoreButton: React.FC<StoreButtonProps> = ({
           style={{ objectFit: 'contain' }}
           priority
         />
-        {isComingSoon && (
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-lg cursor-not-allowed">
-            <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-700 shadow-md">
-              Coming Soon
-            </span>
-          </div>
-        )}
-      </div>
+      </Link>
     );
   }
 

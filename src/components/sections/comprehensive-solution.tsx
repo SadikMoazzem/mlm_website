@@ -225,7 +225,7 @@ export function ComprehensiveSolutionSection() {
                       transition={{ delay: 0.3 }}
                       className="flex flex-wrap gap-4 items-start"
                     >
-                      <StoreButton store="GooglePlay" isComingSoon={true} />
+                      <StoreButton store="GooglePlay" href="https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid" />
                       <StoreButton store="AppStore" href="https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734" />
                     </motion.div>
                   )}

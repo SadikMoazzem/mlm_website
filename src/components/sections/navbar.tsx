@@ -164,7 +164,7 @@ export function Navbar() {
                 href="/register"
                 className="rounded-full bg-primary-600 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg"
               >
-                Join Us
+                Get Started
               </Link>
             </div>
           </div>
@@ -267,7 +267,7 @@ export function Navbar() {
                   className="rounded-full bg-primary-600 px-6 py-2.5 text-center text-base font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Join Us
+                  Get Started
                 </Link>
               </div>
             </div>
