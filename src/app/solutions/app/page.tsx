@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import { 
   Clock, 
@@ -10,11 +11,6 @@ import {
   Eye
 } from 'lucide-react'
 import StoreButton from '@/components/elements/StoreButton'
-
-export const metadata: Metadata = {
-  title: 'MyLocalMasjid App - Your All-in-One Islamic App',
-  description: 'Privacy First, Accurate prayer times and masjid info, wherever you go. Find Prayer Times. Nearby Masjids. Real Jamaat Info.',
-}
 
 export default function AppPage() {
   const features = [
