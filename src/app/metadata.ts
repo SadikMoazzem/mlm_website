@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   metadataBase: new URL('https://mylocalmasjid.com'),
   title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
-  description: 'Making Masjid services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masajid and their communities.',
+  description: 'Established in 2020, making Masjid services more accessible and keeping your community connected and informed. From prayer times to events, we help strengthen the bond between masajid and their communities.',
   keywords: [
     'Masjid management',
     'Mosque management',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'MyLocalMasjid',
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
-    description: 'Making Masjid services more accessible and keeping your community connected and informed.',
+    description: 'Established in 2020, making Masjid services more accessible and keeping your community connected and informed.',
     images: [{
       url: '/images/preview.png',
       width: 1200,
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
-    description: 'Making Masjid services more accessible and keeping your community connected and informed.',
+    description: 'Established in 2020, making Masjid services more accessible and keeping your community connected and informed.',
     images: ['/images/preview.png'],
     creator: '@SadikMozzo',
   },

@@ -54,6 +54,7 @@ export function Footer() {
                 My<span className="text-primary-600">Local</span>Masjid
               </span>
             </Link>
+            <p className="mt-2 text-sm text-gray-500">Est. 2020</p>
             <p className="mt-4 max-w-md text-gray-600">
               Empowering Masjids with modern technology to better serve their communities
               and enhance the spiritual experience.

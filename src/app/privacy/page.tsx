@@ -29,8 +29,9 @@ export default function PrivacyPage() {
     { id: "share", title: "DO WE SHARE YOUR INFORMATION?", number: "4", icon: <Share2 size={16} className="mr-1" /> },
     { id: "cookies", title: "DO WE USE COOKIES OR TRACKING TECHNOLOGIES?", number: "5", icon: <Cookie size={16} className="mr-1" /> },
     { id: "protection", title: "HOW IS YOUR DATA PROTECTED?", number: "6", icon: <Server size={16} className="mr-1" /> },
-    { id: "rights", title: "YOUR RIGHTS", number: "7", icon: <UserCheck size={16} className="mr-1" /> },
-    { id: "contact", title: "CONTACT US", number: "8", icon: <Mail size={16} className="mr-1" /> },
+    { id: "feedback", title: "FEEDBACK SUBMISSIONS", number: "7", icon: <Users size={16} className="mr-1" /> },
+    { id: "rights", title: "YOUR RIGHTS", number: "8", icon: <UserCheck size={16} className="mr-1" /> },
+    { id: "contact", title: "CONTACT US", number: "9", icon: <Mail size={16} className="mr-1" /> },
   ]
 
   return (
@@ -55,7 +56,7 @@ export default function PrivacyPage() {
             transition={{ delay: 0.2 }}
             className="mt-3 text-lg text-gray-600"
           >
-            Last updated January 14, 2025
+            Last updated September 10, 2025
           </motion.p>
         </div>
       </motion.div>
@@ -175,6 +176,10 @@ export default function PrivacyPage() {
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
                 <span><strong>Anonymous analytics:</strong> We collect anonymized usage data to understand masjid involvement and improve the app experience. This data is completely anonymous, cannot be linked to any individual user, and you can opt-out at any time in the app settings.</span>
               </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span><strong>Feedback device identifier:</strong> When you submit feedback about masjid data, we generate a random, anonymous device ID stored locally on your device. This ID is used solely to prevent duplicate feedback submissions and cannot be linked to your personal identity.</span>
+              </li>
             </ul>
             
             <h2 id="use" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
@@ -196,6 +201,10 @@ export default function PrivacyPage() {
               <li className="flex items-start">
                 <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
                 <span>Analyze anonymous usage patterns to understand masjid involvement and improve the app experience.</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-primary-600 rounded-full flex-shrink-0"></span>
+                <span>Manage feedback submissions to prevent duplicate entries and maintain data quality.</span>
               </li>
             </ul>
             
@@ -246,7 +255,7 @@ export default function PrivacyPage() {
               <span>6. HOW IS YOUR DATA PROTECTED?</span>
             </h2>
             <p>
-              We take data protection seriously. Any data we store (admin name and email only) is handled with standard security measures to prevent unauthorised access.
+              We take data protection seriously. Any data we store (admin name and email for administrators, plus anonymous device identifiers for feedback management) is handled with standard security measures to prevent unauthorised access.
             </p>
             
             <h3 className="text-2xl font-semibold mt-8">Data Quality & Accuracy</h3>
@@ -291,9 +300,50 @@ export default function PrivacyPage() {
               </li>
             </ul>
             
+            <h2 id="feedback" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
+              <Users className="mr-3 text-primary-600" size={32} />
+              <span>7. FEEDBACK SUBMISSIONS</span>
+            </h2>
+            <p>
+              Our app includes a feedback feature that allows users to confirm or suggest edits to masjid information to help us maintain accurate data.
+            </p>
+            
+            <h3 className="text-2xl font-semibold mt-8">Device Identification for Feedback Management</h3>
+            <p>
+              To prevent multiple feedback submissions from the same user for the same masjid, we generate a unique device identifier when you first submit feedback through the app.
+            </p>
+            
+            <div className="bg-blue-50 p-6 rounded-lg border border-blue-100 mt-4">
+              <p className="font-medium mb-4">
+                Important details about this identifier:
+              </p>
+              <ul className="space-y-3 list-none pl-0">
+                <li className="flex items-start">
+                  <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-blue-500 rounded-full flex-shrink-0"></span>
+                  <span>It is a <strong>random, unique ID</strong> generated specifically for feedback management</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-blue-500 rounded-full flex-shrink-0"></span>
+                  <span>It is <strong>stored locally on your device</strong> and sent with feedback requests</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-blue-500 rounded-full flex-shrink-0"></span>
+                  <span>It is <strong>not linked to any personal information</strong> and cannot be used to identify you</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block mr-4 mt-1 min-w-[20px] h-5 bg-blue-500 rounded-full flex-shrink-0"></span>
+                  <span>It is used <strong>only to manage feedback submissions</strong> and prevent duplicate entries</span>
+                </li>
+              </ul>
+            </div>
+            
+            <p>
+              This system helps us maintain data quality while ensuring your privacy is protected. The identifier cannot be traced back to you personally and serves solely as a technical tool to improve our feedback system.
+            </p>
+            
             <h2 id="rights" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
               <UserCheck className="mr-3 text-primary-600" size={32} />
-              <span>7. YOUR RIGHTS</span>
+              <span>8. YOUR RIGHTS</span>
             </h2>
             <p>
               If you are a registered masjid admin, you have the right to:
@@ -319,7 +369,7 @@ export default function PrivacyPage() {
             
             <h2 id="contact" className="flex items-center flex-wrap text-3xl font-semibold text-black mt-12">
               <Mail className="mr-3 text-primary-600" size={32} />
-              <span>8. CONTACT US</span>
+              <span>9. CONTACT US</span>
             </h2>
             <p>
               If you have any questions or concerns about this Privacy Policy or how we handle your data, please contact us:
