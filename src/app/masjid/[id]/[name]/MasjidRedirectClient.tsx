@@ -67,7 +67,7 @@ export function MasjidRedirectClient({
     try {
       // Try direct window.location first (works better on iOS)
       window.location.href = deepLinkUrl
-    } catch (error) {
+    } catch {
       // Fallback: create a temporary link and click it
       const link = document.createElement('a')
       link.href = deepLinkUrl

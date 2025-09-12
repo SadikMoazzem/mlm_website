@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { MasjidRedirectClient } from './MasjidRedirectClient'
 import { generateMetadata } from './metadata'
-import { getMasjidById, getDisplayAddress } from '@/lib/masjid-service'
+import { getMasjidById } from '@/lib/masjid-service'
 
 export { generateMetadata }
 
