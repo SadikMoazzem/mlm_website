@@ -1,17 +1,39 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Image from 'next/image'
-import { Smartphone, Download, Clock } from 'lucide-react'
+import { 
+  Smartphone, 
+  Download, 
+  Clock, 
+  MapPin, 
+  ExternalLink, 
+  Users, 
+  Calendar,
+  Compass,
+  Wifi,
+  Car,
+  Baby,
+  Accessibility,
+  Coffee,
+  BookOpen,
+  Phone,
+  Globe,
+  Share2
+} from 'lucide-react'
+import { MasjidData } from '@/types/api'
+import { formatMasjidDisplayName, getDisplayAddress, getGoogleMapsUrl, getNextPrayer, getCurrentPrayerTimes, getCurrentPrayerPeriod, formatTime } from '@/lib/masjid-service'
 
 interface MasjidRedirectClientProps {
-  masjidName: string
+  masjidData: MasjidData | null
+  fallbackName: string
   masjidId: string
   deepLinkUrl: string
 }
 
 export function MasjidRedirectClient({ 
-  masjidName, 
+  masjidData,
+  fallbackName, 
   masjidId, 
   deepLinkUrl 
 }: MasjidRedirectClientProps) {
@@ -19,30 +41,7 @@ export function MasjidRedirectClient({
   const [showFallback, setShowFallback] = useState(false)
   const [attemptedDeepLink, setAttemptedDeepLink] = useState(false)
 
-  useEffect(() => {
-    // Detect device type
-    const userAgent = navigator.userAgent.toLowerCase()
-    const isIOS = /iphone|ipad|ipod/.test(userAgent)
-    const isAndroid = /android/.test(userAgent)
-    
-    if (isIOS) {
-      setDeviceType('ios')
-    } else if (isAndroid) {
-      setDeviceType('android')
-    } else {
-      setDeviceType('desktop')
-      setShowFallback(true) // Desktop users see the download page immediately
-      return
-    }
-
-    // For mobile devices, attempt deep link
-    if (!attemptedDeepLink && (isIOS || isAndroid)) {
-      setAttemptedDeepLink(true)
-      attemptDeepLink()
-    }
-  }, [deepLinkUrl, attemptedDeepLink])
-
-  const attemptDeepLink = () => {
+  const attemptDeepLink = useCallback(() => {
     // Create a hidden iframe to attempt the deep link
     const iframe = document.createElement('iframe')
     iframe.style.display = 'none'
@@ -72,7 +71,30 @@ export function MasjidRedirectClient({
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }, 3000)
-  }
+  }, [deepLinkUrl])
+
+  useEffect(() => {
+    // Detect device type
+    const userAgent = navigator.userAgent.toLowerCase()
+    const isIOS = /iphone|ipad|ipod/.test(userAgent)
+    const isAndroid = /android/.test(userAgent)
+    
+    if (isIOS) {
+      setDeviceType('ios')
+    } else if (isAndroid) {
+      setDeviceType('android')
+    } else {
+      setDeviceType('desktop')
+      setShowFallback(true) // Desktop users see the download page immediately
+      return
+    }
+
+    // For mobile devices, attempt deep link
+    if (!attemptedDeepLink && (isIOS || isAndroid)) {
+      setAttemptedDeepLink(true)
+      attemptDeepLink()
+    }
+  }, [deepLinkUrl, attemptedDeepLink, attemptDeepLink])
 
   const handleStoreRedirect = (store: 'ios' | 'android') => {
     const urls = {
@@ -82,14 +104,37 @@ export function MasjidRedirectClient({
     window.open(urls[store], '_blank')
   }
 
+  // Get display data from API or fallback
+  const displayName = masjidData ? formatMasjidDisplayName(masjidData) : fallbackName
+  const address = masjidData ? getDisplayAddress(masjidData) : undefined
+  const mapsUrl = masjidData ? getGoogleMapsUrl(masjidData) : null
+  const nextPrayer = masjidData ? getNextPrayer(masjidData) : null
+  const prayerTimes = masjidData ? getCurrentPrayerTimes(masjidData) : null
+  const currentPrayerPeriod = masjidData ? getCurrentPrayerPeriod(masjidData) : null
+
+  // Helper function to get facility icon
+  const getFacilityIcon = (facilityName: string) => {
+    const name = facilityName.toLowerCase()
+    if (name.includes('wifi') || name.includes('internet')) return Wifi
+    if (name.includes('parking') || name.includes('car')) return Car
+    if (name.includes('child') || name.includes('baby') || name.includes('nursery')) return Baby
+    if (name.includes('wheelchair') || name.includes('disabled') || name.includes('access')) return Accessibility
+    if (name.includes('cafe') || name.includes('kitchen') || name.includes('food')) return Coffee
+    if (name.includes('library') || name.includes('book') || name.includes('education')) return BookOpen
+    return Users // default icon
+  }
+
   if (!showFallback && (deviceType === 'ios' || deviceType === 'android')) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <div className="animate-pulse">
           <Smartphone className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Opening {masjidName}
+            Opening {displayName}
           </h1>
+          {address && (
+            <p className="text-gray-500 text-sm mb-2">{address}</p>
+          )}
           <p className="text-gray-600">
             Redirecting you to the MyLocalMasjid app...
           </p>
@@ -99,115 +144,293 @@ export function MasjidRedirectClient({
   }
 
   return (
-    <div className="max-w-4xl mx-auto text-center">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-center mb-6">
-          <Image
-            src="/images/logo.png"
-            alt="MyLocalMasjid"
-            width={60}
-            height={60}
-            className="mr-3"
-          />
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-            MyLocalMasjid
-          </h1>
-        </div>
-        <h2 className="text-xl md:text-2xl text-emerald-700 font-semibold mb-4">
-          {masjidName}
-        </h2>
-        <p className="text-gray-600 text-lg">
-          Get prayer times, jamaat times, and updates for this masjid
-        </p>
-      </div>
-
-      {/* Mobile App Download Section */}
-      <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-        <div className="flex items-center justify-center mb-6">
-          <Download className="w-8 h-8 text-emerald-600 mr-3" />
-          <h3 className="text-2xl font-bold text-gray-800">
-            Download the App
-          </h3>
+    <div className="max-w-md lg:max-w-6xl mx-auto bg-white min-h-screen lg:rounded-3xl lg:shadow-2xl lg:overflow-hidden">
+      {/* Header with cover-like design */}
+      <div className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white px-6 lg:px-12 py-8 lg:py-16 rounded-b-3xl lg:rounded-b-none relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 right-4 w-32 h-32 lg:w-48 lg:h-48 border border-white rounded-full"></div>
+          <div className="absolute bottom-4 left-4 w-24 h-24 lg:w-36 lg:h-36 border border-white rounded-full"></div>
+          <div className="hidden lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-white rounded-full"></div>
         </div>
         
-        <p className="text-gray-600 mb-8 text-lg">
-          Access {masjidName} and thousands of other masajid worldwide
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-          {/* iOS Download Button */}
-          <button
-            onClick={() => handleStoreRedirect('ios')}
-            className="flex items-center bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors min-w-[200px]"
-          >
-            <Image
-              src="/Store=App Store, Type=Light, Language=English.svg"
-              alt="Download on App Store"
-              width={120}
-              height={40}
-            />
-          </button>
-
-          {/* Android Download Button */}
-          <button
-            onClick={() => handleStoreRedirect('android')}
-            className="flex items-center bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors min-w-[200px]"
-          >
-            <Image
-              src="/Store=Google Play, Type=Light, Language=English.svg"
-              alt="Get it on Google Play"
-              width={120}
-              height={40}
-            />
-          </button>
-        </div>
-
-        {/* App Features */}
-        <div className="grid md:grid-cols-3 gap-6 text-left">
-          <div className="flex items-start">
-            <Clock className="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0" />
+        <div className="relative z-10">
+          
+          {/* Masjid name and info */}
+          <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
             <div>
-              <h4 className="font-semibold text-gray-800 mb-1">Accurate Prayer Times</h4>
-              <p className="text-gray-600 text-sm">Get precise prayer and jamaat times for your location</p>
+              <h1 className="text-2xl lg:text-4xl font-bold mb-2 lg:mb-4">{displayName}</h1>
+          
+              {address && (
+                <div className="flex items-start mb-4 lg:mb-6">
+                  <MapPin className="w-4 h-4 lg:w-5 lg:h-5 mt-1 mr-2 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-emerald-100 text-sm lg:text-base leading-relaxed">{address}</p>
+                    {mapsUrl && (
+                      <a 
+                        href={mapsUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center mt-2 text-white bg-white/20 px-3 py-1 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm hover:bg-white/30 transition-colors"
+                      >
+                        <ExternalLink className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
+                        Get Directions
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-          <div className="flex items-start">
-            <Smartphone className="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0" />
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-1">Nearby Masajid</h4>
-              <p className="text-gray-600 text-sm">Find masajid wherever you are in the world</p>
-            </div>
-          </div>
-          <div className="flex items-start">
-            <div className="w-6 h-6 bg-emerald-600 rounded-full mr-3 mt-1 flex-shrink-0 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">Q</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-1">Qibla Compass</h4>
-              <p className="text-gray-600 text-sm">Always know the direction to Makkah</p>
-            </div>
+          
+            {/* Next prayer highlight */}
+            {nextPrayer && (
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 lg:p-6 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                <div className="flex items-center justify-between lg:flex-col lg:items-start lg:space-y-4">
+                  <div className="flex items-center lg:w-full lg:justify-center">
+                    <Clock className="w-5 h-5 lg:w-8 lg:h-8 mr-3 lg:mr-0 lg:mb-2" />
+                    <div className="lg:text-center">
+                      <p className="text-white/90 text-xs lg:text-sm uppercase tracking-wide lg:mb-2">Next Prayer</p>
+                      <p className="font-semibold lg:text-xl">{nextPrayer.name}</p>
+                    </div>
+                  </div>
+                  <div className="text-right lg:text-center lg:w-full">
+                    <p className="text-2xl lg:text-5xl font-bold">{formatTime(nextPrayer.time)}</p>
+                    <p className="text-white/80 text-xs lg:text-base capitalize">{nextPrayer.type}</p>
+                    
+                    {/* Show both times when available */}
+                    {nextPrayer.displayInfo?.showBoth && (
+                      <div className="mt-2 lg:mt-3 text-white/70">
+                        <div className="flex justify-center space-x-4 text-xs lg:text-sm">
+                          <div className="text-center">
+                            <p className="text-white/60 text-xs uppercase tracking-wide">Start</p>
+                            <p className="font-medium">{formatTime(nextPrayer.displayInfo.startTime || '')}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-white/60 text-xs uppercase tracking-wide">Jammat</p>
+                            <p className="font-medium">{formatTime(nextPrayer.displayInfo.jammatTime || '')}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Coming Soon Section */}
-      <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl p-6">
-        <h3 className="text-xl font-bold mb-2">Masjid Directory Platform</h3>
-        <p className="text-emerald-100">
-          A comprehensive web platform for masjid information is coming soon!
-        </p>
+      {/* Content Cards */}
+      <div className="px-6 lg:px-12 py-6 lg:py-12 space-y-6">
+        
+        {/* Download App Card - Slim Top Section */}
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl p-4 lg:p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Smartphone className="w-6 h-6 lg:w-8 lg:h-8 opacity-90" />
+              <div>
+                <h3 className="font-semibold lg:text-lg">Get the Full Experience</h3>
+                <p className="text-emerald-100 text-xs lg:text-sm">Access {displayName} and thousands more masajid</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col lg:flex-row lg:space-x-3 space-y-2 lg:space-y-0">
+              {/* Mobile: Single smart button, Desktop: Both buttons */}
+              {deviceType === 'desktop' ? (
+                <>
+                  <button
+                    onClick={() => handleStoreRedirect('ios')}
+                    className="bg-white/20 backdrop-blur-sm border border-white/30 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
+                  >
+                    View in iOS
+                  </button>
+                  <button
+                    onClick={() => handleStoreRedirect('android')}
+                    className="bg-white/20 backdrop-blur-sm border border-white/30 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
+                  >
+                    View in Android
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => handleStoreRedirect(deviceType)}
+                  className="bg-white/20 backdrop-blur-sm border border-white/30 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
+                >
+                  View in App
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid - Mobile: stacked, Desktop: 2:1 ratio */}
+        <div className="lg:grid lg:grid-cols-3 lg:gap-8 space-y-6 lg:space-y-0">
+          
+          {/* Prayer Times Card - Mobile: First, Desktop: Right column */}
+          {prayerTimes && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-1 lg:order-2">
+              <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Clock className="w-5 h-5 text-emerald-600 mr-3" />
+                    <h3 className="font-semibold text-gray-800">Prayer Times</h3>
+                  </div>
+                  <span className="text-xs text-gray-500">{prayerTimes.date}</span>
+                </div>
+              </div>
+              <div className="p-0">
+                {/* Prayer Times Table */}
+                <div className="divide-y divide-gray-100">
+                  {[
+                    { name: 'Fajr', start: prayerTimes.fajr.start, jammat: prayerTimes.fajr.jammat },
+                    { name: 'Dhuhr', start: prayerTimes.dhuhr.start, jammat: prayerTimes.dhuhr.jammat },
+                    { name: 'Asr', start: prayerTimes.asr.start, jammat: prayerTimes.asr.jammat },
+                    { name: 'Maghrib', start: prayerTimes.maghrib.start, jammat: prayerTimes.maghrib.jammat },
+                    { name: 'Isha', start: prayerTimes.isha.start, jammat: prayerTimes.isha.jammat }
+                  ].map((prayer, index) => {
+                    const isCurrentPeriod = currentPrayerPeriod === prayer.name
+                    const isNextPrayer = nextPrayer?.name === prayer.name || nextPrayer?.name === `${prayer.name} Jammat`
+                    
+                    return (
+                    <div key={prayer.name} className={`flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors ${
+                      isCurrentPeriod ? 'bg-blue-50 border-l-4 border-blue-500' : 
+                      isNextPrayer ? 'bg-emerald-50 border-l-4 border-emerald-500' : ''
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-2 h-2 rounded-full ${
+                          isCurrentPeriod ? 'bg-blue-500' :
+                          isNextPrayer ? 'bg-emerald-500' : 'bg-gray-300'
+                        }`}></div>
+                        <span className={`font-medium ${
+                          isCurrentPeriod ? 'text-blue-800' : 'text-gray-800'
+                        }`}>
+                          {prayer.name}
+                          {isCurrentPeriod && <span className="text-blue-600 text-xs ml-2">(Current)</span>}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-6 text-sm">
+                        <div className="text-right">
+                          <p className="text-gray-500 text-xs uppercase tracking-wide">Start</p>
+                          <p className="font-medium text-gray-800">{formatTime(prayer.start)}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-emerald-600 text-xs uppercase tracking-wide">Jammat</p>
+                          <p className="font-medium text-emerald-700">{formatTime(prayer.jammat)}</p>
+                        </div>
+                      </div>
+                    </div>
+                    )
+                  })}
+                  
+                  {/* Sunrise row */}
+                  <div className="flex items-center justify-between px-6 py-4 bg-orange-50">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+                      <span className="font-medium text-gray-800">Sunrise</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-orange-600 text-xs uppercase tracking-wide">Time</p>
+                      <p className="font-medium text-orange-700">{formatTime(prayerTimes.sunrise)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Facilities Card - Mobile: Second (full width), Desktop: Left 2 columns */}
+          {masjidData?.facilities && masjidData.facilities.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-2 lg:order-1">
+              <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                <div className="flex items-center">
+                  <Users className="w-5 h-5 text-emerald-600 mr-3" />
+                  <h3 className="font-semibold text-gray-800">Facilities</h3>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="flex flex-wrap gap-3">
+                  {masjidData.facilities.filter(f => f.active).map((facility) => {
+                    const IconComponent = getFacilityIcon(facility.name)
+                    const getStatusColors = (status: string) => {
+                      switch (status.toLowerCase()) {
+                        case 'open':
+                          return {
+                            bg: 'bg-green-500',
+                            border: 'border-green-200',
+                            text: 'text-green-800',
+                            icon: 'text-green-600',
+                            cardBg: 'bg-green-50'
+                          }
+                        case 'closed':
+                          return {
+                            bg: 'bg-red-500',
+                            border: 'border-red-200',
+                            text: 'text-red-800',
+                            icon: 'text-red-600',
+                            cardBg: 'bg-red-50'
+                          }
+                        case 'maintenance':
+                          return {
+                            bg: 'bg-orange-500',
+                            border: 'border-orange-200',
+                            text: 'text-orange-800',
+                            icon: 'text-orange-600',
+                            cardBg: 'bg-orange-50'
+                          }
+                        default:
+                          return {
+                            bg: 'bg-yellow-500',
+                            border: 'border-yellow-200',
+                            text: 'text-yellow-800',
+                            icon: 'text-yellow-600',
+                            cardBg: 'bg-yellow-50'
+                          }
+                      }
+                    }
+                    
+                    const colors = getStatusColors(facility.status)
+                    
+                    return (
+                      <div 
+                        key={facility.id} 
+                        className={`relative flex-shrink-0 ${colors.cardBg} ${colors.border} border rounded-2xl p-4 min-w-[140px] max-w-[180px] transition-all hover:shadow-md hover:scale-105`}
+                      >
+                        {/* Status indicator dot */}
+                        <div className={`absolute top-3 right-3 w-3 h-3 ${colors.bg} rounded-full shadow-sm`}></div>
+                        
+                        <div className="flex flex-col items-center text-center space-y-3">
+                          <div className={`p-3 bg-white rounded-xl shadow-sm`}>
+                            <IconComponent className={`w-6 h-6 ${colors.icon}`} />
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <h4 className="font-medium text-gray-800 text-sm leading-tight">
+                              {facility.name}
+                            </h4>
+                            
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${colors.text} bg-white/80`}>
+                              {facility.status}
+                            </span>
+                          </div>
+                          
+                          {facility.description && (
+                            <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
+                              {facility.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          
+        </div>
       </div>
 
-      {/* Debug Info (only in development) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-8 p-4 bg-gray-100 rounded-lg text-left">
-          <h4 className="font-bold text-gray-700 mb-2">Debug Info:</h4>
-          <p className="text-sm text-gray-600">Masjid ID: {masjidId}</p>
-          <p className="text-sm text-gray-600">Deep Link: {deepLinkUrl}</p>
-          <p className="text-sm text-gray-600">Device: {deviceType}</p>
-        </div>
-      )}
     </div>
   )
 }

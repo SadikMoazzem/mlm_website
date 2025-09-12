@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
+import { getMasjidById, formatMasjidDisplayName, getDisplayAddress } from '@/lib/masjid-service'
 
 interface GenerateMetadataProps {
-  params: {
+  params: Promise<{
     id: string
     name: string
-  }
+  }>
 }
 
 // Helper function to convert URL-friendly name back to readable format
@@ -15,13 +16,23 @@ function formatMasjidName(urlName: string): string {
     .join(' ')
 }
 
-export function generateMetadata({ params }: GenerateMetadataProps): Metadata {
-  const { name } = params
-  const masjidName = formatMasjidName(name)
+export async function generateMetadata({ params }: GenerateMetadataProps): Promise<Metadata> {
+  const { name, id } = await params
   
+  // Try to get real masjid data for better SEO
+  const masjidData = await getMasjidById(id)
+  
+  // Use real data if available, otherwise fallback to URL name
+  const masjidName = masjidData ? formatMasjidDisplayName(masjidData) : formatMasjidName(name)
+  const address = masjidData ? getDisplayAddress(masjidData) : undefined
+  
+  const description = address 
+    ? `Get accurate prayer times, jamaat times, and updates for ${masjidName} in ${address}. Download the MyLocalMasjid app for the best experience.`
+    : `Get accurate prayer times, jamaat times, and updates for ${masjidName}. Download the MyLocalMasjid app for the best experience.`
+
   return {
     title: `${masjidName} - Prayer Times & Updates | MyLocalMasjid`,
-    description: `Get accurate prayer times, jamaat times, and updates for ${masjidName}. Download the MyLocalMasjid app for the best experience.`,
+    description,
     keywords: [
       masjidName,
       'prayer times',
@@ -33,7 +44,7 @@ export function generateMetadata({ params }: GenerateMetadataProps): Metadata {
     ],
     openGraph: {
       title: `${masjidName} - MyLocalMasjid`,
-      description: `Access prayer times and updates for ${masjidName} through the MyLocalMasjid app.`,
+      description,
       type: 'website',
       images: [
         {
@@ -47,11 +58,11 @@ export function generateMetadata({ params }: GenerateMetadataProps): Metadata {
     twitter: {
       card: 'summary_large_image',
       title: `${masjidName} - MyLocalMasjid`,
-      description: `Get prayer times and updates for ${masjidName} with the MyLocalMasjid app.`,
+      description,
       images: ['/images/preview.png'],
     },
     alternates: {
-      canonical: `/masjid/${params.id}/${params.name}`,
+      canonical: `/masjid/${id}/${name}`,
     },
   }
 }
