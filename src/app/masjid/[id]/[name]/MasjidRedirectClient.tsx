@@ -33,34 +33,58 @@ export function MasjidRedirectClient({
   const [attemptedDeepLink, setAttemptedDeepLink] = useState(false)
 
   const attemptDeepLink = useCallback(() => {
-    // Create a hidden iframe to attempt the deep link
-    const iframe = document.createElement('iframe')
-    iframe.style.display = 'none'
-    iframe.src = deepLinkUrl
-    document.body.appendChild(iframe)
-
-    // Set a timer to show fallback after 2 seconds
+    let hasAppOpened = false
+    
+    // Create a fallback timer
     const fallbackTimer = setTimeout(() => {
-      setShowFallback(true)
-      document.body.removeChild(iframe)
-    }, 2000)
+      if (!hasAppOpened) {
+        setShowFallback(true)
+      }
+    }, 1500)
 
     // Listen for page visibility change (indicates app opened)
     const handleVisibilityChange = () => {
       if (document.hidden) {
+        hasAppOpened = true
         clearTimeout(fallbackTimer)
-        document.body.removeChild(iframe)
+        document.removeEventListener('visibilitychange', handleVisibilityChange)
       }
     }
 
+    // Listen for blur event (also indicates app opened)
+    const handleBlur = () => {
+      hasAppOpened = true
+      clearTimeout(fallbackTimer)
+      window.removeEventListener('blur', handleBlur)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+
+    // Add event listeners
     document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleBlur)
+
+    // Attempt the deep link
+    try {
+      // Try direct window.location first (works better on iOS)
+      window.location.href = deepLinkUrl
+    } catch (error) {
+      // Fallback: create a temporary link and click it
+      const link = document.createElement('a')
+      link.href = deepLinkUrl
+      link.style.display = 'none'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
 
     // Clean up after 3 seconds regardless
     setTimeout(() => {
-      if (document.body.contains(iframe)) {
-        document.body.removeChild(iframe)
-      }
+      clearTimeout(fallbackTimer)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('blur', handleBlur)
+      if (!hasAppOpened) {
+        setShowFallback(true)
+      }
     }, 3000)
   }, [deepLinkUrl])
 
@@ -95,6 +119,12 @@ export function MasjidRedirectClient({
     window.open(urls[store], '_blank')
   }
 
+  const handleTryAgain = () => {
+    setAttemptedDeepLink(false)
+    setShowFallback(false)
+    attemptDeepLink()
+  }
+
   // Get display data from API or fallback
   const displayName = masjidData ? formatMasjidDisplayName(masjidData) : fallbackName
   const address = masjidData ? getDisplayAddress(masjidData) : undefined
@@ -126,9 +156,15 @@ export function MasjidRedirectClient({
           {address && (
             <p className="text-gray-500 text-sm mb-2">{address}</p>
           )}
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Redirecting you to the MyLocalMasjid app...
           </p>
+          <button
+            onClick={handleTryAgain}
+            className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     )
@@ -425,3 +461,4 @@ export function MasjidRedirectClient({
     </div>
   )
 }
+

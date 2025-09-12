@@ -26,21 +26,44 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
   const masjidName = masjidData ? formatMasjidDisplayName(masjidData) : formatMasjidName(name)
   const address = masjidData ? getDisplayAddress(masjidData) : undefined
   
+  // Extract city for location-based SEO
+  const city = masjidData?.location?.city
+  const country = masjidData?.location?.country
+  
   const description = address 
-    ? `Get accurate prayer times, jamaat times, and updates for ${masjidName} in ${address}. Download the MyLocalMasjid app for the best experience.`
-    : `Get accurate prayer times, jamaat times, and updates for ${masjidName}. Download the MyLocalMasjid app for the best experience.`
+    ? `${masjidName} prayer times, jamaat times, and facilities in ${address}. Live updates, Qibla direction, and Islamic calendar. Download MyLocalMasjid app for notifications.`
+    : `${masjidName} prayer times, jamaat times, and facilities. Live updates, Qibla direction, and Islamic calendar. Download MyLocalMasjid app for notifications.`
+
+  // Enhanced keywords for location-based searches
+  const locationKeywords = city ? [
+    `${city} masjid`,
+    `${city} mosque`,
+    `${city} prayer times`,
+    `masjid in ${city}`,
+    `mosque in ${city}`,
+    ...(country ? [`${city} ${country} masjid`, `${city} ${country} mosque`] : [])
+  ] : []
 
   return {
-    title: `${masjidName} - Prayer Times & Updates | MyLocalMasjid`,
+    title: `${masjidName} Prayer Times${city ? ` - ${city}` : ''} | MyLocalMasjid`,
     description,
     keywords: [
       masjidName,
+      `${masjidName} prayer times`,
+      `${masjidName} jamaat times`,
       'prayer times',
       'jamaat times',
+      'salah times',
+      'namaz times',
       'masjid',
       'mosque',
-      'islamic app',
-      'MyLocalMasjid'
+      'islamic center',
+      'muslim prayer',
+      'qibla direction',
+      'islamic calendar',
+      'masjid facilities',
+      'MyLocalMasjid',
+      ...locationKeywords
     ],
     openGraph: {
       title: `${masjidName} - MyLocalMasjid`,
@@ -63,6 +86,10 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
     },
     alternates: {
       canonical: `/masjid/${id}/${name}`,
+    },
+    other: {
+      'apple-itunes-app': `app-id=6743862734, app-argument=mylocalmasjid://modals/masjid-details?id=${id}`,
+      'google-play-app': `app-id=com.moazzemlabs.mylocalmasjid, app-argument=mylocalmasjid://modals/masjid-details?id=${id}`,
     },
   }
 }

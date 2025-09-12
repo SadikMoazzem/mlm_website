@@ -11,6 +11,7 @@ Allow: /pricing
 Allow: /about
 Allow: /contact
 Allow: /blog
+Allow: /masjid
 
 # Crawl-delay to be nice to search engines
 Crawl-delay: 1 
