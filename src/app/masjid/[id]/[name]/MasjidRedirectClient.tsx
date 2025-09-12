@@ -1,25 +1,18 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import Image from 'next/image'
 import { 
   Smartphone, 
-  Download, 
   Clock, 
   MapPin, 
   ExternalLink, 
   Users, 
-  Calendar,
-  Compass,
   Wifi,
   Car,
   Baby,
   Accessibility,
   Coffee,
-  BookOpen,
-  Phone,
-  Globe,
-  Share2
+  BookOpen
 } from 'lucide-react'
 import { MasjidData } from '@/types/api'
 import { formatMasjidDisplayName, getDisplayAddress, getGoogleMapsUrl, getNextPrayer, getCurrentPrayerTimes, getCurrentPrayerPeriod, formatTime } from '@/lib/masjid-service'
@@ -27,14 +20,12 @@ import { formatMasjidDisplayName, getDisplayAddress, getGoogleMapsUrl, getNextPr
 interface MasjidRedirectClientProps {
   masjidData: MasjidData | null
   fallbackName: string
-  masjidId: string
   deepLinkUrl: string
 }
 
 export function MasjidRedirectClient({ 
   masjidData,
   fallbackName, 
-  masjidId, 
   deepLinkUrl 
 }: MasjidRedirectClientProps) {
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop')
@@ -287,7 +278,7 @@ export function MasjidRedirectClient({
                     { name: 'Asr', start: prayerTimes.asr.start, jammat: prayerTimes.asr.jammat },
                     { name: 'Maghrib', start: prayerTimes.maghrib.start, jammat: prayerTimes.maghrib.jammat },
                     { name: 'Isha', start: prayerTimes.isha.start, jammat: prayerTimes.isha.jammat }
-                  ].map((prayer, index) => {
+                  ].map((prayer) => {
                     const isCurrentPeriod = currentPrayerPeriod === prayer.name
                     const isNextPrayer = nextPrayer?.name === prayer.name || nextPrayer?.name === `${prayer.name} Jammat`
                     

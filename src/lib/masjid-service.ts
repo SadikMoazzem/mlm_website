@@ -55,7 +55,7 @@ export function getDisplayAddress(masjid: MasjidData): string {
     return masjid.location.full_address
   }
   
-  const parts = [masjid.address, masjid.location?.city, masjid.location?.country].filter(Boolean)
+  const parts = [masjid.location?.city, masjid.location?.country].filter(Boolean)
   return parts.join(', ')
 }
 
@@ -211,7 +211,7 @@ export function getNextPrayer(masjid: MasjidData): {
         displayInfo: {
           startTime: prayer.startTime,
           jammatTime: prayer.jammatTime,
-          showBoth: prayer.name !== 'Sunrise' && prayer.startTime && prayer.jammatTime
+          showBoth: prayer.name !== 'Sunrise' && !!prayer.startTime && !!prayer.jammatTime
         }
       }
     }

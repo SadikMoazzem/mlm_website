@@ -48,7 +48,6 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
           <MasjidRedirectClient 
             masjidData={masjidData}
             fallbackName={masjidName}
-            masjidId={id}
             deepLinkUrl={deepLinkUrl}
           />
         </Suspense>
