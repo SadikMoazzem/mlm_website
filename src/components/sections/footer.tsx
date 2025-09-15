@@ -9,17 +9,17 @@ const navigation = {
     { name: 'Admin Portal', href: '/solutions/admin' },
     { name: 'Masjid Website', href: '/solutions/website' },
     { name: 'Mobile App', href: '/solutions/app' },
+    { name: 'Pricing', href: '/pricing' },
   ],
   company: [
     { name: 'Our Journey', href: '/journey' },
-    { name: 'Pricing', href: '/pricing' },
+    { name: 'Masjid Directory A-Z', href: '/masjid-directory' },
     { name: 'Register Your Masjid', href: '/register' },
   ],
   support: [
     { name: 'Contact', href: '/contact' },
     { name: 'Report an Issue', href: '/report' },
     { name: 'Submit Prayer Times', href: '/add-prayer-times' },
-    { name: 'Masjid Directory A-Z', href: '/masjid-directory' },
   ],
   legal: [
     { name: 'Terms & Conditions', href: '/terms' },

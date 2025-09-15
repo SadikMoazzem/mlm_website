@@ -99,7 +99,7 @@ export default function NearPage({ params, searchParams }: NearPageProps) {
   }
 
   const getLocationTitle = () => {
-    // Use query parameter first (from search)
+    // Use query parameter first (from search or geolocation)
     if (locationInfo.query) {
       return locationInfo.query
     }

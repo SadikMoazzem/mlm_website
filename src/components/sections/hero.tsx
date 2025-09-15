@@ -5,6 +5,7 @@ import { ArrowRight, Building2, Users, Smartphone } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import StoreButton from '@/components/elements/StoreButton'
+import { FindNearMeButton } from '@/components/elements/FindNearMeButton'
 
 export function HeroSection() {
   /* Keep this for later when we have masajids onboard
@@ -95,6 +96,8 @@ export function HeroSection() {
                 Get Started
                 <ArrowRight className="transition-transform group-hover:translate-x-1" />
               </Link>
+              
+              <FindNearMeButton />
             </motion.div>
 
 

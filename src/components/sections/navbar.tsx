@@ -40,7 +40,6 @@ export function Navbar() {
   ]
 
   const navItems = [
-    { name: 'Find Masjids', href: '/masjids' },
     { name: 'Our Journey', href: '/journey' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Our Masjids', href: '/masjids' },
