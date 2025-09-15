@@ -19,6 +19,7 @@ const navigation = {
     { name: 'Contact', href: '/contact' },
     { name: 'Report an Issue', href: '/report' },
     { name: 'Submit Prayer Times', href: '/add-prayer-times' },
+    { name: 'Masjid Directory A-Z', href: '/masjid-directory' },
   ],
   legal: [
     { name: 'Terms & Conditions', href: '/terms' },

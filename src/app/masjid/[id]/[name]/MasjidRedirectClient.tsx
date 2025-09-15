@@ -12,7 +12,8 @@ import {
   Baby,
   Accessibility,
   Coffee,
-  BookOpen
+  BookOpen,
+  X
 } from 'lucide-react'
 import { MasjidData } from '@/types/api'
 import { formatMasjidDisplayName, getDisplayAddress, getGoogleMapsUrl, getNextPrayer, getCurrentPrayerTimes, getCurrentPrayerPeriod, formatTime } from '@/lib/masjid-service'
@@ -31,6 +32,7 @@ export function MasjidRedirectClient({
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop')
   const [showFallback, setShowFallback] = useState(false)
   const [attemptedDeepLink, setAttemptedDeepLink] = useState(false)
+  const [selectedFacility, setSelectedFacility] = useState<any>(null)
 
   const attemptDeepLink = useCallback(() => {
     let hasAppOpened = false
@@ -321,17 +323,21 @@ export function MasjidRedirectClient({
                 {/* Prayer Times Table */}
                 <div className="divide-y divide-gray-100">
                   {[
-                    { name: 'Fajr', start: prayerTimes.fajr.start, jammat: prayerTimes.fajr.jammat },
-                    { name: 'Dhuhr', start: prayerTimes.dhuhr.start, jammat: prayerTimes.dhuhr.jammat },
-                    { name: 'Asr', start: prayerTimes.asr.start, jammat: prayerTimes.asr.jammat },
-                    { name: 'Maghrib', start: prayerTimes.maghrib.start, jammat: prayerTimes.maghrib.jammat },
-                    { name: 'Isha', start: prayerTimes.isha.start, jammat: prayerTimes.isha.jammat }
+                    { name: 'Fajr', start: prayerTimes.fajr.start, jammat: prayerTimes.fajr.jammat, isMainPrayer: true },
+                    { name: 'Sunrise', start: prayerTimes.sunrise, jammat: null, isMainPrayer: false },
+                    { name: 'Dhuhr', start: prayerTimes.dhuhr.start, jammat: prayerTimes.dhuhr.jammat, isMainPrayer: true },
+                    { name: 'Asr', start: prayerTimes.asr.start, jammat: prayerTimes.asr.jammat, isMainPrayer: true },
+                    { name: 'Maghrib', start: prayerTimes.maghrib.start, jammat: prayerTimes.maghrib.jammat, isMainPrayer: true },
+                    { name: 'Isha', start: prayerTimes.isha.start, jammat: prayerTimes.isha.jammat, isMainPrayer: true }
                   ].map((prayer) => {
                     const isCurrentPeriod = currentPrayerPeriod === prayer.name
                     const isNextPrayer = nextPrayer?.name === prayer.name || nextPrayer?.name === `${prayer.name} Jammat`
                     
+                    // Apply lower opacity to sunrise unless it's current
+                    const sunriseOpacity = prayer.name === 'Sunrise' && !isCurrentPeriod ? 'opacity-50' : ''
+                    
                     return (
-                    <div key={prayer.name} className={`flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors ${
+                    <div key={prayer.name} className={`flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors ${sunriseOpacity} ${
                       isCurrentPeriod ? 'bg-blue-50 border-l-4 border-blue-500' : 
                       isNextPrayer ? 'bg-emerald-50 border-l-4 border-emerald-500' : ''
                     }`}>
@@ -348,30 +354,66 @@ export function MasjidRedirectClient({
                         </span>
                       </div>
                       <div className="flex items-center space-x-6 text-sm">
-                        <div className="text-right">
-                          <p className="text-gray-500 text-xs uppercase tracking-wide">Start</p>
-                          <p className="font-medium text-gray-800">{formatTime(prayer.start)}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-emerald-600 text-xs uppercase tracking-wide">Jammat</p>
-                          <p className="font-medium text-emerald-700">{formatTime(prayer.jammat)}</p>
-                        </div>
+                        {prayer.name === 'Sunrise' ? (
+                          // Sunrise - only show time without labels
+                          <div className="text-right">
+                            <p className="font-medium text-gray-800">{formatTime(prayer.start)}</p>
+                          </div>
+                        ) : (
+                          // Regular prayers - show start and jammat
+                          <>
+                            <div className="text-right">
+                              <p className="text-gray-500 text-xs uppercase tracking-wide">Start</p>
+                              <p className="font-medium text-gray-800">{formatTime(prayer.start)}</p>
+                            </div>
+                            {prayer.jammat && (
+                              <div className="text-right">
+                                <p className="text-emerald-600 text-xs uppercase tracking-wide">Jammat</p>
+                                <p className="font-medium text-emerald-700">{formatTime(prayer.jammat)}</p>
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                     )
                   })}
                   
-                  {/* Sunrise row */}
-                  <div className="flex items-center justify-between px-6 py-4 bg-orange-50">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 rounded-full bg-orange-400"></div>
-                      <span className="font-medium text-gray-800">Sunrise</span>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-orange-600 text-xs uppercase tracking-wide">Time</p>
-                      <p className="font-medium text-orange-700">{formatTime(prayerTimes.sunrise)}</p>
-                    </div>
-                  </div>
+                  {/* Jummah Times Section - Same design as prayer rows */}
+                  {masjidData?.special_prayers && masjidData.special_prayers.filter(p => p.active).length > 0 && (
+                    <>
+                      {/* Spacer */}
+                      <div className="h-4 bg-gray-50"></div>
+                      
+                      {masjidData.special_prayers
+                        .filter(prayer => prayer.active)
+                        .map((jummah) => (
+                          <div key={jummah.id} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                              <span className="font-medium text-gray-800">
+                                {jummah.label}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-6 text-sm">
+                              {jummah.start_time && (
+                                <div className="text-right">
+                                  <p className="text-gray-500 text-xs uppercase tracking-wide">Start</p>
+                                  <p className="font-medium text-gray-800">{formatTime(jummah.start_time)}</p>
+                                </div>
+                              )}
+                              {jummah.jammat_time && (
+                                <div className="text-right">
+                                  <p className="text-emerald-600 text-xs uppercase tracking-wide">Jammat</p>
+                                  <p className="font-medium text-emerald-700">{formatTime(jummah.jammat_time)}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -432,7 +474,8 @@ export function MasjidRedirectClient({
                     return (
                       <div 
                         key={facility.id} 
-                        className={`relative flex-shrink-0 ${colors.cardBg} ${colors.border} border rounded-2xl p-4 min-w-[140px] max-w-[180px] transition-all hover:shadow-md hover:scale-105`}
+                        onClick={() => setSelectedFacility(facility)}
+                        className={`relative flex-shrink-0 ${colors.cardBg} ${colors.border} border rounded-2xl p-4 min-w-[140px] max-w-[180px] transition-all hover:shadow-md hover:scale-105 cursor-pointer`}
                       >
                         {/* Status indicator dot */}
                         <div className={`absolute top-3 right-3 w-3 h-3 ${colors.bg} rounded-full shadow-sm`}></div>
@@ -468,7 +511,107 @@ export function MasjidRedirectClient({
 
           
         </div>
+
+        {/* SEO Content Section - Moved below grid */}
+        <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl p-6 lg:p-8 border border-white/20">
+          <div className="text-center lg:text-left">
+            <h2 className="text-xl lg:text-2xl font-semibold text-gray-800 mb-4">
+              {displayName} Prayer Times {masjidData?.location?.city && `in ${masjidData.location.city}`}
+            </h2>
+            <p className="text-gray-600 leading-relaxed">
+              Get accurate and up-to-date prayer times for {displayName}
+              {address && ` located in ${address}`}. 
+              Our comprehensive prayer schedule includes daily Fajr, Dhuhr, Asr, Maghrib, and Isha prayer times, 
+              along with jamaat congregation times for the local Muslim community. 
+              {masjidData?.location?.city && ` Find reliable ${masjidData.location.city} masjid prayer times, `}
+              salah times, and salah schedules to help you maintain your daily prayers. 
+              Stay connected with accurate Islamic prayer times and masjid services in your area.
+            </p>
+          </div>
+        </div>
       </div>
+
+      {/* Facility Modal */}
+      {selectedFacility && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {selectedFacility.name}
+              </h3>
+              <button
+                onClick={() => setSelectedFacility(null)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-6">
+              {/* Status */}
+              <div className="mb-4">
+                <span className="text-sm text-gray-600">Status</span>
+                <div className="mt-1">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    selectedFacility.status === 'open' 
+                      ? 'bg-green-100 text-green-800'
+                      : selectedFacility.status === 'closed'
+                      ? 'bg-red-100 text-red-800'
+                      : selectedFacility.status === 'maintenance'
+                      ? 'bg-orange-100 text-orange-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {selectedFacility.status.charAt(0).toUpperCase() + selectedFacility.status.slice(1)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedFacility.description && (
+                <div className="mb-4">
+                  <span className="text-sm text-gray-600">Description</span>
+                  <p className="mt-1 text-gray-800 leading-relaxed">
+                    {selectedFacility.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Additional Info */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">Facility Information</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Type:</span>
+                    <span className="text-gray-800">{selectedFacility.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Status:</span>
+                    <span className="text-gray-800 capitalize">{selectedFacility.status}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Available:</span>
+                    <span className="text-gray-800">
+                      {selectedFacility.active ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <div className="mt-6">
+                <button
+                  onClick={() => setSelectedFacility(null)}
+                  className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )

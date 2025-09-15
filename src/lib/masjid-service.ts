@@ -3,7 +3,7 @@
  */
 
 import apiClient from './api-client'
-import { MasjidData } from '@/types/api'
+import { MasjidData, MasjidResponseItem } from '@/types/api'
 
 /**
  * Format time from 24-hour to 12-hour format with AM/PM
@@ -275,4 +275,70 @@ export function getCurrentPrayerPeriod(masjid: MasjidData): string | null {
   }
   
   return null
+}
+
+/**
+ * Format masjid name for URL (convert spaces to hyphens, lowercase)
+ */
+export function formatMasjidUrlName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .trim()
+}
+
+/**
+ * Convert API response item to internal MasjidData format
+ */
+export function convertApiResponseToMasjidData(item: MasjidResponseItem): MasjidData {
+  return {
+    id: item.masjid.name, // Using name as ID since no ID field provided
+    name: item.masjid.name,
+    type: item.masjid.type,
+    madhab: item.masjid.madhab,
+    locale: item.masjid.locale,
+    active: item.masjid.active,
+    logo_url: item.masjid.logo_url,
+    data_source: item.masjid.data_source,
+    capacity: 0, // Not provided in API response
+    meta: item.masjid.meta,
+    created_at: new Date().toISOString(), // Not provided in API response
+    updated_at: new Date().toISOString(), // Not provided in API response
+    location: {
+      id: item.location.masjid_id,
+      masjid_id: item.location.masjid_id,
+      geoHash: item.location.geoHash,
+      city: item.location.city,
+      country: item.location.country,
+      full_address: item.location.full_address,
+      latitude: item.location.latitude,
+      longitude: item.location.longitude
+    },
+    facilities: item.facilities.map(f => ({
+      id: `${f.masjid_id}-${f.facility}`,
+      masjid_id: f.masjid_id,
+      name: f.facility,
+      description: f.info,
+      status: 'open', // Default status
+      active: true
+    })),
+    current_prayer_times: {
+      asr_jammat: item.current_prayer_times.asr_jammat,
+      asr_start: item.current_prayer_times.asr_start,
+      asr_start_1: item.current_prayer_times.asr_start_1,
+      date: item.current_prayer_times.date,
+      dhur_jammat: item.current_prayer_times.dhur_jammat,
+      dhur_start: item.current_prayer_times.dhur_start,
+      fajr_jammat: item.current_prayer_times.fajr_jammat,
+      fajr_start: item.current_prayer_times.fajr_start,
+      isha_jammat: item.current_prayer_times.isha_jammat,
+      isha_start: item.current_prayer_times.isha_start,
+      magrib_jammat: item.current_prayer_times.magrib_jammat,
+      magrib_start: item.current_prayer_times.magrib_start,
+      masjid_id: item.current_prayer_times.masjid_id,
+      sunrise: item.current_prayer_times.sunrise
+    }
+  }
 }

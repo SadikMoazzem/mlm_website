@@ -3,7 +3,7 @@
  * Handles authentication, error handling, and type safety
  */
 
-import { MasjidData, ApiResponse, ApiError } from '@/types/api'
+import { MasjidData, ApiResponse, ApiError, PaginatedMasajidResponse } from '@/types/api'
 
 /**
  * API Client Configuration
@@ -124,29 +124,24 @@ class ApiClient {
   }
 
   /**
-   * Get multiple masajid (if endpoint exists)
+   * Get paginated masajid
    */
-  async getMasajid(params?: {
-    city?: string
-    country?: string
-    limit?: number
-    offset?: number
-  }): Promise<ApiResponse<MasjidData[]>> {
-    const searchParams = new URLSearchParams()
-    if (params?.city) searchParams.append('city', params.city)
-    if (params?.country) searchParams.append('country', params.country)
-    if (params?.limit) searchParams.append('limit', params.limit.toString())
-    if (params?.offset) searchParams.append('offset', params.offset.toString())
-    
-    const queryString = searchParams.toString()
-    return this.get<MasjidData[]>(`/masajids${queryString ? `?${queryString}` : ''}`)
+  async getMasajidPaginated(page: number = 1, size: number = 20): Promise<ApiResponse<PaginatedMasajidResponse>> {
+    return this.get<PaginatedMasajidResponse>(`/masjids?page=${page}&size=${size}`)
   }
 
   /**
-   * Search masajid by name (if endpoint exists)
+   * Search masajid with pagination
    */
-  async searchMasajid(query: string): Promise<ApiResponse<MasjidData[]>> {
-    return this.get<MasjidData[]>(`/masajids/search?q=${encodeURIComponent(query)}`)
+  async searchMasajid(query: string, page: number = 1, size: number = 20): Promise<ApiResponse<PaginatedMasajidResponse>> {
+    return this.get<PaginatedMasajidResponse>(`/masjids?search_string=${encodeURIComponent(query)}&page=${page}&size=${size}`)
+  }
+
+  /**
+   * Get masajid by starting letter with pagination
+   */
+  async getMasajidByLetter(letter: string, page: number = 1, size: number = 200): Promise<ApiResponse<PaginatedMasajidResponse>> {
+    return this.get<PaginatedMasajidResponse>(`/masjids?starts_with=${encodeURIComponent(letter)}&page=${page}&size=${size}`)
   }
 }
 
@@ -156,12 +151,11 @@ const apiClient = new ApiClient()
 export default apiClient
 
 // Export individual methods for convenience
-export const {
-  getMasjid,
-  getMasajid,
-  searchMasajid,
-  get,
-  post,
-  put,
-  delete: deleteRequest,
-} = apiClient
+export const getMasjid = (id: string) => apiClient.getMasjid(id)
+export const getMasajidPaginated = (page: number = 1, size: number = 20) => apiClient.getMasajidPaginated(page, size)
+export const searchMasajid = (query: string, page: number = 1, size: number = 20) => apiClient.searchMasajid(query, page, size)
+export const getMasajidByLetter = (letter: string, page: number = 1, size: number = 200) => apiClient.getMasajidByLetter(letter, page, size)
+export const get = <T>(endpoint: string) => apiClient.get<T>(endpoint)
+export const post = <T>(endpoint: string, data?: unknown) => apiClient.post<T>(endpoint, data)
+export const put = <T>(endpoint: string, data?: unknown) => apiClient.put<T>(endpoint, data)
+export const deleteRequest = <T>(endpoint: string) => apiClient.delete<T>(endpoint)

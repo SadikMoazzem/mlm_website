@@ -6,6 +6,10 @@ import { getMasjidById } from '@/lib/masjid-service'
 
 export { generateMetadata }
 
+// ISR Configuration - 12 hour revalidation (43200 seconds)
+export const revalidate = 43200 // 12 hours
+export const dynamicParams = true // Allow dynamic masjid pages
+
 interface MasjidPageProps {
   params: Promise<{
     id: string
@@ -42,15 +46,17 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
   const masjidData = await getMasjidById(id)
   
   // Generate structured data for SEO
+  // Enhanced structured data for prayer times SEO
   const structuredData = masjidData ? {
     "@context": "https://schema.org",
     "@type": "PlaceOfWorship",
     "name": masjidData.name,
-    "description": `Islamic place of worship offering prayer times, jamaat times, and community services`,
+    "description": `${masjidData.name} - Islamic place of worship in ${masjidData.location?.city || 'your area'} offering daily prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha), jamaat times, and community services`,
     "address": masjidData.location ? {
       "@type": "PostalAddress",
       "streetAddress": masjidData.location.full_address,
       "addressLocality": masjidData.location.city,
+      "addressRegion": masjidData.location.city,
       "addressCountry": masjidData.location.country
     } : undefined,
     "geo": masjidData.location?.latitude && masjidData.location?.longitude ? {
@@ -71,7 +77,77 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
     })),
     "openingHours": masjidData.current_prayer_times ? [
       `Mo-Su ${masjidData.current_prayer_times.fajr_start}-${masjidData.current_prayer_times.isha_start}`
-    ] : undefined
+    ] : undefined,
+    // Enhanced prayer times data for search engines
+    "event": masjidData.current_prayer_times ? [
+      {
+        "@type": "Event",
+        "name": "Fajr Prayer",
+        "startTime": masjidData.current_prayer_times.fajr_start,
+        "location": {
+          "@type": "Place",
+          "name": masjidData.name,
+          "address": masjidData.location?.full_address
+        }
+      },
+      {
+        "@type": "Event", 
+        "name": "Dhuhr Prayer",
+        "startTime": masjidData.current_prayer_times.dhur_start,
+        "location": {
+          "@type": "Place",
+          "name": masjidData.name,
+          "address": masjidData.location?.full_address
+        }
+      },
+      {
+        "@type": "Event",
+        "name": "Asr Prayer", 
+        "startTime": masjidData.current_prayer_times.asr_start,
+        "location": {
+          "@type": "Place",
+          "name": masjidData.name,
+          "address": masjidData.location?.full_address
+        }
+      },
+      {
+        "@type": "Event",
+        "name": "Maghrib Prayer",
+        "startTime": masjidData.current_prayer_times.magrib_start,
+        "location": {
+          "@type": "Place", 
+          "name": masjidData.name,
+          "address": masjidData.location?.full_address
+        }
+      },
+      {
+        "@type": "Event",
+        "name": "Isha Prayer",
+        "startTime": masjidData.current_prayer_times.isha_start,
+        "location": {
+          "@type": "Place",
+          "name": masjidData.name,
+          "address": masjidData.location?.full_address
+        }
+      }
+    ] : undefined,
+    // Add special prayers as additional events
+    "additionalProperty": masjidData.special_prayers?.filter(p => p.active).map(prayer => ({
+      "@type": "Event",
+      "name": prayer.label,
+      "startTime": prayer.start_time,
+      "description": prayer.info || `${prayer.label} prayer`,
+      "performer": prayer.imam ? {
+        "@type": "Person",
+        "name": prayer.imam
+      } : undefined,
+      "location": {
+        "@type": "Place",
+        "name": masjidData.name,
+        "address": masjidData.location?.full_address
+      }
+    })),
+    "keywords": `prayer times, ${masjidData.name}, ${masjidData.location?.city || ''} masjid, jamaat times, salah times, fajr, dhuhr, asr, maghrib, isha, jummah, special prayers`
   } : null
   
   return (

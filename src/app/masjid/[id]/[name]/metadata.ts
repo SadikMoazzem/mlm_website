@@ -30,40 +30,70 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
   const city = masjidData?.location?.city
   const country = masjidData?.location?.country
   
+  // Enhanced description for prayer times searches
   const description = address 
-    ? `${masjidName} prayer times, jamaat times, and facilities in ${address}. Live updates, Qibla direction, and Islamic calendar. Download MyLocalMasjid app for notifications.`
-    : `${masjidName} prayer times, jamaat times, and facilities. Live updates, Qibla direction, and Islamic calendar. Download MyLocalMasjid app for notifications.`
+    ? `${masjidName} prayer times and jamaat times in ${address}. Live Fajr, Dhuhr, Asr, Maghrib, Isha prayer times. Qibla direction, Islamic calendar, and masjid facilities. Download MyLocalMasjid app.`
+    : `${masjidName} prayer times and jamaat times. Live Fajr, Dhuhr, Asr, Maghrib, Isha prayer times. Qibla direction, Islamic calendar, and masjid facilities. Download MyLocalMasjid app.`
 
-  // Enhanced keywords for location-based searches
+  // Enhanced keywords for "prayer times [location] masjid" searches
   const locationKeywords = city ? [
+    `prayer times ${city}`,
+    `${city} prayer times`,
+    `${city} masjid prayer times`,
+    `${city} mosque prayer times`,
+    `prayer times ${city} masjid`,
+    `prayer times ${city} mosque`,
     `${city} masjid`,
     `${city} mosque`,
-    `${city} prayer times`,
     `masjid in ${city}`,
     `mosque in ${city}`,
-    ...(country ? [`${city} ${country} masjid`, `${city} ${country} mosque`] : [])
+    `${city} jamaat times`,
+    `salah times ${city}`,
+    `namaz times ${city}`,
+    ...(country ? [
+      `prayer times ${city} ${country}`,
+      `${city} ${country} masjid`,
+      `${city} ${country} mosque`,
+      `${city} ${country} prayer times`
+    ] : [])
   ] : []
 
   return {
     title: `${masjidName} Prayer Times${city ? ` - ${city}` : ''} | MyLocalMasjid`,
     description,
     keywords: [
-      masjidName,
+      // Primary prayer times keywords (most important for search)
+      `prayer times ${masjidName.toLowerCase()}`,
       `${masjidName} prayer times`,
       `${masjidName} jamaat times`,
+      `${masjidName} salah times`,
+      
+      // Location-based prayer times (high priority)
+      ...locationKeywords,
+      
+      // General prayer times keywords
       'prayer times',
       'jamaat times',
       'salah times',
       'namaz times',
+      'fajr prayer time',
+      'dhuhr prayer time',
+      'asr prayer time',
+      'maghrib prayer time',
+      'isha prayer time',
+      
+      // Masjid identification
+      masjidName,
       'masjid',
       'mosque',
       'islamic center',
       'muslim prayer',
+      
+      // Additional features
       'qibla direction',
       'islamic calendar',
       'masjid facilities',
-      'MyLocalMasjid',
-      ...locationKeywords
+      'MyLocalMasjid'
     ],
     openGraph: {
       title: `${masjidName} - MyLocalMasjid`,
