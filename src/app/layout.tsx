@@ -13,10 +13,7 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-const aref = localFont({
-  src: '../fonts/ArefRuqaa-Regular.ttf',
-  variable: '--font-aref',
-})
+// Arabic font removed due to file corruption
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mylocalmasjid.com'),
@@ -140,7 +137,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="MyLocalMasjid" />
       </head>
-      <body className={`${inter.variable} ${aref.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
           <div className="min-h-screen pt-20 bg-white">

@@ -35,12 +35,12 @@ export function MasjidRedirectClient({
   const attemptDeepLink = useCallback(() => {
     let hasAppOpened = false
     
-    // Create a fallback timer
+    // Create a fallback timer - show masjid profile after 1 second
     const fallbackTimer = setTimeout(() => {
       if (!hasAppOpened) {
         setShowFallback(true)
       }
-    }, 1500)
+    }, 1000)
 
     // Listen for page visibility change (indicates app opened)
     const handleVisibilityChange = () => {
@@ -77,7 +77,7 @@ export function MasjidRedirectClient({
       document.body.removeChild(link)
     }
 
-    // Clean up after 3 seconds regardless
+    // Clean up after 2 seconds regardless
     setTimeout(() => {
       clearTimeout(fallbackTimer)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
@@ -85,7 +85,7 @@ export function MasjidRedirectClient({
       if (!hasAppOpened) {
         setShowFallback(true)
       }
-    }, 3000)
+    }, 2000)
   }, [deepLinkUrl])
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export function MasjidRedirectClient({
       setDeviceType('android')
     } else {
       setDeviceType('desktop')
-      setShowFallback(true) // Desktop users see the download page immediately
+      setShowFallback(true) // Desktop users see the masjid profile immediately
       return
     }
 
@@ -123,6 +123,10 @@ export function MasjidRedirectClient({
     setAttemptedDeepLink(false)
     setShowFallback(false)
     attemptDeepLink()
+  }
+
+  const handleSkipToProfile = () => {
+    setShowFallback(true)
   }
 
   // Get display data from API or fallback
@@ -156,15 +160,23 @@ export function MasjidRedirectClient({
           {address && (
             <p className="text-gray-500 text-sm mb-2">{address}</p>
           )}
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 mb-6">
             Redirecting you to the MyLocalMasjid app...
           </p>
-          <button
-            onClick={handleTryAgain}
-            className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
-          >
-            Try Again
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={handleTryAgain}
+              className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={handleSkipToProfile}
+              className="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium border border-gray-300"
+            >
+              View Profile Page
+            </button>
+          </div>
         </div>
       </div>
     )
