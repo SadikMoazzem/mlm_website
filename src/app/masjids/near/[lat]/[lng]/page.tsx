@@ -82,10 +82,24 @@ export default function NearPage({ params, searchParams }: NearPageProps) {
         throw new Error('Failed to fetch masjids')
       }
       
-      const data = await response.json()
-      setMasjids(data.masjids || [])
-      setTotalPages(data.pages || 1)
-      setTotalMasjids(data.total || 0)
+        const data = await response.json()
+        
+        // Transform the new API response structure
+        const transformedMasjids = (data.masjids || []).map((item: any) => ({
+          // Use the root-level masjid data as the base
+          ...item.masjid,
+          // Add distance from the root level
+          distance_km: item.distance_km,
+          // Use root-level data which might be more complete than nested data
+          location: item.location || item.masjid.location,
+          facilities: item.facilities || item.masjid.facilities,
+          current_prayer_times: item.current_prayer_times || item.masjid.current_prayer_times,
+          special_prayers: item.special_prayers || item.masjid.special_prayers || []
+        }))
+        
+        setMasjids(transformedMasjids)
+        setTotalPages(data.pages || 1)
+        setTotalMasjids(data.total || 0)
     } catch {
       setError('Failed to load masjids. Please try again.')
     } finally {
