@@ -3,7 +3,7 @@
  * Handles authentication, error handling, and type safety
  */
 
-import { MasjidData, ApiResponse, ApiError, PaginatedMasajidResponse } from '@/types/api'
+import { MasjidData, ApiResponse, ApiError, PaginatedMasajidResponse, NearestMasajidResponse } from '@/types/api'
 
 /**
  * API Client Configuration
@@ -36,6 +36,10 @@ class ApiClient {
     this.initialize()
     const url = `${this.baseUrl}${endpoint}`
     
+    console.log(`🔍 [API] Making request: ${options.method || 'GET'} ${endpoint}`)
+    console.log(`📡 [API] Full URL: ${url}`)
+    console.log(`🔑 [API] Using API Key: ${this.apiKey?.substring(0, 8)}...`)
+    
     try {
       const response = await fetch(url, {
         ...options,
@@ -45,6 +49,8 @@ class ApiClient {
           ...options.headers,
         },
       })
+
+      console.log(`📊 [API] Response status: ${response.status} ${response.statusText}`)
 
       // Handle non-200 responses
       if (!response.ok) {
@@ -58,13 +64,17 @@ class ApiClient {
       }
 
       const data = await response.json()
+      console.log(`✅ [API] Success! Data received:`, {
+        endpoint,
+        hasData: !!data,
+        dataKeys: data ? Object.keys(data) : []
+      })
       return {
         success: true,
         data,
       }
     } catch (error) {
-      console.error(`API Error [${endpoint}]:`, error)
-      
+      console.error(`💥 [API] Error for ${endpoint}:`, error)
       if (error instanceof Error) {
         return {
           success: false,
@@ -143,6 +153,20 @@ class ApiClient {
   async getMasajidByLetter(letter: string, page: number = 1, size: number = 200): Promise<ApiResponse<PaginatedMasajidResponse>> {
     return this.get<PaginatedMasajidResponse>(`/masjids?starts_with=${encodeURIComponent(letter)}&page=${page}&size=${size}`)
   }
+
+  /**
+   * Get nearest masajid by coordinates
+   */
+  async getNearestMasajid(params: {
+    latitude: number
+    longitude: number
+    radius_km?: number
+    page?: number
+    size?: number
+  }): Promise<ApiResponse<NearestMasajidResponse>> {
+    const { latitude, longitude, radius_km = 10, page = 1, size = 20 } = params
+    return this.get<NearestMasajidResponse>(`/masjids/nearest-masjids?latitude=${latitude}&longitude=${longitude}&radius_km=${radius_km}&page=${page}&size=${size}`)
+  }
 }
 
 // Create singleton instance
@@ -155,6 +179,13 @@ export const getMasjid = (id: string) => apiClient.getMasjid(id)
 export const getMasajidPaginated = (page: number = 1, size: number = 20) => apiClient.getMasajidPaginated(page, size)
 export const searchMasajid = (query: string, page: number = 1, size: number = 20) => apiClient.searchMasajid(query, page, size)
 export const getMasajidByLetter = (letter: string, page: number = 1, size: number = 200) => apiClient.getMasajidByLetter(letter, page, size)
+export const getNearestMasajid = (params: {
+  latitude: number
+  longitude: number
+  radius_km?: number
+  page?: number
+  size?: number
+}) => apiClient.getNearestMasajid(params)
 export const get = <T>(endpoint: string) => apiClient.get<T>(endpoint)
 export const post = <T>(endpoint: string, data?: unknown) => apiClient.post<T>(endpoint, data)
 export const put = <T>(endpoint: string, data?: unknown) => apiClient.put<T>(endpoint, data)

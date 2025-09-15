@@ -31,9 +31,8 @@ export function MasjidDirectoryAZ({ initialData, initialError }: MasjidDirectory
       } else {
         setError(data.error || 'Failed to load masjids')
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred while loading masjids')
-      console.error('Error loading masjids:', err)
     } finally {
       setIsLoading(false)
     }
@@ -198,7 +197,6 @@ function MasjidListItem({ masjid }: MasjidListItemProps) {
                               ? 'text-blue-600' 
                               : 'text-gray-400'
                           }`}
-                          title={`Parking - ${parkingFacility.status}`}
                         />
                       )}
                       {womensPrayerFacility && (
@@ -208,7 +206,6 @@ function MasjidListItem({ masjid }: MasjidListItemProps) {
                               ? 'text-pink-600' 
                               : 'text-gray-400'
                           }`}
-                          title={`Women's Prayer Area - ${womensPrayerFacility.status}`}
                         />
                       )}
                       {otherFacilitiesCount > 0 && (

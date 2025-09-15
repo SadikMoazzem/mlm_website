@@ -29,10 +29,8 @@ export async function getMasjidById(id: string): Promise<MasjidData | null> {
       return response.data
     }
     
-    console.error('Failed to fetch masjid:', response.error)
     return null
-  } catch (error) {
-    console.error('Error fetching masjid:', error)
+  } catch {
     return null
   }
 }

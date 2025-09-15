@@ -41,8 +41,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
       } else {
         throw new Error('Failed to submit form')
       }
-    } catch (error) {
-      console.error('Error submitting form:', error)
+    } catch {
       setSubmitError('Failed to submit form. Please try again.')
     } finally {
       setIsSubmitting(false)

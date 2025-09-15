@@ -73,6 +73,7 @@ export interface MasjidData {
   facilities: MasjidFacility[]
   current_prayer_times: CurrentPrayerTimes
   special_prayers?: SpecialPrayer[]
+  distance_km?: number // For nearest masjids API
 }
 
 export interface ApiResponse<T> {
@@ -133,6 +134,14 @@ export interface MasjidResponseItem {
 
 export interface PaginatedMasajidResponse {
   items: MasjidData[]
+  total: number
+  page: number
+  size: number
+  pages: number
+}
+
+export interface NearestMasajidResponse {
+  masjids: MasjidData[]
   total: number
   page: number
   size: number

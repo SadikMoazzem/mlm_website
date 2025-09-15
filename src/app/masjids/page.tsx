@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { MapPin, Users, Clock } from 'lucide-react'
+import { MapPin, Users, Clock, ChevronRight } from 'lucide-react'
+import { cities } from '@/data/cities'
+import LocationSearch from '@/components/search/LocationSearch'
 
 export const metadata: Metadata = {
   title: 'Find Masjids by Location - UK Cities | MyLocalMasjid',
@@ -39,96 +41,12 @@ export const metadata: Metadata = {
   },
 }
 
-// Popular UK cities with dummy data for now
-const popularCities = [
-  {
-    name: 'London',
-    count: 245,
-    description: 'Capital city with diverse Islamic communities',
-    image: '/images/cities/london.jpg',
-    slug: 'london'
-  },
-  {
-    name: 'Birmingham',
-    count: 89,
-    description: 'Major Islamic center in the Midlands',
-    image: '/images/cities/birmingham.jpg',
-    slug: 'birmingham'
-  },
-  {
-    name: 'Manchester',
-    count: 67,
-    description: 'Vibrant Muslim community in the North',
-    image: '/images/cities/manchester.jpg',
-    slug: 'manchester'
-  },
-  {
-    name: 'Bradford',
-    count: 45,
-    description: 'Historic Islamic community',
-    image: '/images/cities/bradford.jpg',
-    slug: 'bradford'
-  },
-  {
-    name: 'Leicester',
-    count: 38,
-    description: 'Diverse multicultural city',
-    image: '/images/cities/leicester.jpg',
-    slug: 'leicester'
-  },
-  {
-    name: 'Leeds',
-    count: 34,
-    description: 'Growing Muslim community',
-    image: '/images/cities/leeds.jpg',
-    slug: 'leeds'
-  },
-  {
-    name: 'Luton',
-    count: 29,
-    description: 'Strong Islamic presence',
-    image: '/images/cities/luton.jpg',
-    slug: 'luton'
-  },
-  {
-    name: 'Blackburn',
-    count: 27,
-    description: 'Traditional Islamic community',
-    image: '/images/cities/blackburn.jpg',
-    slug: 'blackburn'
-  },
-  {
-    name: 'Sheffield',
-    count: 25,
-    description: 'Established Muslim community',
-    image: '/images/cities/sheffield.jpg',
-    slug: 'sheffield'
-  },
-  {
-    name: 'Oldham',
-    count: 23,
-    description: 'Close-knit Islamic community',
-    image: '/images/cities/oldham.jpg',
-    slug: 'oldham'
-  },
-  {
-    name: 'Rochdale',
-    count: 21,
-    description: 'Active Muslim community',
-    image: '/images/cities/rochdale.jpg',
-    slug: 'rochdale'
-  },
-  {
-    name: 'Bolton',
-    count: 19,
-    description: 'Diverse Islamic community',
-    image: '/images/cities/bolton.jpg',
-    slug: 'bolton'
-  }
-]
+// Use real cities data from our data file
+
+// Revalidate main masjids page weekly (7 days = 604800 seconds)
+export const revalidate = 604800
 
 export default function MasjidsByLocationPage() {
-  const totalMasjids = popularCities.reduce((sum, city) => sum + city.count, 0)
 
   return (
     <div className="min-h-screen bg-white">
@@ -145,16 +63,29 @@ export default function MasjidsByLocationPage() {
             <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-gray-600">
               <div className="flex items-center">
                 <MapPin className="w-5 h-5 mr-2 text-emerald-600" />
-                <span>{popularCities.length} Cities</span>
+                <span>{cities.length} Cities</span>
               </div>
               <div className="flex items-center">
                 <Users className="w-5 h-5 mr-2 text-emerald-600" />
-                <span>{totalMasjids}+ Masjids</span>
+                <span>England, Wales & Scotland</span>
               </div>
               <div className="flex items-center">
                 <Clock className="w-5 h-5 mr-2 text-emerald-600" />
                 <span>Live Prayer Times</span>
               </div>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-12">
+            <div className="max-w-2xl mx-auto">
+              <LocationSearch 
+                placeholder="Search for a location to find nearby masjids..."
+                className="w-full"
+              />
+              <p className="text-center text-gray-500 text-sm mt-3">
+                Search for any UK location to find masjids within 15km radius
+              </p>
             </div>
           </div>
 
@@ -180,8 +111,8 @@ export default function MasjidsByLocationPage() {
 
           {/* Cities Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {popularCities.map((city) => (
-              <CityCard key={city.slug} city={city} />
+            {cities.map((city) => (
+              <CityCard key={city.id} city={city} />
             ))}
           </div>
 
@@ -207,39 +138,38 @@ export default function MasjidsByLocationPage() {
 
 interface CityCardProps {
   city: {
+    id: string
     name: string
-    count: number
-    description: string
-    slug: string
+    country: string
+    areas: Array<{
+      name: string
+    }>
   }
 }
 
 function CityCard({ city }: CityCardProps) {
   return (
-    <Link href={`/masjids/${city.slug}`}>
+    <Link href={`/masjids/${city.id}`}>
       <div className="group bg-white border border-gray-200 hover:border-emerald-300 rounded-xl p-6 hover:shadow-lg transition-all duration-200 cursor-pointer">
         <div className="flex items-start justify-between mb-4">
-          <div>
+          <div className="flex-1">
             <h3 className="text-xl font-semibold text-emerald-800 group-hover:text-emerald-600 transition-colors">
               {city.name}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">{city.description}</p>
+            <p className="text-sm text-gray-600 mt-1">{city.areas.length} areas • {city.country}</p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-emerald-600">{city.count}</div>
-            <div className="text-xs text-gray-500">masjids</div>
+            <div className="text-sm font-medium text-emerald-600">{city.country}</div>
           </div>
         </div>
         
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex items-center text-sm text-gray-600">
             <MapPin className="w-4 h-4 mr-1 text-emerald-600" />
-            <span>View all masjids</span>
+            <span>Browse areas</span>
           </div>
           <div className="text-emerald-600 group-hover:text-emerald-700 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ChevronRight className="w-5 h-5" />
           </div>
         </div>
       </div>

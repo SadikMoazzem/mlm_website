@@ -4,8 +4,8 @@ import Link from 'next/link'
 
 export { generateMetadata }
 
-// ISR Configuration
-export const revalidate = 86400 // 24 hours
+// ISR Configuration - Revalidate directory pages weekly (7 days = 604800 seconds)
+export const revalidate = 604800
 export const dynamicParams = true // Allow dynamic pages beyond pre-cached
 
 // Pre-generate first 10 pages (200 masjids)

@@ -43,7 +43,7 @@ export function Navbar() {
     { name: 'Find Masjids', href: '/masjids' },
     { name: 'Our Journey', href: '/journey' },
     { name: 'Pricing', href: '/pricing' },
-    { name: 'Contact Us', href: '/contact' },
+    { name: 'Our Masjids', href: '/masjids' },
   ]
 
   return (

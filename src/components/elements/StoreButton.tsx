@@ -23,7 +23,6 @@ const StoreButton: React.FC<StoreButtonProps> = ({
 
   if (store === 'AppStore') {
     if (!href) {
-      console.warn('StoreButton: href prop is required for AppStore type.');
       return null; // Or some fallback UI
     }
     return (
@@ -47,7 +46,6 @@ const StoreButton: React.FC<StoreButtonProps> = ({
 
   if (store === 'GooglePlay') {
     if (!href) {
-      console.warn('StoreButton: href prop is required for GooglePlay type.');
       return null; // Or some fallback UI
     }
     return (

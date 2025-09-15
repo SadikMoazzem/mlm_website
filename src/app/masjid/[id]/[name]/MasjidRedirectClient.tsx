@@ -15,7 +15,7 @@ import {
   BookOpen,
   X
 } from 'lucide-react'
-import { MasjidData } from '@/types/api'
+import { MasjidData, MasjidFacility } from '@/types/api'
 import { formatMasjidDisplayName, getDisplayAddress, getGoogleMapsUrl, getNextPrayer, getCurrentPrayerTimes, getCurrentPrayerPeriod, formatTime } from '@/lib/masjid-service'
 
 interface MasjidRedirectClientProps {
@@ -32,7 +32,7 @@ export function MasjidRedirectClient({
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop')
   const [showFallback, setShowFallback] = useState(false)
   const [attemptedDeepLink, setAttemptedDeepLink] = useState(false)
-  const [selectedFacility, setSelectedFacility] = useState<any>(null)
+  const [selectedFacility, setSelectedFacility] = useState<MasjidFacility | null>(null)
 
   const attemptDeepLink = useCallback(() => {
     let hasAppOpened = false
@@ -308,17 +308,18 @@ export function MasjidRedirectClient({
         <div className="lg:grid lg:grid-cols-3 lg:gap-8 space-y-6 lg:space-y-0">
           
           {/* Prayer Times Card - Mobile: First, Desktop: Right column */}
-          {prayerTimes && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-1 lg:order-2">
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Clock className="w-5 h-5 text-emerald-600 mr-3" />
-                    <h3 className="font-semibold text-gray-800">Prayer Times</h3>
-                  </div>
-                  <span className="text-xs text-gray-500">{prayerTimes.date}</span>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-1 lg:order-2">
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Clock className="w-5 h-5 text-emerald-600 mr-3" />
+                  <h3 className="font-semibold text-gray-800">Prayer Times</h3>
                 </div>
+                {prayerTimes && <span className="text-xs text-gray-500">{prayerTimes.date}</span>}
               </div>
+            </div>
+            
+            {prayerTimes ? (
               <div className="p-0">
                 {/* Prayer Times Table */}
                 <div className="divide-y divide-gray-100">
@@ -380,7 +381,7 @@ export function MasjidRedirectClient({
                   })}
                   
                   {/* Jummah Times Section - Same design as prayer rows */}
-                  {masjidData?.special_prayers && masjidData.special_prayers.filter(p => p.active).length > 0 && (
+                  {masjidData?.special_prayers && masjidData.special_prayers.filter(p => p.active).length > 0 ? (
                     <>
                       {/* Spacer */}
                       <div className="h-4 bg-gray-50"></div>
@@ -413,21 +414,49 @@ export function MasjidRedirectClient({
                         ))
                       }
                     </>
+                  ) : prayerTimes && (
+                    <>
+                      {/* Spacer */}
+                      <div className="h-4 bg-gray-50"></div>
+                      
+                      {/* No Jummah Times Message */}
+                      <div className="px-6 py-4 text-center bg-gray-50">
+                        <div className="flex items-center justify-center space-x-2 text-gray-500">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">No Jummah times available</span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-1">
+                          Contact the masjid for Jummah prayer schedules
+                        </p>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Facilities Card - Mobile: Second (full width), Desktop: Left 2 columns */}
-          {masjidData?.facilities && masjidData.facilities.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-2 lg:order-1">
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                <div className="flex items-center">
-                  <Users className="w-5 h-5 text-emerald-600 mr-3" />
-                  <h3 className="font-semibold text-gray-800">Facilities</h3>
+            ) : (
+              <div className="p-6 text-center">
+                <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <h4 className="font-medium text-gray-700 mb-2">No Prayer Times Available</h4>
+                <p className="text-gray-500 text-sm mb-4">
+                  Prayer times are not currently available for this masjid. Please contact the masjid directly for prayer schedules.
+                </p>
+                <div className="text-xs text-gray-400">
+                  Help us improve by encouraging the masjid to update their prayer times.
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* Facilities Card - Mobile: Second (full width), Desktop: Left 2 columns */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-2 lg:order-1">
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center">
+                <Users className="w-5 h-5 text-emerald-600 mr-3" />
+                <h3 className="font-semibold text-gray-800">Facilities</h3>
+              </div>
+            </div>
+            
+            {masjidData?.facilities && masjidData.facilities.length > 0 ? (
               <div className="p-6">
                 <div className="flex flex-wrap gap-3">
                   {masjidData.facilities.filter(f => f.active).map((facility) => {
@@ -506,8 +535,19 @@ export function MasjidRedirectClient({
                   })}
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="p-6 text-center">
+                <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <h4 className="font-medium text-gray-700 mb-2">No Facilities Information</h4>
+                <p className="text-gray-500 text-sm mb-4">
+                  Facility information is not currently available for this masjid. Please contact the masjid directly for details about available amenities.
+                </p>
+                <div className="text-xs text-gray-400">
+                  Help us improve by encouraging the masjid to update their facility information.
+                </div>
+              </div>
+            )}
+          </div>
 
           
         </div>

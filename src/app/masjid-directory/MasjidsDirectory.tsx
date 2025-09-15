@@ -43,8 +43,6 @@ export function MasjidsDirectory({ initialPage, initialSearch, initialData, init
       if (search) params.set('search', search)
       
       const apiUrl = `/api/masjids?${params.toString()}`
-      console.log('🔍 Search API URL:', apiUrl)
-      console.log('📄 Page:', page, 'Search:', search || '(no search)')
       
       const response = await fetch(apiUrl)
       const data = await response.json()
@@ -60,9 +58,8 @@ export function MasjidsDirectory({ initialPage, initialSearch, initialData, init
       } else {
         setError(data.error || 'Failed to load masjids')
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred while loading masjids')
-      console.error('Error loading masjids:', err)
     } finally {
       setIsLoading(false)
     }
@@ -87,8 +84,6 @@ export function MasjidsDirectory({ initialPage, initialSearch, initialData, init
     params.delete('page') // Reset to page 1 on search
     
     const browserUrl = `/masjids?${params.toString()}`
-    console.log('🌐 Browser URL:', browserUrl)
-    console.log('🔎 Search Query:', trimmedQuery || '(cleared)')
     
     router.push(browserUrl)
     // Load data immediately with loading state
@@ -335,7 +330,6 @@ function MasjidCard({ masjid }: MasjidCardProps) {
                             ? 'text-blue-600' 
                             : 'text-gray-400'
                         } transition-colors duration-300`}
-                        title={`Parking - ${parkingFacility.status}`}
                       />
                     </div>
                   )}
@@ -347,7 +341,6 @@ function MasjidCard({ masjid }: MasjidCardProps) {
                             ? 'text-pink-600' 
                             : 'text-gray-400'
                         } transition-colors duration-300`}
-                        title={`Women's Prayer Area - ${womensPrayerFacility.status}`}
                       />
                     </div>
                   )}
