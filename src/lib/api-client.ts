@@ -3,7 +3,10 @@
  * Handles authentication, error handling, and type safety
  */
 
+import * as Sentry from "@sentry/nextjs"
 import { MasjidData, ApiResponse, ApiError, PaginatedMasajidResponse, NearestMasajidResponse } from '@/types/api'
+
+const { logger } = Sentry
 
 /**
  * API Client Configuration
@@ -33,60 +36,124 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    this.initialize()
-    const url = `${this.baseUrl}${endpoint}`
-    
-    console.log(`🔍 [API] Making request: ${options.method || 'GET'} ${endpoint}`)
-    console.log(`📡 [API] Full URL: ${url}`)
-    console.log(`🔑 [API] Using API Key: ${this.apiKey?.substring(0, 8)}...`)
-    
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': this.apiKey!,
-          ...options.headers,
-        },
-      })
+    return Sentry.startSpan(
+      {
+        op: "http.client",
+        name: `${options.method || 'GET'} ${endpoint}`,
+      },
+      async (span) => {
+        this.initialize()
+        const url = `${this.baseUrl}${endpoint}`
+        
+        // Add span attributes
+        span.setAttribute("http.method", options.method || 'GET')
+        span.setAttribute("http.url", url)
+        span.setAttribute("api.endpoint", endpoint)
+        
+        logger.debug(logger.fmt`Making API request: ${options.method || 'GET'} ${endpoint}`, {
+          url,
+          endpoint,
+          method: options.method || 'GET'
+        })
+        
+        try {
+          const response = await fetch(url, {
+            ...options,
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': this.apiKey!,
+              ...options.headers,
+            },
+          })
 
-      console.log(`📊 [API] Response status: ${response.status} ${response.statusText}`)
+          span.setAttribute("http.status_code", response.status)
+          span.setAttribute("http.status_text", response.statusText)
 
-      // Handle non-200 responses
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        const error: ApiError = new Error(
-          errorData.message || `HTTP ${response.status}: ${response.statusText}`
-        )
-        error.status = response.status
-        error.code = errorData.code
-        throw error
-      }
+          logger.info(logger.fmt`API response received: ${response.status} ${response.statusText}`, {
+            endpoint,
+            status: response.status,
+            statusText: response.statusText
+          })
 
-      const data = await response.json()
-      console.log(`✅ [API] Success! Data received:`, {
-        endpoint,
-        hasData: !!data,
-        dataKeys: data ? Object.keys(data) : []
-      })
-      return {
-        success: true,
-        data,
-      }
-    } catch (error) {
-      console.error(`💥 [API] Error for ${endpoint}:`, error)
-      if (error instanceof Error) {
-        return {
-          success: false,
-          error: error.message,
+          // Handle non-200 responses
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}))
+            const error: ApiError = new Error(
+              errorData.message || `HTTP ${response.status}: ${response.statusText}`
+            )
+            error.status = response.status
+            error.code = errorData.code
+            
+            // Log error and capture in Sentry
+            logger.error(logger.fmt`API request failed: ${endpoint}`, {
+              endpoint,
+              status: response.status,
+              statusText: response.statusText,
+              errorCode: errorData.code,
+              errorMessage: errorData.message
+            })
+            
+            Sentry.captureException(error, {
+              tags: {
+                api_endpoint: endpoint,
+                http_status: response.status
+              },
+              extra: {
+                url,
+                errorData,
+                method: options.method || 'GET'
+              }
+            })
+            
+            throw error
+          }
+
+          const data = await response.json()
+          
+          logger.debug(logger.fmt`API request successful: ${endpoint}`, {
+            endpoint,
+            hasData: !!data,
+            dataKeys: data ? Object.keys(data) : []
+          })
+          
+          return {
+            success: true,
+            data,
+          }
+        } catch (error) {
+          logger.error(logger.fmt`API request exception: ${endpoint}`, {
+            endpoint,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          })
+          
+          // Capture exception in Sentry if not already captured
+          if (!(error as ApiError).status) {
+            Sentry.captureException(error, {
+              tags: {
+                api_endpoint: endpoint,
+                error_type: 'network_error'
+              },
+              extra: {
+                url,
+                method: options.method || 'GET'
+              }
+            })
+          }
+          
+          if (error instanceof Error) {
+            return {
+              success: false,
+              error: error.message,
+            }
+          }
+          
+          return {
+            success: false,
+            error: 'Unknown API error occurred',
+          }
         }
       }
-      
-      return {
-        success: false,
-        error: 'Unknown API error occurred',
-      }
-    }
+    )
   }
 
   /**

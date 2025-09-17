@@ -17,17 +17,20 @@ import {
 } from 'lucide-react'
 import { MasjidData, MasjidFacility } from '@/types/api'
 import { formatMasjidDisplayName, getDisplayAddress, getGoogleMapsUrl, getNextPrayer, getCurrentPrayerTimes, getCurrentPrayerPeriod, formatTime } from '@/lib/masjid-service'
+import { ViewInAppButton } from '@/components/elements/ViewInAppButton'
 
 interface MasjidRedirectClientProps {
   masjidData: MasjidData | null
   fallbackName: string
   deepLinkUrl: string
+  masjidId: string
 }
 
 export function MasjidRedirectClient({ 
   masjidData,
   fallbackName, 
-  deepLinkUrl 
+  deepLinkUrl,
+  masjidId
 }: MasjidRedirectClientProps) {
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop')
   const [showFallback, setShowFallback] = useState(false)
@@ -113,13 +116,6 @@ export function MasjidRedirectClient({
     }
   }, [deepLinkUrl, attemptedDeepLink, attemptDeepLink])
 
-  const handleStoreRedirect = (store: 'ios' | 'android') => {
-    const urls = {
-      ios: 'https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734',
-      android: 'https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid'
-    }
-    window.open(urls[store], '_blank')
-  }
 
   const handleTryAgain = () => {
     setAttemptedDeepLink(false)
@@ -276,30 +272,12 @@ export function MasjidRedirectClient({
             </div>
             
             <div className="flex flex-col lg:flex-row lg:space-x-3 space-y-2 lg:space-y-0">
-              {/* Mobile: Single smart button, Desktop: Both buttons */}
-              {deviceType === 'desktop' ? (
-                <>
-                  <button
-                    onClick={() => handleStoreRedirect('ios')}
-                    className="bg-white/20 backdrop-blur-sm border border-white/30 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
-                  >
-                    View in iOS
-                  </button>
-                  <button
-                    onClick={() => handleStoreRedirect('android')}
-                    className="bg-white/20 backdrop-blur-sm border border-white/30 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
-                  >
-                    View in Android
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => handleStoreRedirect(deviceType)}
-                  className="bg-white/20 backdrop-blur-sm border border-white/30 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
-                >
-                  View in App
-                </button>
-              )}
+              <ViewInAppButton
+                masjidId={masjidId}
+                masjidName={displayName}
+                variant="secondary"
+                className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:border-white/40"
+              />
             </div>
           </div>
         </div>

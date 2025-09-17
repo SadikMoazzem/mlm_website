@@ -167,6 +167,7 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
               masjidData={masjidData}
               fallbackName={masjidName}
               deepLinkUrl={deepLinkUrl}
+              masjidId={id}
             />
           </Suspense>
         </div>
