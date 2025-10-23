@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: 'MyLocalMasjid - Connecting Masajid to Their Communities',
     description: 'Established in 2020, making Masjid services more accessible and keeping your community connected and informed.',
     images: ['/images/preview.png'],
-    creator: '@SadikMozzo',
+    creator: '@mlmasjid',
   },
   icons: {
     icon: [

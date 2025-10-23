@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
     description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free!',
     images: ['/images/preview.png'],
-    creator: '@SadikMozzo',
+    creator: '@mlmasjid',
   },
   icons: {
     icon: [
@@ -119,7 +119,7 @@ export default function RootLayout({
               "keywords": "prayer times, mosque finder, masjid, qibla, islamic app, muslim app, jamaat times, ramadan",
               "sameAs": [
                 "https://www.mylocalmasjid.com",
-                "https://twitter.com/SadikMozzo",
+                "https://twitter.com/mlmasjid",
                 "https://play.google.com/store/apps/details?id=com.moazzemlabs.mylocalmasjid",
                 "https://apps.apple.com/gb/app/mylocalmasjid-app/id6743862734"
               ]
