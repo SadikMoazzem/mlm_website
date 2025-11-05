@@ -944,7 +944,7 @@ Masjid Details:
 
       {/* Floating Submit Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-primary-200/50 p-6 shadow-2xl z-40">
-        <div className="px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="px-2 sm:px-4 lg:px-6 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {(() => {
                 const hasFiles = uploadedFiles.length > 0
@@ -993,10 +993,7 @@ Masjid Details:
                 </>
               ) : (
                 <>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                  </svg>
-                  <span>Submit Data</span>
+                  <span>Submit</span>
                 </>
               )}
             </button>
