@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 }
 
 interface MasjidUploadPageProps {
-  searchParams: {
+  searchParams: Promise<{
     masjid_id?: string
     token?: string
-  }
+  }>
 }
 
 export default async function MasjidUploadPage({ searchParams }: MasjidUploadPageProps) {
