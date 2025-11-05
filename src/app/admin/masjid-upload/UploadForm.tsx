@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback, useMemo, lazy, Suspense, memo } from 'react'
+import { useState, useRef, useCallback, useMemo, lazy, Suspense, memo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MasjidData } from '@/types/api'
 import LoadingModal from '@/components/ui/loading-modal'
@@ -15,10 +15,41 @@ interface UploadedFile {
   name: string
   size: number
   type: string
-  file: File
+  id: string // Unique ID to reference file in Map
   uploadedUrl?: string
   uploadedFileKey?: string
 }
+
+// File type validation constants
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB (frontend limit)
+const MAX_FILE_COUNT = 5
+
+const SUPPORTED_EXTENSIONS = [
+  // Images
+  '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg',
+  // Documents
+  '.pdf', '.doc', '.docx', '.txt',
+  // Spreadsheets
+  '.csv', '.xlsx', '.xls'
+]
+
+const SUPPORTED_MIME_TYPES = [
+  // Images
+  'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp', 'image/svg+xml',
+  // Documents
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  // Spreadsheets
+  'text/csv',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+]
+
+const UNSUPPORTED_EXTENSIONS = [
+  '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz'
+]
 
 interface JummahTime {
   id: string
@@ -56,6 +87,10 @@ interface UploadFormProps {
 const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
   const router = useRouter()
   
+  // File storage outside React state (prevents memory issues)
+  const fileMapRef = useRef<Map<string, File>>(new Map())
+  const fileIdCounterRef = useRef(0)
+  
   // State management
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const [jummahTimes, setJummahTimes] = useState<JummahTime[]>([])
@@ -89,8 +124,17 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
   const [modalMessage, setModalMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [newJummahName, setNewJummahName] = useState('')
+  const [unsupportedFileForEmail, setUnsupportedFileForEmail] = useState<File | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Clear all File objects from memory
+      fileMapRef.current.clear()
+    }
+  }, [])
 
   // Format time from 24-hour to 12-hour format with AM/PM
   const formatTime = (time: string): string => {
@@ -126,18 +170,138 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
     }
   }
 
+  // Get file extension from filename
+  const getFileExtension = (filename: string): string => {
+    const lastDot = filename.lastIndexOf('.')
+    return lastDot >= 0 ? filename.substring(lastDot).toLowerCase() : ''
+  }
+
+  // Validate file type
+  const isFileTypeSupported = (file: File): boolean => {
+    const extension = getFileExtension(file.name)
+    const mimeType = file.type.toLowerCase()
+    
+    // Check if extension is in unsupported list
+    if (UNSUPPORTED_EXTENSIONS.includes(extension)) {
+      return false
+    }
+    
+    // Check if extension is in supported list
+    if (SUPPORTED_EXTENSIONS.includes(extension)) {
+      return true
+    }
+    
+    // Check if MIME type is supported
+    if (SUPPORTED_MIME_TYPES.includes(mimeType)) {
+      return true
+    }
+    
+    // Special case: if it's an image type but extension not listed, allow it
+    if (mimeType.startsWith('image/')) {
+      return true
+    }
+    
+    return false
+  }
+
+  // Validate file
+  const validateFile = (file: File, currentFileCount: number): { valid: boolean; error?: string } => {
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      // For files larger than the frontend limit, ask user to email the file instead
+      return {
+        valid: false,
+        error: 'TOO_LARGE'
+      }
+    }
+
+    // Check file count
+    if (currentFileCount >= MAX_FILE_COUNT) {
+      return {
+        valid: false,
+        error: `Maximum ${MAX_FILE_COUNT} files allowed. Please remove a file first.`
+      }
+    }
+
+    // Check file type
+    if (!isFileTypeSupported(file)) {
+      const extension = getFileExtension(file.name)
+      if (UNSUPPORTED_EXTENSIONS.includes(extension)) {
+        return {
+          valid: false,
+          error: 'UNSUPPORTED' // Special flag for unsupported files
+        }
+      }
+      return {
+        valid: false,
+        error: `${file.name} has an unsupported file type. Supported types: images, PDFs, Word documents, Excel files, CSV, and text files.`
+      }
+    }
+
+    return { valid: true }
+  }
 
   // File upload handlers
   const handleFileUpload = useCallback((files: FileList | File[]) => {
     const fileArray = Array.from(files)
-    const newFiles: UploadedFile[] = fileArray.map(file => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      file
-    }))
-    setUploadedFiles(prev => [...prev, ...newFiles])
-  }, [])
+    const currentFileCount = uploadedFiles.length
+    const validFiles: UploadedFile[] = []
+    const validationErrors: string[] = []
+    let unsupportedFile: File | null = null
+
+    for (const file of fileArray) {
+      const validation = validateFile(file, currentFileCount + validFiles.length)
+      
+      if (!validation.valid) {
+        // If file is unsupported or too large, prompt user to email it
+        if (validation.error === 'UNSUPPORTED' || validation.error === 'TOO_LARGE') {
+          if (!unsupportedFile) {
+            unsupportedFile = file
+          }
+        } else if (validation.error) {
+          validationErrors.push(validation.error)
+        }
+        continue
+      }
+
+      // Generate unique ID for this file
+      const fileId = `file_${Date.now()}_${fileIdCounterRef.current++}`
+      
+      // Store File object in Map (outside React state)
+      fileMapRef.current.set(fileId, file)
+      
+      // Store only metadata in state
+      validFiles.push({
+        id: fileId,
+        name: file.name,
+        size: file.size,
+        type: file.type
+      })
+    }
+
+    // Show errors if any
+    if (validationErrors.length > 0) {
+      setErrorMessage(validationErrors.join('\n'))
+      setModalStatus('error')
+      setModalMessage('File validation failed')
+      setShowLoadingModal(true)
+      setTimeout(() => {
+        setShowLoadingModal(false)
+        setErrorMessage('')
+      }, 3000)
+    }
+
+    // Handle unsupported file (zip, etc.)
+    if (unsupportedFile) {
+      setUnsupportedFileForEmail(unsupportedFile)
+      setShowEmailModal(true)
+    }
+
+    // Add valid files to state
+    if (validFiles.length > 0) {
+      setUploadedFiles(prev => [...prev, ...validFiles])
+    }
+  }, [uploadedFiles.length])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -164,7 +328,14 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
   }, [handleFileUpload])
 
   const removeFile = useCallback((index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index))
+    setUploadedFiles(prev => {
+      const fileToRemove = prev[index]
+      if (fileToRemove) {
+        // Remove File object from Map to free memory
+        fileMapRef.current.delete(fileToRemove.id)
+      }
+      return prev.filter((_, i) => i !== index)
+    })
   }, [])
 
   // Jummah times handlers
@@ -359,7 +530,13 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
         setUploadProgress({ current: 0, total: uploadedFiles.length })
         
         for (let i = 0; i < uploadedFiles.length; i++) {
-          const file = uploadedFiles[i]
+          const fileMetadata = uploadedFiles[i]
+          
+          // Retrieve File object from Map
+          const file = fileMapRef.current.get(fileMetadata.id)
+          if (!file) {
+            throw new Error(`File ${fileMetadata.name} not found`)
+          }
           
           // Update progress
           setUploadProgress({ current: i + 1, total: uploadedFiles.length })
@@ -368,7 +545,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
           try {
             // Create FormData for this file
             const formData = new FormData()
-            formData.append('file', file.file)
+            formData.append('file', file)
             formData.append('masjid_id', masjidData.id)
 
             // Upload file to our API route
@@ -379,22 +556,25 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
 
             if (!response.ok) {
               const errorData = await response.json().catch(() => ({}))
-              throw new Error(errorData.error || `Upload failed for ${file.name}`)
+              throw new Error(errorData.error || `Upload failed for ${fileMetadata.name}`)
             }
 
             const uploadResult = await response.json()
             
-            // Update the file with upload results
+            // Update the file metadata with upload results
             updatedFiles[i] = {
-              ...file,
+              ...fileMetadata,
               uploadedUrl: uploadResult.url,
               uploadedFileKey: uploadResult.file_key
             }
             
+            // Clean up File object from Map after successful upload
+            fileMapRef.current.delete(fileMetadata.id)
+            
           } catch (error) {
             setModalStatus('error')
             setModalMessage('Upload failed')
-            setErrorMessage(`Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+            setErrorMessage(`Failed to upload ${fileMetadata.name}: ${error instanceof Error ? error.message : 'Unknown error'}`)
             throw error
           }
         }
@@ -521,8 +701,8 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
     const masjidId = masjidData.id || ''
     const masjidAddress = masjidData.location?.full_address || 'Address not available'
     
-    const subject = `Prayer Times for ${masjidName}`
-    const body = `Assalamu Alaikum,
+    let subject = `Prayer Times for ${masjidName}`
+    let body = `Assalamu Alaikum,
 
 Please find attached the prayer times for ${masjidName}.
 
@@ -531,10 +711,30 @@ Jazakallah Khair.
 Masjid Details:
 - Masjid ID: ${masjidId}
 - Address: ${masjidAddress}`
+
+    // If there's an unsupported file, mention it in the email
+    if (unsupportedFileForEmail) {
+      subject = `Unsupported File Upload for ${masjidName}`
+      body = `Assalamu Alaikum,
+
+Please find attached the unsupported file (${unsupportedFileForEmail.name}) for ${masjidName}.
+
+Please note: This file type is not supported for direct upload. Please attach it to this email.
+
+Jazakallah Khair.
+
+Masjid Details:
+- Masjid ID: ${masjidId}
+- Address: ${masjidAddress}
+- File: ${unsupportedFileForEmail.name} (${(unsupportedFileForEmail.size / 1024 / 1024).toFixed(2)}MB)`
+    }
     
     const mailtoLink = `mailto:admin@mylocalmasjid.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     window.open(mailtoLink, '_blank')
-  }, [masjidData])
+    
+    // Clear unsupported file after opening email
+    setUnsupportedFileForEmail(null)
+  }, [masjidData, unsupportedFileForEmail])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50/30">
@@ -628,7 +828,7 @@ Masjid Details:
                   Drop files here or click to browse
                 </p>
                 <p className="text-gray-500 mb-6">
-                  Support for images, PDFs, and documents
+                  Support for images, PDFs, documents, Excel, and CSV files (max 5 files, 25MB each)
                 </p>
                 <button
                   onClick={() => fileInputRef.current?.click()}
@@ -642,8 +842,8 @@ Masjid Details:
                   multiple
                   onChange={handleFileInputChange}
                   className="hidden"
-                  accept="image/*,.pdf,.doc,.docx,.txt"
-                  title="Select files up to 25MB each"
+                  accept="image/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls"
+                  title="Select up to 5 files, 25MB each. Supported: images, PDFs, Word, Excel, CSV, text files"
                 />
               </div>
 
@@ -660,7 +860,7 @@ Masjid Details:
                   </h4>
                   <div className="space-y-3">
                     {uploadedFiles.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-primary-100/50 rounded-2xl p-4 border border-primary-200/50">
+                      <div key={file.id} className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-primary-100/50 rounded-2xl p-4 border border-primary-200/50">
                         <div className="flex items-center space-x-4">
                           <div className="flex-shrink-0 w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
                             <svg className="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1082,7 +1282,10 @@ Masjid Details:
               masjidId={masjidData.id || ''}
               masjidAddress={masjidData.location?.full_address || 'Address not available'}
               onOpenEmail={openEmailClient}
-              onCancel={() => setShowEmailModal(false)}
+              onCancel={() => {
+                setShowEmailModal(false)
+                setUnsupportedFileForEmail(null)
+              }}
             />
           </Suspense>
         )}
