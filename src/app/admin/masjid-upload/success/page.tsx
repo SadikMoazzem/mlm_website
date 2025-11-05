@@ -1,9 +1,10 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import StoreButton from '@/components/elements/StoreButton'
 
-export default function SuccessPage() {
+function SuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -186,3 +187,23 @@ export default function SuccessPage() {
     </div>
   )
 }
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg animate-pulse">
+            <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <p className="text-lg text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
+  )
+}
+

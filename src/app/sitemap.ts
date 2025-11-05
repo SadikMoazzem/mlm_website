@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getMasajidPaginated } from '@/lib/api-client'
 import { formatMasjidUrlName } from '@/lib/masjid-service'
+import { cities } from '@/data/cities'
 
 const BASE_URL = 'https://mylocalmasjid.com'
 
@@ -107,6 +108,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
+  // Generate city pages
+  const cityPages: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${BASE_URL}/masjids/${city.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }))
+
+  // Generate area/nearby pages for each area in each city
+  const areaPages: MetadataRoute.Sitemap = cities.flatMap((city) =>
+    city.areas.map((area) => {
+      // Create search params matching the AreaCard component format
+      const searchParams = new URLSearchParams({
+        area: area.name,
+        city: city.name,
+        source: 'area',
+        radius: '10'
+      })
+      
+      return {
+        url: `${BASE_URL}/masjids/near/${area.latitude}/${area.longitude}?${searchParams.toString()}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }
+    })
+  )
+
   // Fetch all masjids
   let masjidPages: MetadataRoute.Sitemap = []
   try {
@@ -124,7 +153,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error generating masjid pages for sitemap:', error)
   }
 
-  // Combine static and masjid pages
-  return [...staticPages, ...masjidPages]
+  // Combine all pages: static, city, area, and masjid pages
+  return [...staticPages, ...cityPages, ...areaPages, ...masjidPages]
 }
 
