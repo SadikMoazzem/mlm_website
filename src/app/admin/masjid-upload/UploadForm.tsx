@@ -1,9 +1,15 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo, lazy, Suspense, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import { MasjidData } from '@/types/api'
 import LoadingModal from '@/components/ui/loading-modal'
+
+// Lazy load modals for code splitting
+const EditJummahModal = lazy(() => import('./modals/EditJummahModal'))
+const AddJummahModal = lazy(() => import('./modals/AddJummahModal'))
+const EmailModal = lazy(() => import('./modals/EmailModal'))
+const WarningModal = lazy(() => import('./modals/WarningModal'))
 
 interface UploadedFile {
   name: string
@@ -47,7 +53,7 @@ interface UploadFormProps {
   masjidData: MasjidData
 }
 
-export default function UploadForm({ masjidData }: UploadFormProps) {
+const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
   const router = useRouter()
   
   // State management
@@ -322,6 +328,20 @@ export default function UploadForm({ masjidData }: UploadFormProps) {
     return facilityList
   }, [])
 
+  // Memoize computed values to avoid recalculating on every render
+  const activeJummahTimes = useMemo(() => 
+    jummahTimes.filter(t => !t.deleted), 
+    [jummahTimes]
+  )
+
+  const hasFiles = useMemo(() => uploadedFiles.length > 0, [uploadedFiles.length])
+  const hasJummahTimes = useMemo(() => activeJummahTimes.length > 0, [activeJummahTimes.length])
+  const hasFacilities = useMemo(() => 
+    facilities.parking !== null || facilities.womens_prayer_area !== null,
+    [facilities.parking, facilities.womens_prayer_area]
+  )
+  const isReady = useMemo(() => hasFiles || hasJummahTimes || hasFacilities, [hasFiles, hasJummahTimes, hasFacilities])
+
   // Actual submission logic
   const proceedWithSubmission = useCallback(async () => {
     setShowWarningModal(false)
@@ -384,7 +404,6 @@ export default function UploadForm({ masjidData }: UploadFormProps) {
       }
 
       // Transform data for backend submission
-      const activeJummahTimes = jummahTimes.filter(t => !t.deleted)
       const winterJummahTimes = activeJummahTimes.map(t => t.time)
       const specialPrayers = transformJummahTimes(activeJummahTimes)
       const facilitiesList = transformFacilities(facilities, facilityComments)
@@ -457,35 +476,32 @@ export default function UploadForm({ masjidData }: UploadFormProps) {
       setIsSubmitting(false)
       // Keep modal open to show error message if there's an error
     }
-  }, [uploadedFiles, jummahTimes, facilities, facilityComments, masjidData.id, masjidData.name, transformJummahTimes, transformFacilities, router])
+  }, [uploadedFiles, activeJummahTimes, facilities, facilityComments, masjidData.id, masjidData.name, transformJummahTimes, transformFacilities, router])
 
   // Submit handler
   const handleSubmit = useCallback(async () => {
     // Check if at least one section has data
-    const hasFiles = uploadedFiles.length > 0
-    const hasJummahTimes = jummahTimes.filter(t => !t.deleted).length > 0
-    const hasFacilities = facilities.parking !== null || facilities.womens_prayer_area !== null
-    
-    if (!hasFiles && !hasJummahTimes && !hasFacilities) {
+    if (!isReady) {
       setShowWarningModal(true)
       return
     }
 
     // Proceed with submission
     await proceedWithSubmission()
-  }, [uploadedFiles, jummahTimes, facilities, proceedWithSubmission])
+  }, [isReady, proceedWithSubmission])
 
-  const formatFileSize = (bytes: number) => {
+  // Memoize formatFileSize to avoid recreating on each render
+  const formatFileSize = useCallback((bytes: number) => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
+  }, [])
 
-  const updateFacilityComment = (facility: 'parking' | 'womens_prayer_area', comment: string) => {
+  const updateFacilityComment = useCallback((facility: 'parking' | 'womens_prayer_area', comment: string) => {
     setFacilityComments(prev => ({ ...prev, [facility]: comment }))
-  }
+  }, [])
 
   const closeModal = useCallback(() => {
     setShowLoadingModal(false)
@@ -693,7 +709,7 @@ Masjid Details:
           
               {/* Current Jummah Times */}
               <div className="max-h-80 overflow-y-auto space-y-4 mb-6 pr-2">
-                {jummahTimes.filter(t => !t.deleted).map((jummahTime) => (
+                {activeJummahTimes.map((jummahTime) => (
                   <div 
                     key={jummahTime.id} 
                     className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-primary-100/50 rounded-2xl p-4 border border-primary-200/50 transition-all duration-300"
@@ -946,13 +962,7 @@ Masjid Details:
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-primary-200/50 p-6 shadow-2xl z-40">
         <div className="px-2 sm:px-4 lg:px-6 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              {(() => {
-                const hasFiles = uploadedFiles.length > 0
-                const hasJummahTimes = jummahTimes.filter(t => !t.deleted).length > 0
-                const hasFacilities = facilities.parking !== null || facilities.womens_prayer_area !== null
-                const isReady = hasFiles || hasJummahTimes || hasFacilities
-                
-                return isReady ? (
+              {isReady ? (
                   <>
                     <div className="w-8 h-8 bg-primary-100 rounded-xl flex items-center justify-center">
                       <svg className="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -970,17 +980,11 @@ Masjid Details:
                     </div>
                     <span className="text-gray-600 font-medium">Please fill out at least one section</span>
                   </>
-                )
-              })()}
+                )}
             </div>
             <button
               onClick={handleSubmit}
-              disabled={(() => {
-                const hasFiles = uploadedFiles.length > 0
-                const hasJummahTimes = jummahTimes.filter(t => !t.deleted).length > 0
-                const hasFacilities = facilities.parking !== null || facilities.womens_prayer_area !== null
-                return isSubmitting || (!hasFiles && !hasJummahTimes && !hasFacilities)
-              })()}
+              disabled={isSubmitting || !isReady}
               className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 disabled:from-gray-400 disabled:to-gray-400 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl disabled:transform-none disabled:shadow-none flex items-center space-x-3"
             >
               {isSubmitting ? (
@@ -1005,82 +1009,24 @@ Masjid Details:
 
         {/* Edit Time Modal */}
         {showEditModal && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Edit Jummah Time</h3>
-                </div>
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
-                  Winter Times
-                </span>
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                  <input
-                    type="text"
-                    value={editingJummahName}
-                    onChange={(e) => setEditingJummahName(e.target.value)}
-                    placeholder="Jummah 1"
-                    className="w-full border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
-                  <div className="flex items-center space-x-3">
-                    <select
-                      value={editingTimeHour}
-                      onChange={(e) => setEditingTimeHour(e.target.value)}
-                      className="flex-1 border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                    >
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
-                        <option key={h} value={h}>{h}</option>
-                      ))}
-                    </select>
-                    <span className="text-gray-600 font-bold text-xl">:</span>
-                    <select
-                      value={editingTimeMinute}
-                      onChange={(e) => setEditingTimeMinute(e.target.value)}
-                      className="flex-1 border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                    >
-                      {Array.from({ length: 60 }, (_, i) => i).map(m => (
-                        <option key={m} value={m.toString().padStart(2, '0')}>
-                          {m.toString().padStart(2, '0')}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={editingTimePeriod}
-                      onChange={(e) => setEditingTimePeriod(e.target.value as 'AM' | 'PM')}
-                      className="flex-1 border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                    >
-                      <option value="AM">AM</option>
-                      <option value="PM">PM</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => {
+          <Suspense fallback={null}>
+            <EditJummahModal
+              isOpen={showEditModal}
+              editingTime={editingTime}
+              editingTimeHour={editingTimeHour}
+              editingTimeMinute={editingTimeMinute}
+              editingTimePeriod={editingTimePeriod}
+              editingJummahName={editingJummahName}
+              onHourChange={setEditingTimeHour}
+              onMinuteChange={setEditingTimeMinute}
+              onPeriodChange={setEditingTimePeriod}
+              onNameChange={setEditingJummahName}
+              onSave={() => {
                       if (editingTime) {
                         editJummahTime(editingTime)
                       }
                     }}
-                    className="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    onClick={() => {
+              onCancel={() => {
                       setShowEditModal(false)
                       setEditingTime(null)
                       setEditingTimeHour('12')
@@ -1088,14 +1034,8 @@ Masjid Details:
                       setEditingTimePeriod('PM')
                       setEditingJummahName('')
                     }}
-                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            />
+          </Suspense>
         )}
 
         {/* Loading Modal */}
@@ -1110,169 +1050,55 @@ Masjid Details:
 
         {/* Add Jummah Modal */}
         {showAddJummahModal && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
-              <div className="mb-6">
-                <div className="flex items-center mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Add Jummah Time</h3>
-                </div>
-                <div className="flex justify-start ml-16">
-                  <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
-                    Winter Times
-                  </span>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                  <input
-                    type="text"
-                    value={newJummahName}
-                    onChange={(e) => setNewJummahName(e.target.value)}
-                    placeholder="Jummah 1"
-                    className="w-full border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
-                  <div className="flex items-center space-x-3">
-                    <select
-                      value={newTimeHour}
-                      onChange={(e) => setNewTimeHour(e.target.value)}
-                      className="flex-1 border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                    >
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
-                        <option key={h} value={h}>{h}</option>
-                      ))}
-                    </select>
-                    <span className="text-gray-600 font-bold text-xl">:</span>
-                    <select
-                      value={newTimeMinute}
-                      onChange={(e) => setNewTimeMinute(e.target.value)}
-                      className="flex-1 border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                    >
-                      {Array.from({ length: 60 }, (_, i) => i).map(m => (
-                        <option key={m} value={m.toString().padStart(2, '0')}>
-                          {m.toString().padStart(2, '0')}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={newTimePeriod}
-                      onChange={(e) => setNewTimePeriod(e.target.value as 'AM' | 'PM')}
-                      className="flex-1 border-2 border-primary-300 rounded-xl px-4 py-3 text-lg font-medium focus:border-primary-500 focus:outline-none transition-colors"
-                    >
-                      <option value="AM">AM</option>
-                      <option value="PM">PM</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div className="flex space-x-3">
-                  <button
-                    onClick={addJummahTime}
-                    className="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                  >
-                    Add
-                  </button>
-                  <button
-                    onClick={() => {
+          <Suspense fallback={null}>
+            <AddJummahModal
+              isOpen={showAddJummahModal}
+              newJummahName={newJummahName}
+              newTimeHour={newTimeHour}
+              newTimeMinute={newTimeMinute}
+              newTimePeriod={newTimePeriod}
+              onNameChange={setNewJummahName}
+              onHourChange={setNewTimeHour}
+              onMinuteChange={setNewTimeMinute}
+              onPeriodChange={setNewTimePeriod}
+              onAdd={addJummahTime}
+              onCancel={() => {
                       setShowAddJummahModal(false)
                       setNewJummahName('')
                       setNewTimeHour('12')
                       setNewTimeMinute('00')
                       setNewTimePeriod('PM')
                     }}
-                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            />
+          </Suspense>
         )}
 
         {/* Email Upload Modal */}
         {showEmailModal && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Email Upload</h3>
-              </div>
-              
-              <div className="space-y-4 mb-6">
-                <p className="text-gray-700">
-                  Please attach the files or zip files to the email. Jazakallah Khair.
-                </p>
-              </div>
-              
-              <div className="flex space-x-3">
-                <button
-                  onClick={openEmailClient}
-                  className="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                >
-                  Open Email
-                </button>
-                <button
-                  onClick={() => setShowEmailModal(false)}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
+          <Suspense fallback={null}>
+            <EmailModal
+              isOpen={showEmailModal}
+              masjidName={masjidData.name || 'Masjid'}
+              masjidId={masjidData.id || ''}
+              masjidAddress={masjidData.location?.full_address || 'Address not available'}
+              onOpenEmail={openEmailClient}
+              onCancel={() => setShowEmailModal(false)}
+            />
+          </Suspense>
         )}
 
         {/* Warning Modal for No Files */}
         {showWarningModal && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                  <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Incomplete Submission</h3>
-              </div>
-              
-              <div className="space-y-4 mb-6">
-                <p className="text-gray-700">
-                  Please fill out at least one section: prayer time files, Jummah times, or facilities information.
-                </p>
-              </div>
-              
-              <div className="flex space-x-3">
-                <button
-                  onClick={proceedWithSubmission}
-                  className="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                >
-                  Continue Anyway
-                </button>
-                <button
-                  onClick={() => setShowWarningModal(false)}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
-                >
-                  Go Back
-                </button>
-              </div>
-            </div>
-          </div>
+          <Suspense fallback={null}>
+            <WarningModal
+              isOpen={showWarningModal}
+              onContinue={proceedWithSubmission}
+              onCancel={() => setShowWarningModal(false)}
+            />
+          </Suspense>
         )}
     </div>
   )
-}
+})
+
+export default UploadForm
