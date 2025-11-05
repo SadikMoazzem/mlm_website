@@ -9,13 +9,6 @@ export async function GET(request: NextRequest) {
     const searchQuery = searchParams.get('search')
     const startsWithLetter = searchParams.get('starts_with') // New parameter for letter filtering
 
-    console.log('🔗 API Route URL:', request.url)
-    console.log('📋 API Params:', { page, size, searchQuery, startsWithLetter })
-    
-    // Also log to terminal with more detail
-    console.log(`[API] Page: ${page}, Size: ${size}, Query: "${searchQuery || 'none'}", Letter: "${startsWithLetter || 'none'}"`)
-    console.log(`[URL] Full request URL: ${request.url}`)
-
     let response
     if (startsWithLetter) {
       response = await getMasajidByLetter(startsWithLetter, page, size)
