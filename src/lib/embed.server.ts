@@ -29,6 +29,8 @@ export const getJumuahPrayersForMasjid = cache(async (masjidId: string): Promise
 })
 
 // Fetch a range (defaults to 7 days: today + next 6 days).
+// Note: API only supports limit=1, so we make parallel requests for each day
+// The timeout fix in api-client.ts ensures requests fail fast instead of waiting 10s
 export const getPrayerTimesRangeForMasjid = cache(async (masjidId: string, days = 7): Promise<CurrentPrayerTimes[]> => {
   const today = new Date()
   const dates: string[] = []
@@ -39,6 +41,7 @@ export const getPrayerTimesRangeForMasjid = cache(async (masjidId: string, days 
   }
 
   // Use the single-day cached helper for each date to take advantage of the cache key
+  // All requests run in parallel with 5s timeout (configured in api-client.ts)
   const results = await Promise.all(dates.map(dt => getPrayerTimesForMasjid(masjidId, dt)))
   // Filter out nulls but keep ordering
   return results.filter(Boolean) as CurrentPrayerTimes[]

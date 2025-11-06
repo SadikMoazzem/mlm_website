@@ -1,7 +1,7 @@
 import { PrayerTimesWidget } from '@/components/PrayerTimesWidget'
 import { getEmbedPrayerTimesData } from '@/lib/embed.server'
 
-export const revalidate = 3600 // 1 hour
+export const revalidate = 7200 // 2 hours - prayer times don't change frequently, longer cache reduces API calls
 
 interface Props {
   searchParams: Promise<{ masjid_id?: string }>;

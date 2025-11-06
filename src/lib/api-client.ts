@@ -56,15 +56,25 @@ class ApiClient {
           method: options.method || 'GET'
         })
         
+        // Add timeout using AbortController (5 seconds for embed performance)
+        const timeoutMs = 5000
+        const controller = new AbortController()
+        let timeoutId: NodeJS.Timeout | undefined
+        
         try {
+          timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+          
           const response = await fetch(url, {
             ...options,
+            signal: controller.signal,
             headers: {
               'Content-Type': 'application/json',
               'x-api-key': this.apiKey!,
               ...options.headers,
             },
           })
+          
+          clearTimeout(timeoutId)
 
           span.setAttribute("http.status_code", response.status)
           span.setAttribute("http.status_text", response.statusText)
@@ -121,6 +131,36 @@ class ApiClient {
             data,
           }
         } catch (error) {
+          // Clear timeout if request completes (success or error)
+          if (timeoutId) {
+            clearTimeout(timeoutId)
+          }
+          
+          // Check if it's a timeout error
+          if (error instanceof Error && error.name === 'AbortError') {
+            logger.error(logger.fmt`API request timeout: ${endpoint}`, {
+              endpoint,
+              timeoutMs
+            })
+            
+            Sentry.captureException(new Error(`API request timeout after ${timeoutMs}ms: ${endpoint}`), {
+              tags: {
+                api_endpoint: endpoint,
+                error_type: 'timeout'
+              },
+              extra: {
+                url,
+                method: options.method || 'GET',
+                timeoutMs
+              }
+            })
+            
+            return {
+              success: false,
+              error: `Request timeout after ${timeoutMs}ms`,
+            }
+          }
+          
           logger.error(logger.fmt`API request exception: ${endpoint}`, {
             endpoint,
             error: error instanceof Error ? error.message : 'Unknown error'
