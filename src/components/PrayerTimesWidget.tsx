@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { PrayerTimesRead, SpecialPrayer } from '@/types/api'
+import { CurrentPrayerTimes, SpecialPrayer } from '@/types/api'
 
 const LOCALE = process.env.NEXT_PUBLIC_LOCALE || 'en-GB'
 
@@ -26,7 +26,7 @@ function timeToMinutes(time?: string | null) {
 
 type Prayer = { name: string; begins: string; jamaah?: string; startMinutes: number }
 
-function formatPrayerTimesReadToPrayer(prayerTimes: PrayerTimesRead): Prayer[] {
+function formatPrayerTimesReadToPrayer(prayerTimes: CurrentPrayerTimes): Prayer[] {
   return [
     { name: 'Fajr', begins: prayerTimes.fajr_start, jamaah: prayerTimes.fajr_jammat, startMinutes: timeToMinutes(prayerTimes.fajr_start) },
     { name: 'Sunrise', begins: prayerTimes.sunrise || '', jamaah: '', startMinutes: timeToMinutes(prayerTimes.sunrise) },
@@ -46,7 +46,7 @@ function getCurrentPrayer(prayers: Prayer[]): string {
   return 'ʿIshā'
 }
 
-export function PrayerTimesWidget({ prayerTimes, jumuahPrayers = [] }: { prayerTimes: PrayerTimesRead | null; jumuahPrayers?: SpecialPrayer[] }) {
+export function PrayerTimesWidget({ prayerTimes, jumuahPrayers = [] }: { prayerTimes: CurrentPrayerTimes | null; jumuahPrayers?: SpecialPrayer[] }) {
   const [activePrayer, setActivePrayer] = useState<string>('')
 
   const prayers: Prayer[] = useMemo(() => {
@@ -78,7 +78,12 @@ export function PrayerTimesWidget({ prayerTimes, jumuahPrayers = [] }: { prayerT
   return (
     <div style={{ padding: 12, fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1e293b' }}>
       <div style={{ textAlign: 'center', marginBottom: 12, color: '#64748b', fontSize: 13 }}>
-        {prayerTimes && `${new Intl.DateTimeFormat(LOCALE, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(prayerTimes.date))} • ${prayerTimes.hijri_date}`}
+        {prayerTimes && (
+          <>
+            {new Intl.DateTimeFormat(LOCALE, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(prayerTimes.date))}
+            {prayerTimes.hijri_date && ` • ${prayerTimes.hijri_date}`}
+          </>
+        )}
       </div>
 
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>

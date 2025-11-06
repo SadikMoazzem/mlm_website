@@ -1,13 +1,13 @@
 import { cache } from 'react'
 import { get } from './api-client'
-import { PrayerTimesRead, SpecialPrayer } from '@/types/api'
+import { CurrentPrayerTimes, SpecialPrayer } from '@/types/api'
 
 // Cache helper
-export const getPrayerTimesForMasjid = cache(async (masjidId: string, date?: string): Promise<PrayerTimesRead | null> => {
+export const getPrayerTimesForMasjid = cache(async (masjidId: string, date?: string): Promise<CurrentPrayerTimes | null> => {
   try {
     const today = date || new Date().toISOString().split('T')[0]
     const endpoint = `/masjids/masjid/${masjidId}/prayer-times?date=${encodeURIComponent(today)}`
-    const response = await get<PrayerTimesRead[]>(endpoint)
+    const response = await get<CurrentPrayerTimes[]>(endpoint)
     if (!response.success || !response.data || response.data.length === 0) return null
     return response.data[0]
   } catch (error) {

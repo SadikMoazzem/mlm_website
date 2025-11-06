@@ -42,6 +42,7 @@ export interface CurrentPrayerTimes {
   magrib_start: string
   masjid_id: string
   sunrise: string
+  hijri_date?: string // Optional Hijri date
 }
 
 export interface SpecialPrayer {
