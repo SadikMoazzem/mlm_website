@@ -65,7 +65,7 @@ function getBaseUrl() {
 }
 
 export async function POST(request: Request) {
-  const secret = request.nextUrl.searchParams.get('secret') || process.env.PREBUILD_SECRET
+  const secret = new URL(request.url).searchParams.get('secret') || process.env.PREBUILD_SECRET
   if (!secret || secret !== (process.env.PREBUILD_SECRET || secret)) {
     return NextResponse.json({ error: 'missing or invalid secret' }, { status: 401 })
   }
