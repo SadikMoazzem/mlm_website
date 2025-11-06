@@ -28,17 +28,34 @@ export const getJumuahPrayersForMasjid = cache(async (masjidId: string): Promise
   }
 })
 
-export async function getEmbedPrayerTimesData(masjidIdParam?: string | null) {
-  if (!masjidIdParam) {
-    return { prayerTimes: null, jumuahPrayers: [], masjidId: null }
+// Fetch a range (defaults to 7 days: today + next 6 days).
+export const getPrayerTimesRangeForMasjid = cache(async (masjidId: string, days = 7): Promise<CurrentPrayerTimes[]> => {
+  const today = new Date()
+  const dates: string[] = []
+  for (let i = 0; i < days; i++) {
+    const d = new Date(today)
+    d.setDate(today.getDate() + i)
+    dates.push(d.toISOString().split('T')[0])
   }
 
-  const [prayerTimes, jumuahPrayers] = await Promise.all([
+  // Use the single-day cached helper for each date to take advantage of the cache key
+  const results = await Promise.all(dates.map(dt => getPrayerTimesForMasjid(masjidId, dt)))
+  // Filter out nulls but keep ordering
+  return results.filter(Boolean) as CurrentPrayerTimes[]
+})
+
+export async function getEmbedPrayerTimesData(masjidIdParam?: string | null) {
+  if (!masjidIdParam) {
+    return { prayerTimes: null, prayerTimesWeek: [], jumuahPrayers: [], masjidId: null }
+  }
+
+  const [prayerTimes, prayerTimesWeek, jumuahPrayers] = await Promise.all([
     getPrayerTimesForMasjid(masjidIdParam),
+    getPrayerTimesRangeForMasjid(masjidIdParam, 7),
     getJumuahPrayersForMasjid(masjidIdParam),
   ])
 
-  return { prayerTimes, jumuahPrayers, masjidId: masjidIdParam }
+  return { prayerTimes, prayerTimesWeek, jumuahPrayers, masjidId: masjidIdParam }
 }
 
 

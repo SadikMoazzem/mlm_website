@@ -46,16 +46,24 @@ function getCurrentPrayer(prayers: Prayer[]): string {
   return 'ʿIshā'
 }
 
-export function PrayerTimesWidget({ prayerTimes, jumuahPrayers = [] }: { prayerTimes: CurrentPrayerTimes | null; jumuahPrayers?: SpecialPrayer[] }) {
+export function PrayerTimesWidget({ prayerTimes, prayerTimesWeek = [], jumuahPrayers = [] }: { prayerTimes: CurrentPrayerTimes | null; prayerTimesWeek?: CurrentPrayerTimes[]; jumuahPrayers?: SpecialPrayer[] }) {
   const [activePrayer, setActivePrayer] = useState<string>('')
+  const [displayedPrayerTimes, setDisplayedPrayerTimes] = useState<CurrentPrayerTimes | null>(() => {
+    if (prayerTimes) return prayerTimes
+    if (prayerTimesWeek && prayerTimesWeek.length > 0) return prayerTimesWeek[0]
+    return null
+  })
+
+  const effectivePrayerTimes = displayedPrayerTimes || prayerTimes
 
   const prayers: Prayer[] = useMemo(() => {
-    if (!prayerTimes || !prayerTimes.fajr_start) return []
-    return formatPrayerTimesReadToPrayer(prayerTimes)
-  }, [prayerTimes])
+    if (!effectivePrayerTimes || !effectivePrayerTimes.fajr_start) return []
+    return formatPrayerTimesReadToPrayer(effectivePrayerTimes)
+  }, [effectivePrayerTimes])
 
   const hasPrayerTimes = prayers.length > 0 && prayers.some(p => p.begins)
 
+  // Keep active prayer updated every minute
   useEffect(() => {
     const update = () => { if (hasPrayerTimes) setActivePrayer(getCurrentPrayer(prayers)) }
     update()
@@ -63,69 +71,344 @@ export function PrayerTimesWidget({ prayerTimes, jumuahPrayers = [] }: { prayerT
     return () => clearInterval(i)
   }, [prayers, hasPrayerTimes])
 
+  // Keep displayedPrayerTimes in sync with the weekly array when available
+  useEffect(() => {
+    if (!prayerTimesWeek || prayerTimesWeek.length === 0) return
+    const today = new Date().toISOString().split('T')[0]
+    const idx = prayerTimesWeek.findIndex(p => p && p.date === today)
+    if (idx !== -1) {
+      setDisplayedPrayerTimes(prayerTimesWeek[idx])
+      return
+    }
+    // fallback: if displayed is null, set to first item
+    if (!displayedPrayerTimes && prayerTimesWeek.length > 0) setDisplayedPrayerTimes(prayerTimesWeek[0])
+  }, [prayerTimesWeek])
+
+  const BRAND_COLOR = '#1D8A77'
+  
   if (!hasPrayerTimes) {
     return (
-      <div style={{ padding: 20, fontFamily: 'system-ui, -apple-system, sans-serif', color: '#64748b' }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: '#334155' }}>Prayer Times Unavailable</div>
-        <div style={{ marginTop: 8 }}>We&apos;re currently unable to display prayer times. Please check back later.</div>
+      <div style={{ 
+        padding: '16px 12px', 
+        fontFamily: 'system-ui, -apple-system, sans-serif', 
+        color: '#64748b',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        width: '100%',
+        background: 'linear-gradient(to bottom, #fafafa 0%, #ffffff 100%)'
+      }}>
+        <div style={{ 
+          padding: '12px',
+          background: 'rgba(220, 38, 38, 0.05)',
+          borderRadius: '6px',
+          border: '1px solid rgba(220, 38, 38, 0.1)',
+          marginBottom: '12px'
+        }}>
+          <div style={{ fontSize: 'clamp(14px, 3vw, 16px)', fontWeight: 600, color: '#dc2626', marginBottom: '6px' }}>Prayer Times Unavailable</div>
+          <div style={{ fontSize: 'clamp(12px, 2.5vw, 14px)', color: '#64748b' }}>We&apos;re currently unable to display prayer times. Please check back later.</div>
+        </div>
+        <div style={{
+          marginTop: '12px',
+          paddingTop: '10px',
+          borderTop: '1px solid #e2e8f0',
+          textAlign: 'right'
+        }}>
+          <a 
+            href="https://mylocalmasjid.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{
+              fontSize: 'clamp(10px, 2vw, 12px)',
+              fontWeight: 500,
+              textDecoration: 'none',
+              display: 'inline-block',
+              color: '#64748b',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '0.8'
+              e.currentTarget.style.background = 'rgba(29, 138, 119, 0.05)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '1'
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            My<span style={{ color: BRAND_COLOR, fontWeight: 600 }}>Local</span>Masjid
+          </a>
+        </div>
       </div>
     )
   }
 
-  const isJumuahDay = prayerTimes ? new Date(prayerTimes.date).getDay() === 5 : false
-  const sortedJumuah = (jumuahPrayers || []).slice().sort((a, b) => (a.jammat_time || '').localeCompare(b.jammat_time || ''))
-
+        const sortedJumuah = (jumuahPrayers || []).slice().sort((a, b) => (a.jammat_time || '').localeCompare(b.jammat_time || ''))
+  
   return (
-    <div style={{ padding: 12, fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1e293b' }}>
-      <div style={{ textAlign: 'center', marginBottom: 12, color: '#64748b', fontSize: 13 }}>
-        {prayerTimes && (
-          <>
-            {new Intl.DateTimeFormat(LOCALE, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(prayerTimes.date))}
-            {prayerTimes.hijri_date && ` • ${prayerTimes.hijri_date}`}
-          </>
-        )}
+    <div style={{ 
+      padding: '12px 10px', 
+      fontFamily: 'system-ui, -apple-system, sans-serif', 
+      color: '#1e293b',
+      maxWidth: '100%',
+      boxSizing: 'border-box',
+      width: '100%',
+      background: 'linear-gradient(to bottom, #fafafa 0%, #ffffff 100%)'
+    }}>
+      {/* Date Header */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: '12px',
+        padding: '8px',
+        background: 'rgba(29, 138, 119, 0.05)',
+        borderRadius: '6px',
+        border: '1px solid rgba(29, 138, 119, 0.1)'
+      }}>
+        <div style={{ 
+          color: '#1D8A77', 
+          fontSize: 'clamp(11px, 2.5vw, 13px)',
+          fontWeight: 600,
+          letterSpacing: '0.3px'
+        }}>
+          {effectivePrayerTimes && (
+            <>
+              {new Intl.DateTimeFormat(LOCALE, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(effectivePrayerTimes.date))}
+              {effectivePrayerTimes.hijri_date && ` • ${effectivePrayerTimes.hijri_date}`}
+            </>
+          )}
+        </div>
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={{ textAlign: 'left', padding: '8px 4px', fontSize: 12, color: '#64748b' }}></th>
-            <th style={{ textAlign: 'right', padding: '8px 4px', fontSize: 12, color: '#64748b' }}>Start</th>
-            <th style={{ textAlign: 'right', padding: '8px 4px', fontSize: 12, color: '#64748b' }}>Jamat</th>
-          </tr>
-        </thead>
-        <tbody>
-          {prayers.filter(p => p.name !== 'Sunrise').map(p => {
-            const isActive = activePrayer === p.name
-            const color = isActive ? '#2563eb' : '#64748b'
-            const isJumuah = p.name === 'Zuhr' && isJumuahDay
-            return (
-              <tr key={p.name}>
-                <td style={{ padding: '8px 4px', fontWeight: 600, color }}>{isJumuah ? "Jumu'ah" : p.name}</td>
-                <td style={{ padding: '8px 4px', textAlign: 'right', fontWeight: 600, color }}>{formatPrayerTime(p.begins)}</td>
-                <td style={{ padding: '8px 4px', textAlign: 'right', fontWeight: 600, color }}>{isJumuah && sortedJumuah.length > 0 ? formatPrayerTime(sortedJumuah[0].jammat_time) : (p.jamaah ? formatPrayerTime(p.jamaah) : '-')}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-
-      {isJumuahDay && sortedJumuah.length > 0 && (
-        <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #e2e8f0' }}>
-          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Jumuah Prayers</div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <tbody>
-              {sortedJumuah.map((j, i) => (
-                <tr key={j.id || i}>
-                  <td style={{ padding: '6px 4px', fontWeight: 600, color: '#64748b' }}>{j.label || `Jamaat ${i+1}`}</td>
-                  <td style={{ padding: '6px 4px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>{j.start_time || '-'}</td>
-                  <td style={{ padding: '6px 4px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>{formatPrayerTime(j.jammat_time)}</td>
+      {/* Prayer Times Table */}
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <table style={{ 
+          width: '100%', 
+          borderCollapse: 'separate',
+          borderSpacing: 0,
+          minWidth: '200px'
+        }}>
+          <thead>
+            <tr>
+              <th style={{ 
+                textAlign: 'left', 
+                padding: '8px 6px', 
+                fontSize: 'clamp(10px, 2.2vw, 11px)', 
+                color: '#64748b', 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                borderBottom: '2px solid #e2e8f0'
+              }}>Prayer</th>
+              <th style={{ 
+                textAlign: 'right', 
+                padding: '8px 6px', 
+                fontSize: 'clamp(10px, 2.2vw, 11px)', 
+                color: '#64748b', 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                borderBottom: '2px solid #e2e8f0'
+              }}>Start</th>
+              <th style={{ 
+                textAlign: 'right', 
+                padding: '8px 6px', 
+                fontSize: 'clamp(10px, 2.2vw, 11px)', 
+                color: '#64748b', 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                borderBottom: '2px solid #e2e8f0'
+              }}>Jamat</th>
+            </tr>
+          </thead>
+          <tbody>
+            {prayers.map((p, index) => {
+              const isActive = activePrayer === p.name
+              const activeBg = isActive ? 'rgba(29, 138, 119, 0.08)' : 'transparent'
+              const activeColor = isActive ? BRAND_COLOR : '#1e293b'
+              const isEven = index % 2 === 0
+              
+              return (
+                <tr 
+                  key={p.name}
+                  style={{
+                    backgroundColor: isActive ? activeBg : (isEven ? 'rgba(0, 0, 0, 0.02)' : 'transparent'),
+                    transition: 'background-color 0.2s ease'
+                  }}
+                >
+                  <td style={{ 
+                    padding: '10px 6px', 
+                    fontWeight: isActive ? 700 : 600, 
+                    color: activeColor, 
+                    fontSize: 'clamp(12px, 2.5vw, 14px)',
+                    borderLeft: isActive ? `3px solid ${BRAND_COLOR}` : '3px solid transparent',
+                    paddingLeft: isActive ? '3px' : '6px'
+                  }}>
+                    {p.name}
+                  </td>
+                  <td style={{ 
+                    padding: '10px 6px', 
+                    textAlign: 'right', 
+                    fontWeight: isActive ? 700 : 600, 
+                    color: activeColor, 
+                    fontSize: 'clamp(12px, 2.5vw, 14px)',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {formatPrayerTime(p.begins)}
+                  </td>
+                  <td style={{ 
+                    padding: '10px 6px', 
+                    textAlign: 'right', 
+                    fontWeight: isActive ? 700 : 600, 
+                    color: activeColor, 
+                    fontSize: 'clamp(12px, 2.5vw, 14px)',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {p.jamaah ? formatPrayerTime(p.jamaah) : '-'}
+                  </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Jumuah Times Table */}
+      {sortedJumuah.length > 0 && (
+        <div style={{ 
+          marginTop: '14px',
+          paddingTop: '14px',
+          borderTop: '2px solid #e2e8f0'
+        }}>
+          <div style={{ 
+            fontSize: 'clamp(11px, 2.3vw, 13px)', 
+            fontWeight: 600, 
+            marginBottom: '10px',
+            color: BRAND_COLOR,
+            letterSpacing: '0.3px',
+            textAlign: 'center'
+          }}>
+            Jumuah Times
+          </div>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <table style={{ 
+              width: '100%', 
+              borderCollapse: 'separate',
+              borderSpacing: 0,
+              minWidth: '200px'
+            }}>
+              <thead>
+                <tr>
+                  <th style={{ 
+                    textAlign: 'left', 
+                    padding: '8px 6px', 
+                    fontSize: 'clamp(10px, 2.2vw, 11px)', 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #e2e8f0'
+                  }}>Jamaat</th>
+                  <th style={{ 
+                    textAlign: 'right', 
+                    padding: '8px 6px', 
+                    fontSize: 'clamp(10px, 2.2vw, 11px)', 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #e2e8f0'
+                  }}>Start</th>
+                  <th style={{ 
+                    textAlign: 'right', 
+                    padding: '8px 6px', 
+                    fontSize: 'clamp(10px, 2.2vw, 11px)', 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #e2e8f0'
+                  }}>Jamat</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedJumuah.map((j, i) => (
+                  <tr 
+                    key={j.id || i}
+                    style={{
+                      backgroundColor: i % 2 === 0 ? 'rgba(0, 0, 0, 0.02)' : 'transparent',
+                      transition: 'background-color 0.2s ease'
+                    }}
+                  >
+                    <td style={{ 
+                      padding: '10px 6px', 
+                      fontWeight: 600, 
+                      color: '#1e293b',
+                      fontSize: 'clamp(12px, 2.5vw, 14px)'
+                    }}>
+                      {j.label || `Jamaat ${i + 1}`}
+                    </td>
+                    <td style={{ 
+                      padding: '10px 6px', 
+                      textAlign: 'right', 
+                      fontWeight: 600, 
+                      color: '#1e293b',
+                      fontSize: 'clamp(12px, 2.5vw, 14px)',
+                      fontVariantNumeric: 'tabular-nums'
+                    }}>
+                      {j.start_time ? formatPrayerTime(j.start_time) : '-'}
+                    </td>
+                    <td style={{ 
+                      padding: '10px 6px', 
+                      textAlign: 'right', 
+                      fontWeight: 600, 
+                      color: BRAND_COLOR,
+                      fontSize: 'clamp(12px, 2.5vw, 14px)',
+                      fontVariantNumeric: 'tabular-nums'
+                    }}>
+                      {formatPrayerTime(j.jammat_time)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
+
+      {/* Branding */}
+      <div style={{
+        marginTop: '12px',
+        paddingTop: '10px',
+        borderTop: '1px solid #e2e8f0',
+        textAlign: 'right'
+      }}>
+        <a 
+          href="https://mylocalmasjid.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{
+            fontSize: 'clamp(10px, 2vw, 12px)',
+            fontWeight: 500,
+            textDecoration: 'none',
+            display: 'inline-block',
+            transition: 'all 0.2s ease',
+            color: '#64748b',
+            padding: '4px 8px',
+            borderRadius: '4px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = '0.8'
+            e.currentTarget.style.background = 'rgba(29, 138, 119, 0.05)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '1'
+            e.currentTarget.style.background = 'transparent'
+          }}
+        >
+          My<span style={{ color: BRAND_COLOR, fontWeight: 600 }}>Local</span>Masjid
+        </a>
+      </div>
     </div>
   )
 }

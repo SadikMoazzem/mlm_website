@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/layout/theme-provider'
 import { Navbar } from '@/components/sections/navbar'
 import { Footer } from '@/components/sections/footer'
 import { Metadata, Viewport } from 'next'
+import { headers } from 'next/headers'
 import './globals.css'
 
 const inter = Inter({
@@ -64,11 +65,14 @@ export const viewport: Viewport = {
   themeColor: '#1D8A77',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const headersList = await headers()
+  const isEmbedRoute = headersList.get('x-is-embed-route') === 'true'
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -138,17 +142,23 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="MyLocalMasjid" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          <div className="min-h-screen pt-20 bg-white">
-            {children}
-          </div>
-          <Footer />
-        </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
-        {/* 100% privacy-first analytics */}
-        <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+        {isEmbedRoute ? (
+          // Minimal layout for embed routes (no header/footer)
+          children
+        ) : (
+          // Full layout for regular pages
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Navbar />
+            <div className="min-h-screen pt-20 bg-white">
+              {children}
+            </div>
+            <Footer />
+            <Analytics />
+            <SpeedInsights />
+            {/* 100% privacy-first analytics */}
+            <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+          </ThemeProvider>
+        )}
       </body>
     </html>
   )

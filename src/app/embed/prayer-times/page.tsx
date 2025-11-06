@@ -10,11 +10,11 @@ interface Props {
 export default async function Page({ searchParams }: Props) {
   const params = await searchParams;
   const masjidId = params?.masjid_id || null;
-  const { prayerTimes, jumuahPrayers } = await getEmbedPrayerTimesData(masjidId);
+  const { prayerTimes, prayerTimesWeek, jumuahPrayers } = await getEmbedPrayerTimesData(masjidId);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', margin: 0, padding: 0 }}>
-      <PrayerTimesWidget prayerTimes={prayerTimes} jumuahPrayers={jumuahPrayers} />
+    <div style={{ background: '#fff', margin: 0, padding: 0, width: '100%' }}>
+      <PrayerTimesWidget prayerTimes={prayerTimes} prayerTimesWeek={prayerTimesWeek} jumuahPrayers={jumuahPrayers} />
     </div>
   )
 }
