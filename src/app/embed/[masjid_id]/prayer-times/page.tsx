@@ -4,13 +4,13 @@ import { getEmbedPrayerTimesData } from '@/lib/embed.server'
 export const revalidate = 7200 // 2 hours
 
 interface Props {
-  params: {
+  params: Promise<{
     masjid_id: string
-  }
+  }>
 }
 
 export default async function Page({ params }: Props) {
-  const masjidId = params?.masjid_id || null
+  const { masjid_id: masjidId } = await params
   const { prayerTimes, prayerTimesWeek, jumuahPrayers } = await getEmbedPrayerTimesData(masjidId)
 
   return (

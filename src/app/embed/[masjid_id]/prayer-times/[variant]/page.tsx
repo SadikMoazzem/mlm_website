@@ -6,14 +6,14 @@ import { PrayerTimesWidget } from '@/components/PrayerTimesWidget'
 export const revalidate = 7200
 
 interface Props {
-  params: {
+  params: Promise<{
     masjid_id: string
     variant: string
-  }
+  }>
 }
 
 export default async function Page({ params }: Props) {
-  const { masjid_id: masjidId, variant } = params
+  const { masjid_id: masjidId, variant } = await params
   const { prayerTimes, prayerTimesWeek, jumuahPrayers } = await getEmbedPrayerTimesData(masjidId)
 
   const data = prayerTimes || (prayerTimesWeek && prayerTimesWeek[0]) || null
