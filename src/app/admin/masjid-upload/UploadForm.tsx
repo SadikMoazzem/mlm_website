@@ -543,34 +543,55 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
           setModalMessage(`Uploading file ${i + 1} of ${uploadedFiles.length}...`)
           
           try {
-            // Create FormData for this file
-            const formData = new FormData()
-            formData.append('file', file)
-            formData.append('masjid_id', masjidData.id)
-
-            // Upload file to our API route
-            const response = await fetch('/api/files/upload', {
+            // 1) Request presigned POST data from our proxy endpoint
+            const presignResp = await fetch('/api/files/presign', {
               method: 'POST',
-              body: formData,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                masjid_id: masjidData.id,
+                filename: file.name,
+                file_category: 'user_uploads',
+                content_type: file.type || undefined
+              })
             })
 
-            if (!response.ok) {
-              const errorData = await response.json().catch(() => ({}))
-              throw new Error(errorData.error || `Upload failed for ${fileMetadata.name}`)
+            if (!presignResp.ok) {
+              const err = await presignResp.json().catch(() => ({}))
+              throw new Error(err.error || `Failed to get presign for ${fileMetadata.name}`)
             }
 
-            const uploadResult = await response.json()
-            
-            // Update the file metadata with upload results
+            const presignData = await presignResp.json()
+
+            // 2) Build FormData with returned fields and append the file
+            const s3Form = new FormData()
+            const fields = presignData.fields || {}
+            Object.entries(fields).forEach(([k, v]) => {
+              // Fields values are expected to be strings
+              if (typeof v === 'string') s3Form.append(k, v)
+            })
+            s3Form.append('file', file)
+
+            // 3) POST directly to S3
+            const s3Response = await fetch(presignData.url, {
+              method: 'POST',
+              body: s3Form
+            })
+
+            if (!s3Response.ok) {
+              const text = await s3Response.text().catch(() => '')
+              throw new Error(`S3 upload failed: ${s3Response.status} ${text}`)
+            }
+
+            // 4) Update file metadata with canonical URL and key returned from presign
             updatedFiles[i] = {
               ...fileMetadata,
-              uploadedUrl: uploadResult.url,
-              uploadedFileKey: uploadResult.file_key
+              uploadedUrl: presignData.public_url || presignData.url,
+              uploadedFileKey: presignData.file_key
             }
-            
+
             // Clean up File object from Map after successful upload
             fileMapRef.current.delete(fileMetadata.id)
-            
+
           } catch (error) {
             setModalStatus('error')
             setModalMessage('Upload failed')
