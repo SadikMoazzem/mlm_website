@@ -572,7 +572,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             s3Form.append('file', file)
 
             // 3) POST directly to S3
-            const s3Response = await fetch(presignData.url, {
+            const s3Response = await fetch(presignData.public_url, {
               method: 'POST',
               body: s3Form
             })
@@ -585,7 +585,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             // 4) Update file metadata with canonical URL and key returned from presign
             updatedFiles[i] = {
               ...fileMetadata,
-              uploadedUrl: presignData.public_url || presignData.url,
+              uploadedUrl: presignData.public_url,
               uploadedFileKey: presignData.file_key
             }
 
