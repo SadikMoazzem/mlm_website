@@ -8,9 +8,11 @@ interface LoadingModalProps {
   status?: 'uploading' | 'success' | 'error' | 'completion'
   errorMessage?: string
   onClose?: () => void
+  masjidId?: string
+  failedFileName?: string
 }
 
-export default function LoadingModal({ isOpen, message, progress, status = 'uploading', errorMessage, onClose }: LoadingModalProps) {
+export default function LoadingModal({ isOpen, message, progress, status = 'uploading', errorMessage, onClose, masjidId, failedFileName }: LoadingModalProps) {
   if (!isOpen) return null
 
   return (
@@ -102,8 +104,10 @@ export default function LoadingModal({ isOpen, message, progress, status = 'uplo
             <div className="flex gap-3">
               {status === 'error' && (
                 <a
-                  href={`mailto:hello@mylocalmasjid.com?subject=${encodeURIComponent('Upload issue')}&body=${encodeURIComponent(
-                    `There was an issue with an upload.\n\nMessage: ${errorMessage || message}\n\nPlease attach any files or screenshots that help explain the problem.\n\nMasjid (if applicable): `
+                  href={`mailto:admin@mylocalmasjid.com?subject=${encodeURIComponent(
+                    failedFileName ? `File Upload Issue - ${failedFileName}` : 'Upload Issue'
+                  )}&body=${encodeURIComponent(
+                    `Assalamu Alaikum,\n\nWe encountered an issue uploading ${failedFileName ? `the file "${failedFileName}"` : 'a file'}.\nPlease find the file attached to this email.\n\nSorry for the inconvenience.\n\nJazakallah Khair.\n\nMasjid Details:${masjidId ? `\n- Masjid ID: ${masjidId}` : ''}${failedFileName ? `\n- Failed File: ${failedFileName}` : ''}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

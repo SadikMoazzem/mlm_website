@@ -123,6 +123,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
   const [modalStatus, setModalStatus] = useState<'uploading' | 'success' | 'error' | 'completion'>('uploading')
   const [modalMessage, setModalMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [failedFileName, setFailedFileName] = useState<string | null>(null)
   const [newJummahName, setNewJummahName] = useState('')
   const [unsupportedFileForEmail, setUnsupportedFileForEmail] = useState<File | null>(null)
 
@@ -571,15 +572,15 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             })
             s3Form.append('file', file)
 
-            // 3) POST directly to S3
-            const s3Response = await fetch(presignData.public_url, {
+            // 3) POST directly to S3 using the presigned POST endpoint (bucket URL, not file URL)
+            const s3Response = await fetch(presignData.url, {
               method: 'POST',
               body: s3Form
             })
 
             if (!s3Response.ok) {
-              const text = await s3Response.text().catch(() => '')
-              throw new Error(`S3 upload failed: ${s3Response.status} ${text}`)
+              // S3 upload failed - show user-friendly error and suggest email
+              throw new Error('UPLOAD_FAILED')
             }
 
             // 4) Update file metadata with canonical URL and key returned from presign
@@ -593,9 +594,27 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             fileMapRef.current.delete(fileMetadata.id)
 
           } catch (error) {
+            // Store failed file name for email
+            setFailedFileName(fileMetadata.name)
+            
+            // Check if it's an S3 upload failure
+            if (error instanceof Error && error.message === 'UPLOAD_FAILED') {
+              setModalStatus('error')
+              setModalMessage('Upload Failed')
+              setErrorMessage(
+                `We're sorry for the inconvenience. We encountered an issue uploading ${fileMetadata.name}. ` +
+                `Please email us your files instead at admin@mylocalmasjid.com with Masjid ID: ${masjidData.id}`
+              )
+              // Don't throw - allow user to continue or email
+              return
+            }
+            // For other errors, show generic message
             setModalStatus('error')
             setModalMessage('Upload failed')
-            setErrorMessage(`Failed to upload ${fileMetadata.name}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+            setErrorMessage(
+              `We're sorry for the inconvenience. We encountered an issue uploading ${fileMetadata.name}. ` +
+              `Please email us your files instead at admin@mylocalmasjid.com with Masjid ID: ${masjidData.id}`
+            )
             throw error
           }
         }
@@ -709,6 +728,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
     setModalStatus('uploading')
     setModalMessage('')
     setErrorMessage('')
+    setFailedFileName(null)
     setUploadProgress({ current: 0, total: 0 })
   }, [])
 
@@ -716,7 +736,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
     setShowEmailModal(true)
   }, [])
 
-  const openEmailClient = useCallback(() => {
+  const openEmailClient = useCallback((failedFileName?: string) => {
     setShowEmailModal(false)
     const masjidName = masjidData.name || 'Masjid'
     const masjidId = masjidData.id || ''
@@ -732,6 +752,24 @@ Jazakallah Khair.
 Masjid Details:
 - Masjid ID: ${masjidId}
 - Address: ${masjidAddress}`
+    
+    // If upload failed, mention it in the email
+    if (failedFileName) {
+      subject = `File Upload Issue for ${masjidName}`
+      body = `Assalamu Alaikum,
+
+We encountered an issue uploading the file "${failedFileName}" for ${masjidName}. 
+Please find the file attached to this email.
+
+Sorry for the inconvenience.
+
+Jazakallah Khair.
+
+Masjid Details:
+- Masjid ID: ${masjidId}
+- Address: ${masjidAddress}
+- Failed File: ${failedFileName}`
+    }
 
     // If there's an unsupported file, mention it in the email
     if (unsupportedFileForEmail) {
@@ -1267,6 +1305,8 @@ Masjid Details:
           status={modalStatus}
           errorMessage={errorMessage}
           onClose={closeModal}
+          masjidId={masjidData.id}
+          failedFileName={failedFileName || undefined}
         />
 
         {/* Add Jummah Modal */}
