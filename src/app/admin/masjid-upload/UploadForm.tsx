@@ -90,6 +90,7 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
   // File storage outside React state (prevents memory issues)
   const fileMapRef = useRef<Map<string, File>>(new Map())
   const fileIdCounterRef = useRef(0)
+  const dragOverThrottleRef = useRef<number | null>(null)
   
   // State management
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
@@ -306,7 +307,12 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
+    // Throttle dragOver updates to avoid excessive re-renders
+    if (dragOverThrottleRef.current) return
     setIsDragOver(true)
+    dragOverThrottleRef.current = window.setTimeout(() => {
+      dragOverThrottleRef.current = null
+    }, 200)
   }, [])
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
@@ -529,113 +535,121 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
       
       if (uploadedFiles.length > 0) {
         setUploadProgress({ current: 0, total: uploadedFiles.length })
-        
-        for (let i = 0; i < uploadedFiles.length; i++) {
-          const fileMetadata = uploadedFiles[i]
-          
-          // Retrieve File object from Map
+        const concurrency = 3
+        const results: Array<any> = new Array(uploadedFiles.length)
+        let idx = 0
+        const abort = { flag: false }
+
+        const uploadSingle = async (fileMetadata: UploadedFile, index: number) => {
+          if (abort.flag) throw new Error('ABORTED')
           const file = fileMapRef.current.get(fileMetadata.id)
-          if (!file) {
-            throw new Error(`File ${fileMetadata.name} not found`)
+          if (!file) throw new Error(`File ${fileMetadata.name} not found`)
+
+          // Request presigned POST
+          const presignResp = await fetch('/api/files/presign', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              masjid_id: masjidData.id,
+              filename: file.name,
+              file_category: 'user_uploads',
+              content_type: file.type || undefined
+            })
+          })
+          if (!presignResp.ok) {
+            const err = await presignResp.json().catch(() => ({}))
+            throw new Error(err.error || `Failed to get presign for ${fileMetadata.name}`)
           }
-          
-          // Update progress
-          setUploadProgress({ current: i + 1, total: uploadedFiles.length })
-          setModalMessage(`Uploading file ${i + 1} of ${uploadedFiles.length}...`)
-          
-          try {
-            // 1) Request presigned POST data from our proxy endpoint
-            const presignResp = await fetch('/api/files/presign', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                masjid_id: masjidData.id,
-                filename: file.name,
-                file_category: 'user_uploads',
-                content_type: file.type || undefined
-              })
-            })
+          const presignData = await presignResp.json()
 
-            if (!presignResp.ok) {
-              const err = await presignResp.json().catch(() => ({}))
-              throw new Error(err.error || `Failed to get presign for ${fileMetadata.name}`)
-            }
+          // Build FormData
+          const s3Form = new FormData()
+          const fields = presignData.fields || {}
+          const fieldOrder = ['Content-Type', 'key', 'x-amz-algorithm', 'x-amz-credential', 'x-amz-date', 'x-amz-security-token', 'policy', 'x-amz-signature']
+          fieldOrder.forEach(fieldName => {
+            if (fields[fieldName]) s3Form.append(fieldName, fields[fieldName])
+          })
+          Object.entries(fields).forEach(([k, v]) => {
+            if (!fieldOrder.includes(k) && typeof v === 'string') s3Form.append(k, v)
+          })
+          s3Form.append('file', file)
 
-            const presignData = await presignResp.json()
+          // POST to S3
+          const s3Response = await fetch(presignData.url, { method: 'POST', body: s3Form })
+          if (!s3Response.ok) {
+            const responseText = await s3Response.text().catch(() => '')
+            const err = new Error('UPLOAD_FAILED')
+            ;(err as any).details = responseText
+            throw err
+          }
 
-            // 2) Build FormData with returned fields and append the file
-            // IMPORTANT: File must be the LAST field for S3 presigned POST
-            const s3Form = new FormData()
-            const fields = presignData.fields || {}
-            
-            // Add all presigned fields in the order AWS expects
-            const fieldOrder = ['Content-Type', 'key', 'x-amz-algorithm', 'x-amz-credential', 'x-amz-date', 'x-amz-security-token', 'policy', 'x-amz-signature']
-            
-            // First, add fields in the preferred order
-            fieldOrder.forEach(fieldName => {
-              if (fields[fieldName]) {
-                s3Form.append(fieldName, fields[fieldName])
-              }
-            })
-            
-            // Then add any remaining fields not in the order list
-            Object.entries(fields).forEach(([k, v]) => {
-              if (!fieldOrder.includes(k) && typeof v === 'string') {
-                s3Form.append(k, v)
-              }
-            })
-            
-            // File MUST be last
-            s3Form.append('file', file)
+          // mark result
+          results[index] = {
+            uploadedUrl: presignData.public_url,
+            uploadedFileKey: presignData.file_key
+          }
+          // cleanup
+          fileMapRef.current.delete(fileMetadata.id)
+        }
 
-            // 3) POST directly to S3 using the presigned POST endpoint (bucket URL, not file URL)
-            const s3Response = await fetch(presignData.url, {
-              method: 'POST',
-              body: s3Form
-            })
-
-            if (!s3Response.ok) {
-              // S3 upload failed - show user-friendly error and suggest email
-              throw new Error('UPLOAD_FAILED')
-            }
-
-            // 4) Update file metadata with canonical URL and key returned from presign
-            updatedFiles[i] = {
-              ...fileMetadata,
-              uploadedUrl: presignData.public_url,
-              uploadedFileKey: presignData.file_key
-            }
-
-            // Clean up File object from Map after successful upload
-            fileMapRef.current.delete(fileMetadata.id)
-
-          } catch (error) {
-            // Store failed file name for email
-            setFailedFileName(fileMetadata.name)
-            
-            // Check if it's an S3 upload failure
-            if (error instanceof Error && error.message === 'UPLOAD_FAILED') {
-              setModalStatus('error')
-              setModalMessage('Upload Failed')
-              setErrorMessage(
-                `We're sorry for the inconvenience. We encountered an issue uploading ${fileMetadata.name}. ` +
-                `Please email us your files instead at admin@mylocalmasjid.com with Masjid ID: ${masjidData.id}`
-              )
-              // Don't throw - allow user to continue or email
-              return
-            }
-            // For other errors, show generic message
-            setModalStatus('error')
-            setModalMessage('Upload failed')
-            setErrorMessage(
-              `We're sorry for the inconvenience. We encountered an issue uploading ${fileMetadata.name}. ` +
-              `Please email us your files instead at admin@mylocalmasjid.com with Masjid ID: ${masjidData.id}`
-            )
-            throw error
+        const lastProgressRef = { time: Date.now(), count: 0 }
+        const updateProgressThrottled = (completedCount: number) => {
+          const now = Date.now()
+          // throttle to ~200ms
+          if (now - lastProgressRef.time > 200 || completedCount === uploadedFiles.length) {
+            lastProgressRef.time = now
+            setUploadProgress({ current: completedCount, total: uploadedFiles.length })
+            setModalMessage(`Uploading file ${completedCount} of ${uploadedFiles.length}...`)
           }
         }
 
-        // Update state with uploaded files
+        const workers = new Array(concurrency).fill(null).map(async () => {
+          while (true) {
+            const current = idx++
+            if (current >= uploadedFiles.length || abort.flag) break
+            try {
+              await uploadSingle(uploadedFiles[current], current)
+            } catch (err) {
+              // on upload failure, mark failed file and abort remaining
+              setFailedFileName(uploadedFiles[current].name)
+              abort.flag = true
+              // user-friendly error shown below
+              throw err
+            }
+            lastProgressRef.count++
+            updateProgressThrottled(lastProgressRef.count)
+          }
+        })
+
+        try {
+          await Promise.all(workers)
+        } catch (error) {
+          // Handle upload failure
+          if ((error as Error).message === 'UPLOAD_FAILED') {
+            setModalStatus('error')
+            setModalMessage('Upload Failed')
+            setErrorMessage(
+              `We're sorry for the inconvenience. We encountered an issue uploading ${failedFileName || 'a file'}. ` +
+              `Please email us your files instead at admin@mylocalmasjid.com with Masjid ID: ${masjidData.id}`
+            )
+            return
+          }
+          setModalStatus('error')
+          setModalMessage('Upload failed')
+          setErrorMessage(error instanceof Error ? error.message : 'Unknown error')
+          throw error
+        }
+
+        // Apply results to updatedFiles
+        for (let i = 0; i < uploadedFiles.length; i++) {
+          if (results[i]) {
+            updatedFiles[i] = {
+              ...uploadedFiles[i],
+              uploadedUrl: results[i].uploadedUrl,
+              uploadedFileKey: results[i].uploadedFileKey
+            }
+          }
+        }
         setUploadedFiles(updatedFiles)
       }
 
@@ -837,7 +851,7 @@ Masjid Details:
           </div>
 
           {/* Masjid Profile Card - Right Side */}
-          <div className="bg-gradient-to-br from-primary-100 to-primary-200/80 backdrop-blur-sm shadow-xl rounded-3xl p-6 border border-primary-200/50 hover:shadow-2xl transition-all duration-300 lg:w-80 lg:flex-shrink-0">
+          <div className="bg-gradient-to-br from-primary-100 to-primary-200/80 backdrop-blur-sm shadow-xl rounded-3xl p-6 border border-primary-200/50 lg:w-80 lg:flex-shrink-0">
             <div className="flex items-start mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg flex-shrink-0">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -863,7 +877,7 @@ Masjid Details:
         <div className="space-y-10">
 
           {/* File Upload Section - Full Width */}
-          <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50 hover:shadow-2xl transition-all duration-300">
+          <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
@@ -885,10 +899,10 @@ Masjid Details:
               
               {/* Dropzone */}
               <div
-                className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300 ${
+                className={`border-2 border-dashed rounded-2xl p-10 text-center ${
                   isDragOver 
-                    ? 'border-primary-400 bg-primary-50 scale-105' 
-                    : 'border-primary-200 hover:border-primary-300 hover:bg-primary-50/50'
+                    ? 'border-primary-400 bg-primary-50' 
+                    : 'border-primary-200'
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -907,7 +921,7 @@ Masjid Details:
                 </p>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-8 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-3 rounded-2xl font-semibold shadow-lg"
                 >
                   Choose Files
                 </button>
@@ -949,7 +963,7 @@ Masjid Details:
                         </div>
                         <button
                           onClick={() => removeFile(index)}
-                          className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all duration-200"
+                          className="text-red-500 p-2 rounded-xl"
                         >
                           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -965,7 +979,7 @@ Masjid Details:
           {/* Jummah Times and Facilities Section - 3 Columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Jummah Times Card */}
-            <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50 hover:shadow-2xl transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
@@ -987,7 +1001,7 @@ Masjid Details:
                 {activeJummahTimes.map((jummahTime) => (
                   <div 
                     key={jummahTime.id} 
-                    className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-primary-100/50 rounded-2xl p-4 border border-primary-200/50 transition-all duration-300"
+                    className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-primary-100/50 rounded-2xl p-4 border border-primary-200/50"
                   >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-sm">
@@ -1003,7 +1017,7 @@ Masjid Details:
                     <div className="flex space-x-2">
                           <button
                             onClick={() => openEditModal(jummahTime.id, jummahTime.time)}
-                            className="text-primary-600 hover:text-primary-800 p-2 hover:bg-primary-50 rounded-xl transition-all duration-200"
+                            className="text-primary-600 p-2 rounded-xl"
                             title="Edit time"
                           >
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1012,7 +1026,7 @@ Masjid Details:
                           </button>
                           <button
                             onClick={() => deleteJummahTime(jummahTime.id)}
-                            className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-xl transition-all duration-200"
+                            className="text-red-600 p-2 rounded-xl"
                             title="Delete time"
                           >
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1027,7 +1041,7 @@ Masjid Details:
               {/* Add Button */}
               <button
                 onClick={openAddJummahModal}
-                className="w-full bg-primary-500/20 hover:bg-primary-500/30 text-primary-600 border-2 border-primary-300 rounded-xl px-6 py-3 font-semibold transition-all duration-300 flex items-center justify-center space-x-2"
+                className="w-full bg-primary-500/20 text-primary-600 border-2 border-primary-300 rounded-xl px-6 py-3 font-semibold flex items-center justify-center space-x-2"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1036,7 +1050,7 @@ Masjid Details:
               </button>
               </div>
               {/* Women's Prayer Area */}
-              <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50 hover:shadow-2xl transition-all duration-300">
+              <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50">
                 <div className="flex items-center mb-6">
                   <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-3 shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1051,7 +1065,7 @@ Masjid Details:
                 <div className="space-y-3">
                   <button
                     onClick={() => setFacilities(prev => ({ ...prev, womens_prayer_area: 'available' }))}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    className={`w-full p-4 rounded-2xl border-2 text-left ${
                       facilities.womens_prayer_area === 'available'
                         ? 'bg-green-50 border-green-300 text-green-800 shadow-lg'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
@@ -1075,7 +1089,7 @@ Masjid Details:
                   
                   <button
                     onClick={() => setFacilities(prev => ({ ...prev, womens_prayer_area: 'sometimes' }))}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    className={`w-full p-4 rounded-2xl border-2 text-left ${
                       facilities.womens_prayer_area === 'sometimes'
                         ? 'bg-yellow-50 border-yellow-300 text-yellow-800 shadow-lg'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
@@ -1099,7 +1113,7 @@ Masjid Details:
                   
                   <button
                     onClick={() => setFacilities(prev => ({ ...prev, womens_prayer_area: 'not_available' }))}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    className={`w-full p-4 rounded-2xl border-2 text-left ${
                       facilities.womens_prayer_area === 'not_available'
                         ? 'bg-red-50 border-red-300 text-red-800 shadow-lg'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
@@ -1127,13 +1141,13 @@ Masjid Details:
                     value={facilityComments.womens_prayer_area}
                     onChange={(e) => updateFacilityComment('womens_prayer_area', e.target.value)}
                     placeholder="Any details about women's prayer area..."
-                    className="w-full border-2 border-primary-200 rounded-xl px-3 py-2 text-sm resize-none h-16 focus:border-primary-500 focus:outline-none transition-colors"
+                    className="w-full border-2 border-primary-200 rounded-xl px-3 py-2 text-sm resize-none h-16 focus:border-primary-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Parking */}
-              <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50 hover:shadow-2xl transition-all duration-300">
+          <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-3xl p-8 border border-primary-100/50">
                 <div className="flex items-center mb-6">
                   <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mr-3 shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1148,7 +1162,7 @@ Masjid Details:
                 <div className="space-y-3">
                   <button
                     onClick={() => setFacilities(prev => ({ ...prev, parking: 'available' }))}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    className={`w-full p-4 rounded-2xl border-2 text-left ${
                       facilities.parking === 'available'
                         ? 'bg-green-50 border-green-300 text-green-800 shadow-lg'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
@@ -1172,7 +1186,7 @@ Masjid Details:
                   
                   <button
                     onClick={() => setFacilities(prev => ({ ...prev, parking: 'sometimes' }))}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    className={`w-full p-4 rounded-2xl border-2 text-left ${
                       facilities.parking === 'sometimes'
                         ? 'bg-yellow-50 border-yellow-300 text-yellow-800 shadow-lg'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
@@ -1196,7 +1210,7 @@ Masjid Details:
                   
                   <button
                     onClick={() => setFacilities(prev => ({ ...prev, parking: 'not_available' }))}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    className={`w-full p-4 rounded-2xl border-2 text-left ${
                       facilities.parking === 'not_available'
                         ? 'bg-red-50 border-red-300 text-red-800 shadow-lg'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
@@ -1224,7 +1238,7 @@ Masjid Details:
                     value={facilityComments.parking}
                     onChange={(e) => updateFacilityComment('parking', e.target.value)}
                     placeholder="Any details about parking..."
-                    className="w-full border-2 border-primary-200 rounded-xl px-3 py-2 text-sm resize-none h-16 focus:border-primary-500 focus:outline-none transition-colors"
+                  className="w-full border-2 border-primary-200 rounded-xl px-3 py-2 text-sm resize-none h-16 focus:border-primary-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1260,11 +1274,11 @@ Masjid Details:
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || !isReady}
-              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 disabled:from-gray-400 disabled:to-gray-400 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl disabled:transform-none disabled:shadow-none flex items-center space-x-3"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl disabled:shadow-none flex items-center space-x-3"
             >
               {isSubmitting ? (
                 <>
-                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
