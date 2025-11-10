@@ -562,12 +562,6 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             }
 
             const presignData = await presignResp.json()
-            
-            console.log('=== PRESIGNED DATA ===')
-            console.log('URL:', presignData.url)
-            console.log('Fields:', presignData.fields)
-            console.log('File key:', presignData.file_key)
-            console.log('Public URL:', presignData.public_url)
 
             // 2) Build FormData with returned fields and append the file
             // IMPORTANT: File must be the LAST field for S3 presigned POST
@@ -577,12 +571,9 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             // Add all presigned fields in the order AWS expects
             const fieldOrder = ['Content-Type', 'key', 'x-amz-algorithm', 'x-amz-credential', 'x-amz-date', 'x-amz-security-token', 'policy', 'x-amz-signature']
             
-            console.log('=== FORM DATA FIELDS (in order) ===')
-            
             // First, add fields in the preferred order
             fieldOrder.forEach(fieldName => {
               if (fields[fieldName]) {
-                console.log(`Adding field: ${fieldName}`)
                 s3Form.append(fieldName, fields[fieldName])
               }
             })
@@ -590,39 +581,23 @@ const UploadForm = memo(function UploadForm({ masjidData }: UploadFormProps) {
             // Then add any remaining fields not in the order list
             Object.entries(fields).forEach(([k, v]) => {
               if (!fieldOrder.includes(k) && typeof v === 'string') {
-                console.log(`Adding extra field: ${k}`)
                 s3Form.append(k, v)
               }
             })
             
             // File MUST be last
-            console.log('Adding file:', file.name, 'size:', file.size, 'type:', file.type)
             s3Form.append('file', file)
 
             // 3) POST directly to S3 using the presigned POST endpoint (bucket URL, not file URL)
-            console.log('=== POSTING TO S3 ===')
-            console.log('POST URL:', presignData.url)
-            console.log('File name:', file.name)
-            
             const s3Response = await fetch(presignData.url, {
               method: 'POST',
               body: s3Form
             })
 
-            console.log('=== S3 RESPONSE ===')
-            console.log('Status:', s3Response.status)
-            console.log('Status Text:', s3Response.statusText)
-            console.log('Headers:', Object.fromEntries(s3Response.headers.entries()))
-
             if (!s3Response.ok) {
-              const responseText = await s3Response.text()
-              console.error('=== S3 ERROR RESPONSE ===')
-              console.error('Response body:', responseText)
               // S3 upload failed - show user-friendly error and suggest email
               throw new Error('UPLOAD_FAILED')
             }
-            
-            console.log('✅ S3 upload successful!')
 
             // 4) Update file metadata with canonical URL and key returned from presign
             updatedFiles[i] = {
