@@ -41,6 +41,7 @@ export function Navbar() {
 
   const navItems = [
     { name: 'Our Journey', href: '/journey' },
+    { name: 'How we integrate', href: '/how-we-integrate' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Our Masjids', href: '/masjids' },
   ]

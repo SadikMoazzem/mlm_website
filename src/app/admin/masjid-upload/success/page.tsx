@@ -33,6 +33,14 @@ function SuccessContent() {
             <p className="text-lg text-gray-600">
             May Allah reward you for helping your community.
           </p>
+          <div className="mt-6">
+            <a
+              href="/how-we-integrate"
+              className="inline-flex items-center justify-center rounded-full bg-primary-600 px-8 py-3 text-lg font-semibold text-white shadow-lg hover:bg-primary-700 transition"
+            >
+              How we integrate
+            </a>
+          </div>
         </div>
 
         {/* Solutions Section */}
@@ -97,12 +105,7 @@ function SuccessContent() {
                   >
                     View Demo
                   </a>
-                  <a
-                    href="/solutions/website"
-                    className="inline-block w-full bg-white text-primary-600 border-2 border-primary-300 hover:border-primary-500 px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
-                  >
-                    View how we can integrate
-                  </a>
+                  
                 </div>
             </div>
 

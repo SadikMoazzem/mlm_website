@@ -99,12 +99,26 @@ export default function LoadingModal({ isOpen, message, progress, status = 'uplo
 
           {/* Close button for success/error/completion states */}
           {(status === 'success' || status === 'error' || status === 'completion') && onClose && (
-            <button
-              onClick={onClose}
-              className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
-            >
-              {status === 'completion' ? 'May Allah Bless You' : 'Close'}
-            </button>
+            <div className="flex gap-3">
+              {status === 'error' && (
+                <a
+                  href={`mailto:hello@mylocalmasjid.com?subject=${encodeURIComponent('Upload issue')}&body=${encodeURIComponent(
+                    `There was an issue with an upload.\n\nMessage: ${errorMessage || message}\n\nPlease attach any files or screenshots that help explain the problem.\n\nMasjid (if applicable): `
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white border border-red-200 text-red-700 px-4 py-2 rounded-xl font-semibold transition-colors hover:bg-red-50"
+                >
+                  Email support
+                </a>
+              )}
+              <button
+                onClick={onClose}
+                className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
+              >
+                {status === 'completion' ? 'May Allah Bless You' : 'Close'}
+              </button>
+            </div>
           )}
         </div>
       </div>

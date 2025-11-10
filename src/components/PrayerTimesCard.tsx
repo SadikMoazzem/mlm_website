@@ -208,6 +208,39 @@ export default function PrayerTimesCard({ prayerTimes, jumuahPrayers = [] }: { p
           </div>
         </div>
       )}
+      {/* Branding footer */}
+      <div style={{
+        marginTop: '12px',
+        paddingTop: '10px',
+        borderTop: '1px solid #e2e8f0',
+        textAlign: 'right'
+      }}>
+        <a 
+          href="https://mylocalmasjid.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{
+            fontSize: '12px',
+            fontWeight: 500,
+            textDecoration: 'none',
+            display: 'inline-block',
+            color: '#64748b',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLAnchorElement).style.opacity = '0.8'
+            (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(29, 138, 119, 0.05)'
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLAnchorElement).style.opacity = '1'
+            (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'
+          }}
+        >
+          My<span style={{ color: BRAND_COLOR, fontWeight: 600 }}>Local</span>Masjid
+        </a>
+      </div>
     </div>
   )
 }

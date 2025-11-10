@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pricing - MyLocalMasjid Early Access Program',
-  description: 'Join the MyLocalMasjid Early Access Program for free. Help shape the future of Masjid management and secure benefits for your Masjid.',
+  title: 'Join & Support — MyLocalMasjid (Always Free)',
+  description: 'MyLocalMasjid is and will remain free for masajid. Learn how we are funded and how you can support the project to keep services ad-free and privacy-first.',
   alternates: {
     canonical: '/pricing',
   },
   openGraph: {
-    title: 'MyLocalMasjid Pricing & Early Access',
-    description: 'Get free early access to our comprehensive Masjid management platform.',
+    title: 'MyLocalMasjid — Join & Support',
+    description: 'Support MyLocalMasjid to keep our services free, ad-free, and privacy-first.',
     url: '/pricing',
   },
 }; 

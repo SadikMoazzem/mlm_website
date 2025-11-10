@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import EmbedSelector from '@/components/EmbedSelector'
 import { 
   Clock, 
   Calendar, 
@@ -419,6 +420,25 @@ export default function MasjidWebsitePage() {
               </motion.div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+
+      {/* Embed & Screens Section */}
+      <section id="embed" className="py-12">
+        <div className="container mx-auto max-w-7xl px-4">
+          <div className="rounded-2xl bg-primary-50 p-6 shadow-sm">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Embed & Widgets</h3>
+            <p className="text-gray-700 mb-4">
+              Use our lightweight script or iframe widgets to show live prayer times, Jummah notices and announcements directly on your existing website or masjid screens.
+            </p>
+            <div id="screens" className="text-sm text-gray-600">
+              <strong>Masjid Screens:</strong> We support deploying widgets to digital displays in your masjid — simple iframe or full-screen layouts are available.
+            </div>
+            <div className="mt-6">
+              <EmbedSelector baseUrl="https://mylocalmasjid.com" masjidId="6a75d794-ce79-405f-922d-c28197f57098" />
+            </div>
+          </div>
         </div>
       </section>
     </main>

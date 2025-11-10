@@ -25,6 +25,7 @@ const navigation = {
   ],
   company: [
     { name: 'Our Journey', href: '/journey' },
+    { name: 'How we integrate', href: '/how-we-integrate' },
     { name: 'Masjid Directory A-Z', href: '/masjid-directory' },
     { name: 'Register Your Masjid', href: '/register' },
   ],

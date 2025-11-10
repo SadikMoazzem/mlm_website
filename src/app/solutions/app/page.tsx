@@ -94,7 +94,7 @@ export default function AppPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
+      <section id="app" className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-primary-25"></div>
         <div className="container relative mx-auto max-w-6xl px-4">
           <motion.div

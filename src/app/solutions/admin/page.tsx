@@ -203,6 +203,10 @@ export default function AdminPlatformPage() {
                 transition={{ delay: index * 0.1 }}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
               >
+                {/* Anchor IDs for external links */}
+                {feature.id === 'prayer' && <div id="prayer-times" />}
+                {feature.id === 'events' && <div id="events" />}
+                {feature.id === 'announcements' && <div id="announcements" />}
                 <div className="p-6">
                   <div className="bg-primary-50 rounded-xl p-3 inline-block mb-4">
                     <feature.icon className="h-6 w-6 text-primary-600" />

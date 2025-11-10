@@ -28,9 +28,9 @@ export default function PricingPage() {
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 inline-block rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-600"
+              className="mb-4 inline-block rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600"
             >
-              Early Access Program
+              Always Free — Sustained by community support
             </motion.span>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -38,86 +38,75 @@ export default function PricingPage() {
               transition={{ delay: 0.1 }}
               className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl"
             >
-              Join Now, Save Later
+              We keep MyLocalMasjid free for masajid
             </motion.h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
-              Get early access to our complete platform and help shape the future of Masjid management.
+              Our aim is simple: provide free, privacy-first tools for masajid — websites, widgets, screens and the app — and keep them free forever.
             </p>
-          </div>
-
-          {/* Pricing Cards */}
-          <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Early Access */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="relative rounded-3xl bg-primary-600 p-8 text-white shadow-xl"
-            >
-              <div className="absolute -top-5 right-8 rounded-full bg-yellow-500 px-4 py-1 text-sm font-bold text-white shadow-lg">
-                Available Now
-              </div>
-              <div className="flex items-baseline gap-x-4">
-                <h2 className="text-lg font-semibold leading-8">Early Access</h2>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-gray-100">
-                Join our founding members and get complete access to all features
-              </p>
-              <div className="mt-6 flex items-baseline gap-x-1">
-                <span className="text-4xl font-bold tracking-tight">Free</span>
-                <span className="text-sm font-semibold leading-6">during beta</span>
-              </div>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-gray-600">
+              Currently the project is funded from personal funds. If you'd like to help cover hosting, development and upkeep so we can keep this service free, please consider supporting us.
+            </p>
+            <div className="mt-8 flex justify-center gap-4">
+              <a
+                href="https://www.moazzemlabs.com/support"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-primary-600 text-white px-6 py-3 font-semibold shadow-lg hover:bg-primary-700"
+              >
+                Support our mission
+              </a>
               <Link
                 href="/register"
-                className="mt-6 block rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-primary-600 shadow-sm hover:bg-gray-50"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-primary-600 text-primary-600 px-6 py-3 font-semibold bg-white hover:bg-primary-50"
               >
-                Get Started Now
+                Join now
               </Link>
-              <ul className="mt-8 space-y-3 text-sm leading-6 text-gray-100">
-                {features.map((feature) => (
-                  <li key={feature} className="flex gap-x-3">
-                    <Check className="h-5 w-5 shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-                <li className="flex gap-x-3 font-semibold">
-                  <Zap className="h-5 w-5 shrink-0" />
-                  Early Access to New Features
-                </li>
-              </ul>
-            </motion.div>
+            </div>
+            <div className="mt-6 text-sm text-gray-500 max-w-2xl mx-auto">
+              <em>“When a person dies, all their deeds end except three: a continuing charity (sadaqah jariyah), beneficial knowledge, or a righteous child who prays for them.” — Sahih Muslim</em>
+            </div>
+          </div>
 
-            {/* Future Package */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="relative rounded-3xl bg-white p-8 shadow-xl ring-1 ring-gray-200"
-            >
-              <div className="absolute -top-5 right-8 rounded-full bg-gray-600 px-4 py-1 text-sm font-semibold text-white shadow-lg">
-                Coming Soon
-              </div>
-              <div className="flex items-baseline gap-x-4">
-                <h2 className="text-lg font-semibold leading-8 text-gray-900">Standard Package</h2>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-gray-600">
-                Our full-featured package after the beta period
+          {/* Support & Funding */}
+          <div className="mx-auto mt-16 max-w-5xl">
+            <div className="bg-white rounded-2xl p-8 shadow-lg ring-1 ring-gray-100">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Help keep MyLocalMasjid free</h2>
+              <p className="text-gray-700 mb-4">
+                MyLocalMasjid is offered to masajid completely free. These services are currently paid for personally to keep them ad-free and privacy-first. Your support helps cover the running costs so we can keep it that way.
               </p>
-              <div className="mt-6 flex items-baseline gap-x-1">
-                <span className="text-lg font-semibold text-gray-900">Paid subscription</span>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="rounded-xl bg-primary-50 p-4">
+                  <h4 className="font-semibold text-gray-900">Where your support goes</h4>
+                  <ul className="mt-3 text-sm text-gray-700 space-y-1">
+                    <li>Server hosting & databases</li>
+                    <li>Development & maintenance</li>
+                    <li>App store fees & security</li>
+                  </ul>
+                </div>
+                <div className="rounded-xl bg-white p-4">
+                  <h4 className="font-semibold text-gray-900">What your support enables</h4>
+                  <ul className="mt-3 text-sm text-gray-700 space-y-1">
+                    <li>No paywalls — always free</li>
+                    <li>No ads — privacy-first</li>
+                    <li>Reliable, well-maintained services</li>
+                  </ul>
+                </div>
+                <div className="rounded-xl bg-white p-4">
+                  <h4 className="font-semibold text-gray-900">Our Sacred Promise</h4>
+                  <p className="mt-3 text-sm text-gray-700">
+                    We will never sell your data, show ads, or lock features behind paywalls. Your donations are used transparently to keep services running.
+                  </p>
+                </div>
               </div>
-              <div className="mt-6 block rounded-full bg-gray-100 px-6 py-3 text-center text-sm font-semibold text-gray-400">
-                Details Coming Soon
+              <div className="mt-6 flex items-center gap-4">
+                <a href="https://www.moazzemlabs.com/support" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-primary-600 text-white px-6 py-3 font-semibold shadow-lg hover:bg-primary-700">
+                  Support our mission
+                </a>
+                <Link href="/register" className="inline-flex items-center gap-2 rounded-full border-2 border-primary-600 text-primary-600 px-6 py-3 font-semibold bg-white hover:bg-primary-50">
+                  Join now
+                </Link>
               </div>
-              <ul className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
-                {features.map((feature) => (
-                  <li key={feature} className="flex gap-x-3">
-                    <Check className="h-5 w-5 shrink-0 text-primary-600" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+            </div>
           </div>
 
           {/* Benefits */}
@@ -167,6 +156,9 @@ export default function PricingPage() {
             <p>
               Join now as an early adopter to secure the best possible terms for your Masjid.
               Help us shape the future of Masjid management software.
+            </p>
+            <p className="mt-2">
+              This platform is offered free to masajid and currently sustained from personal funds. If you appreciate this work and want to help keep it free, please consider supporting us: <a href="https://www.moazzemlabs.com/support" target="_blank" rel="noopener noreferrer" className="text-primary-600 underline">Moazzem Labs — Support</a>.
             </p>
           </motion.div>
         </div>
