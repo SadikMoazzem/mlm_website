@@ -230,12 +230,12 @@ export default function PrayerTimesCard({ prayerTimes, jumuahPrayers = [] }: { p
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.opacity = '0.8'
-            (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(29, 138, 119, 0.05)'
+            (e.currentTarget as HTMLAnchorElement).style.setProperty('opacity', '0.8')
+            (e.currentTarget as HTMLAnchorElement).style.setProperty('background', 'rgba(29, 138, 119, 0.05)')
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.opacity = '1'
-            (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'
+            (e.currentTarget as HTMLAnchorElement).style.setProperty('opacity', '1')
+            (e.currentTarget as HTMLAnchorElement).style.setProperty('background', 'transparent')
           }}
         >
           My<span style={{ color: BRAND_COLOR, fontWeight: 600 }}>Local</span>Masjid
