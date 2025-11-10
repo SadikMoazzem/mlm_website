@@ -13,7 +13,7 @@ function formatPrayerTime(time?: string | null) {
     let hours12 = hours % 12
     hours12 = hours12 === 0 ? 12 : hours12
     const ampm = hours >= 12 ? 'pm' : 'am'
-    return `${hours12}:${String(minutes).padStart(2, '0')} ${ampm}`
+    return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`
   } catch {
     return '-'
   }
