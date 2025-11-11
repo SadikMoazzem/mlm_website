@@ -27,13 +27,17 @@ async function getAllMasjids(): Promise<Array<{ id: string; name: string }>> {
   let page = 1
   const pageSize = 100 // Large page size to minimize API calls
   let hasMore = true
+  console.log(`[sitemap] getAllMasjids starting (pageSize=${pageSize})`)
 
   while (hasMore) {
     try {
+      const start = Date.now()
       const response = await getMasajidPaginated(page, pageSize)
+      console.log(`[sitemap] fetched page=${page} in ${Date.now()-start}ms success=${response.success}`)
       
       if (response.success && response.data) {
         const { items, pages, page: currentPage } = response.data
+        console.log(`[sitemap] page=${page} items=${items?.length ?? 0} pages=${pages} currentPage=${currentPage}`)
         
         // Add masjids to the list
         for (const masjid of items) {
@@ -61,7 +65,7 @@ async function getAllMasjids(): Promise<Array<{ id: string; name: string }>> {
       }
     } catch (error) {
       // If there's an error, log it and break
-      console.error('Error fetching masjids for sitemap:', error)
+      console.error('[sitemap] Error fetching masjids for sitemap:', error)
       hasMore = false
     }
   }
@@ -74,6 +78,7 @@ async function getAllMasjids(): Promise<Array<{ id: string; name: string }>> {
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
+  console.log('[sitemap] sitemap() generation started')
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/`,
@@ -155,6 +160,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let masjidPages: MetadataRoute.Sitemap = []
   try {
     const masjids = await getAllMasjids()
+    console.log(`[sitemap] getAllMasjids returned ${masjids.length} entries`)
     
     // Generate sitemap entries for each masjid
     masjidPages = masjids.map((masjid) => {
@@ -166,12 +172,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }
     })
-  } catch (error) {
-    // If fetching masjids fails, at least return static pages
-    console.error('Error generating masjid pages for sitemap:', error)
-  }
 
-  // Combine all pages: static, city, area, and masjid pages
-  return [...staticPages, ...cityPages, ...areaPages, ...masjidPages]
+    // Combine all pages: static, city, area, and masjid pages
+    return [...staticPages, ...cityPages, ...areaPages, ...masjidPages]
+  } catch (error) {
+    // If fetching masjids fails, log and return at least static + city + area pages
+    console.error('[sitemap] Unhandled error while generating sitemap:', error)
+    return [...staticPages, ...cityPages, ...areaPages]
+  }
 }
 

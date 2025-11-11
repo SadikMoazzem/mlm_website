@@ -1,0 +1,43 @@
+
+> website@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.125:3000
+   - Environments: .env
+   - Experiments (use with caution):
+     · clientTraceMetadata
+
+ ✓ Starting...
+warn  - It seems like you don't have a global error handler set up. It is recommended that you add a global-error.js file with Sentry instrumentation so that React rendering errors are reported to Sentry. Read more: https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#react-render-errors-in-app-router (you can suppress this warning by setting SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1 as environment variable)
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+ ✓ Ready in 2.9s
+ ○ Compiling /sitemap.xml ...
+ ✓ Compiled /sitemap.xml in 1502ms (876 modules)
+[sitemap] sitemap() generation started
+[sitemap] getAllMasjids starting (pageSize=100)
+[sitemap] fetched page=1 in 1703ms success=true
+[sitemap] page=1 items=100 pages=11 currentPage=1
+[sitemap] fetched page=2 in 548ms success=true
+[sitemap] page=2 items=100 pages=11 currentPage=2
+[sitemap] fetched page=3 in 460ms success=true
+[sitemap] page=3 items=100 pages=11 currentPage=3
+[sitemap] fetched page=4 in 566ms success=true
+[sitemap] page=4 items=100 pages=11 currentPage=4
+[sitemap] fetched page=5 in 1056ms success=true
+[sitemap] page=5 items=100 pages=11 currentPage=5
+[sitemap] fetched page=6 in 460ms success=true
+[sitemap] page=6 items=100 pages=11 currentPage=6
+[sitemap] fetched page=7 in 459ms success=true
+[sitemap] page=7 items=100 pages=11 currentPage=7
+[sitemap] fetched page=8 in 468ms success=true
+[sitemap] page=8 items=100 pages=11 currentPage=8
+[sitemap] fetched page=9 in 376ms success=true
+[sitemap] page=9 items=100 pages=11 currentPage=9
+[sitemap] fetched page=10 in 575ms success=true
+[sitemap] page=10 items=100 pages=11 currentPage=10
+[sitemap] fetched page=11 in 271ms success=true
+[sitemap] page=11 items=31 pages=11 currentPage=11
+[sitemap] getAllMasjids returned 1031 entries
+ GET /sitemap.xml 200 in 8934ms
