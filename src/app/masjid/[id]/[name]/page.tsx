@@ -49,7 +49,7 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
   // Enhanced structured data for prayer times SEO
   const structuredData = masjidData ? {
     "@context": "https://schema.org",
-    "@type": "PlaceOfWorship",
+    "@type": "Mosque",
     "name": masjidData.name,
     "description": `${masjidData.name} - Islamic place of worship in ${masjidData.location?.city || 'your area'} offering daily prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha), jamaat times, and community services`,
     "address": masjidData.location ? {
@@ -64,7 +64,8 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
       "latitude": masjidData.location.latitude,
       "longitude": masjidData.location.longitude
     } : undefined,
-    "url": `https://mylocalmasjid.com/masjid/${id}/${name}`,
+    "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://mylocalmasjid.com'}/masjid/${id}/${name}`,
+    ...(masjidData.meta?.phone || masjidData.phone ? { "telephone": masjidData.meta?.phone || masjidData.phone } : {}),
     "sameAs": [
       "https://mylocalmasjid.com",
       `mylocalmasjid://modals/masjid-details?id=${id}`

@@ -3,7 +3,7 @@ import { getMasajidPaginated } from '@/lib/api-client'
 import { formatMasjidUrlName } from '@/lib/masjid-service'
 import { cities } from '@/data/cities'
 
-const BASE_URL = 'https://mylocalmasjid.com'
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://mylocalmasjid.com'
 
 // ISR Configuration - Weekly revalidation to keep sitemap fresh
 export const revalidate = 604800 // 7 days
