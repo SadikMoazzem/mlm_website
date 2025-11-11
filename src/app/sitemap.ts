@@ -7,6 +7,17 @@ const BASE_URL = 'https://mylocalmasjid.com'
 
 // ISR Configuration - Weekly revalidation to keep sitemap fresh
 export const revalidate = 604800 // 7 days
+/**
+ * Escape XML special characters in a string so it can be safely inserted into XML content.
+ */
+function escapeXml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
 
 /**
  * Fetch all active masjids from the API by paginating through all pages
@@ -127,11 +138,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         radius: '10'
       })
       
-      return {
-        url: `${BASE_URL}/masjids/near/${area.latitude}/${area.longitude}?${searchParams.toString()}`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
+      {
+        // Build raw URL then encode and XML-escape it to avoid invalid XML (unescaped ampersands)
+        const rawUrl = `${BASE_URL}/masjids/near/${area.latitude}/${area.longitude}?${searchParams.toString()}`
+        return {
+          url: escapeXml(encodeURI(rawUrl)),
+          lastModified: new Date(),
+          changeFrequency: 'weekly' as const,
+          priority: 0.8,
+        }
       }
     })
   )
@@ -142,12 +157,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const masjids = await getAllMasjids()
     
     // Generate sitemap entries for each masjid
-    masjidPages = masjids.map((masjid) => ({
-      url: `${BASE_URL}/masjid/${masjid.id}/${formatMasjidUrlName(masjid.name)}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    }))
+    masjidPages = masjids.map((masjid) => {
+      const rawUrl = `${BASE_URL}/masjid/${masjid.id}/${formatMasjidUrlName(masjid.name)}`
+      return {
+        url: escapeXml(encodeURI(rawUrl)),
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }
+    })
   } catch (error) {
     // If fetching masjids fails, at least return static pages
     console.error('Error generating masjid pages for sitemap:', error)
