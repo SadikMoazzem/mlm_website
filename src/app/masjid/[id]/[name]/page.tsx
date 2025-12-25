@@ -65,7 +65,7 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
       "longitude": masjidData.location.longitude
     } : undefined,
     "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://mylocalmasjid.com'}/masjid/${id}/${name}`,
-    ...(masjidData.meta?.phone || masjidData.phone ? { "telephone": masjidData.meta?.phone || masjidData.phone } : {}),
+    ...(masjidData.meta?.phone ? { "telephone": masjidData.meta.phone } : {}),
     "sameAs": [
       "https://mylocalmasjid.com",
       `mylocalmasjid://modals/masjid-details?id=${id}`
