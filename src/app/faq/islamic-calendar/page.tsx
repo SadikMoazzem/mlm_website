@@ -3,12 +3,39 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Moon, Sunrise, Star } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "When does the Islamic day change?",
+    answer: "The Islamic day begins at Maghrib (sunset), not at midnight. This means Friday (Jumu'ah) begins on Thursday at Maghrib, the 15th of Sha'ban begins on the evening of the 14th, and Ramadan begins when the moon is sighted after Maghrib. Our app updates the Hijri date after Maghrib to reflect this Islamic tradition."
+  },
+  {
+    question: "Why do Hijri dates differ between different sources?",
+    answer: "Hijri dates may differ because of moon sighting versus calculation methods, regional differences (Saudi Arabia may be on a different date than Morocco or Pakistan), and different calculation algorithms. You can adjust the Hijri date by +1 or -1 day in Settings → Prayer Times → Hijri Date Adjustment to match your local community."
+  },
+  {
+    question: "What are the recommended fasting days in Islam?",
+    answer: "Recommended fasting days include Monday and Thursday (the Prophet used to fast these days), Ayyam al-Bid (13th, 14th, 15th of each Islamic month), Day of Arafah (9th Dhu al-Hijjah for non-pilgrims), Ashura (9th, 10th, 11th Muharram), and Six Days of Shawwal after Ramadan."
+  },
+  {
+    question: "What are the major Islamic events highlighted in the calendar?",
+    answer: "The app highlights Eid al-Fitr (1st Shawwal - fasting prohibited), Eid al-Adha (10th Dhu al-Hijjah - fasting prohibited on this day and 3 days after), and Day of Ashura (10th Muharram - highly recommended day to fast)."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function IslamicCalendarPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"
@@ -227,5 +254,6 @@ export default function IslamicCalendarPage() {
         </div>
       </motion.article>
     </main>
+    </>
   );
 }

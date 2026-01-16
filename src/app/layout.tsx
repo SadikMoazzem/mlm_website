@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 // localFont removed due to font file corruption
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { ThemeProvider } from '@/components/layout/theme-provider'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { Navbar } from '@/components/sections/navbar'
 import { Footer } from '@/components/sections/footer'
 import { Metadata, Viewport } from 'next'
@@ -18,8 +18,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mylocalmasjid.com'),
-  title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
-  description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free on iOS & Android. Perfect for Muslims wherever you go.',
+  title: 'MyLocalMasjid - Prayer Times & Masjid Finder App',
+  description: 'Find accurate prayer times and local masjids near you. Download the free MyLocalMasjid app for iOS and Android.',
   keywords: ['prayer times app', 'islamic app', 'muslim app', 'masjid finder', 'mosque finder', 'qibla compass', 'jamaat times', 'ramadan app', 'prayer times', 'nearby mosque', 'islamic calendar'],
   authors: [{ name: 'MyLocalMasjid' }],
   openGraph: {
@@ -27,8 +27,8 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: '/',
     siteName: 'MyLocalMasjid',
-    title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
-    description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free on iOS & Android.',
+    title: 'MyLocalMasjid - Prayer Times & Masjid Finder App',
+    description: 'Find accurate prayer times and local masjids near you. Download the free MyLocalMasjid app for iOS and Android.',
     images: [{
       url: '/images/preview_mobile.png',
       width: 400,
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MyLocalMasjid - Prayer Times & Nearby Masjids App',
-    description: 'Privacy-first Islamic app with accurate prayer times, nearby masjids, qibla compass, and real jamaat times. Download free!',
+    title: 'MyLocalMasjid - Prayer Times & Masjid Finder App',
+    description: 'Find accurate prayer times and local masjids near you. Download the free MyLocalMasjid app for iOS and Android.',
     images: ['/images/preview.png'],
     creator: '@mlmasjid',
   },
@@ -147,9 +147,9 @@ export default async function RootLayout({
           children
         ) : (
           // Full layout for regular pages
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider>
             <Navbar />
-            <div className="min-h-screen pt-20 bg-white">
+            <div className="min-h-screen pt-20 bg-white dark:bg-gray-950">
               {children}
             </div>
             <Footer />

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, MapPin, Loader2, X } from 'lucide-react'
+import Link from 'next/link'
+import { Search, MapPin, Loader2, X, Plus } from 'lucide-react'
 
 interface LocationSearchResult {
   id: string
@@ -267,7 +268,14 @@ export default function LocationSearch({
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 p-6 text-center">
           <Search className="w-8 h-8 text-gray-300 mx-auto mb-2" />
           <p className="text-gray-500 font-medium">No locations found</p>
-          <p className="text-gray-400 text-sm mt-1">Try searching for a different location</p>
+          <p className="text-gray-400 text-sm mt-1 mb-4">Try searching for a different location</p>
+          <Link
+            href="/add-masjid"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            Add a Masjid
+          </Link>
         </div>
       )}
     </div>

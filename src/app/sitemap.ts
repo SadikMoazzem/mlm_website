@@ -122,38 +122,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
+    {
+      url: `${BASE_URL}/for-masjids`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/prayer-times`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/download`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
   ]
 
-  // Generate city pages
+  // Generate location pages for all cities
   const cityPages: MetadataRoute.Sitemap = cities.map((city) => ({
-    url: `${BASE_URL}/masjids/${city.id}`,
+    url: `${BASE_URL}/location/${city.id}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: 0.85,
+    priority: 0.8,
   }))
 
-  // Generate area/nearby pages for each area in each city
+  // Generate location pages for all areas
   const areaPages: MetadataRoute.Sitemap = cities.flatMap((city) =>
-    city.areas.map((area) => {
-      // Create search params matching the AreaCard component format
-      const searchParams = new URLSearchParams({
-        area: area.name,
-        city: city.name,
-        source: 'area',
-        radius: '10'
-      })
-      
-      {
-        // Build raw URL then encode and XML-escape it to avoid invalid XML (unescaped ampersands)
-        const rawUrl = `${BASE_URL}/masjids/near/${area.latitude}/${area.longitude}?${searchParams.toString()}`
-        return {
-          url: escapeXml(encodeURI(rawUrl)),
-          lastModified: new Date(),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        }
-      }
-    })
+    city.areas.map((area) => ({
+      url: `${BASE_URL}/location/${area.id}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
   )
 
   // Fetch all masjids
@@ -169,7 +173,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: escapeXml(encodeURI(rawUrl)),
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
-        priority: 0.8,
+        priority: 0.6,
       }
     })
 

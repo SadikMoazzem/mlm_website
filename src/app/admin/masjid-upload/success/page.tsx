@@ -75,10 +75,12 @@ function SuccessContent() {
                   <li>• Update once, syncs everywhere</li>
                 </ul>
                 <a
-                  href="/solutions/admin"
-                  className="inline-block w-full bg-white text-primary-600 border-2 border-primary-300 hover:border-primary-500 px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
+                  href="https://admin.mylocalmasjid.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
                 >
-                  Learn more
+                  Try Admin Portal
                 </a>
               </div>
 
@@ -128,12 +130,11 @@ function SuccessContent() {
                   <li>• Works offline (no internet needed)</li>
                   <li>• Free & easy setup</li>
               </ul>
-                <a
-                  href="/solutions/admin"
-                  className="inline-block w-full bg-white text-primary-600 border-2 border-primary-300 hover:border-primary-500 px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
+                <span
+                  className="inline-block w-full bg-gray-100 text-gray-500 px-4 py-2 rounded-xl font-semibold text-sm text-center cursor-not-allowed"
                 >
-                  Learn more
-                </a>
+                  Coming Soon
+                </span>
             </div>
 
               {/* Mobile App - Last */}

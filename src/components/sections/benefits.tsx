@@ -134,9 +134,9 @@ export function BenefitsSection() {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100 px-4 py-32">
-      <div className="pattern-islamic absolute inset-0 opacity-5" />
-      
+    <section className="relative w-full overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-primary-950/20 dark:via-gray-900 dark:to-gray-900 px-4 py-32">
+      <div className="pattern-islamic absolute inset-0 opacity-5 dark:opacity-10" />
+
       <div className="container relative mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -149,22 +149,22 @@ export function BenefitsSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-6 inline-block rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-600"
+            className="mb-6 inline-block rounded-full bg-primary-50 dark:bg-primary-950/50 px-4 py-2 text-sm font-semibold text-primary-600 dark:text-primary-400"
           >
             Our Journey
           </motion.span>
-          <h2 className="mb-4 font-heading text-4xl font-bold text-gray-900 md:text-5xl">
+          <h2 className="mb-4 font-heading text-4xl font-bold text-gray-900 dark:text-white md:text-5xl">
             Building the Future of{' '}
-            <span className="text-primary-600">Masjid Management</span>
+            <span className="text-primary-600 dark:text-primary-400">Masjid Management</span>
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600">
+          <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
             From digital transformation to community connection, follow our journey of innovation.
           </p>
         </motion.div>
 
         <div className="relative">
           {/* Timeline Line */}
-          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-primary-200 via-primary-300 to-gray-200" />
+          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-primary-200 via-primary-300 to-gray-200 dark:from-primary-800 dark:via-primary-700 dark:to-gray-700" />
 
           {/* Phases */}
           <div className="space-y-24">
@@ -184,9 +184,9 @@ export function BenefitsSection() {
                 {/* Timeline Dot */}
                 <div
                   className={`absolute left-1/2 top-8 h-4 w-4 -translate-x-1/2 rounded-full border-2 transition-all duration-300
-                    ${phase.status === 'completed' ? 'border-green-500 bg-green-100' : 
-                      phase.status === 'current' ? 'border-primary-500 bg-primary-100' :
-                      'border-gray-400 bg-gray-100'}`}
+                    ${phase.status === 'completed' ? 'border-green-500 bg-green-100 dark:bg-green-900' :
+                      phase.status === 'current' ? 'border-primary-500 bg-primary-100 dark:bg-primary-900' :
+                      'border-gray-400 bg-gray-100 dark:bg-gray-700'}`}
                 />
 
                 {/* Content */}
@@ -194,30 +194,30 @@ export function BenefitsSection() {
                   {/* Icon and Title */}
                   <div className="flex items-center justify-center md:justify-start">
                     <motion.div
-                      className={`group relative rounded-2xl bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl
-                        ${phase.status === 'completed' ? 'border-green-100' :
-                          phase.status === 'current' ? 'border-primary-100' :
-                          'border-gray-100'}
+                      className={`group relative rounded-2xl bg-white dark:bg-gray-800 p-8 shadow-lg transition-all duration-300 hover:shadow-xl
+                        ${phase.status === 'completed' ? 'border-green-100 dark:border-green-900' :
+                          phase.status === 'current' ? 'border-primary-100 dark:border-primary-900' :
+                          'border-gray-100 dark:border-gray-700'}
                         ${activePhase === index ? 'scale-105' : ''}`}
                     >
                       <div className={`mb-4 flex h-16 w-16 items-center justify-center rounded-xl
-                        ${phase.status === 'completed' ? 'bg-green-500/10 text-green-500' :
-                          phase.status === 'current' ? 'bg-primary-500/10 text-primary-500' :
-                          'bg-gray-500/10 text-gray-500'}`}
+                        ${phase.status === 'completed' ? 'bg-green-500/10 text-green-500 dark:bg-green-900/30 dark:text-green-400' :
+                          phase.status === 'current' ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-900/30 dark:text-primary-400' :
+                          'bg-gray-500/10 text-gray-500 dark:bg-gray-700/30 dark:text-gray-400'}`}
                       >
                         <phase.icon className="h-8 w-8" />
                       </div>
                       <div className="flex items-center justify-between">
-                        <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+                        <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
                           {phase.title}
                           {phase.comingSoon && (
-                            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-semibold text-yellow-600">
+                            <span className="rounded-full bg-yellow-50 dark:bg-yellow-900/30 px-2 py-0.5 text-xs font-semibold text-yellow-600 dark:text-yellow-400">
                               Coming Soon
                             </span>
                           )}
                         </h3>
                       </div>
-                      <p className="text-gray-600">{phase.description}</p>
+                      <p className="text-gray-600 dark:text-gray-300">{phase.description}</p>
                     </motion.div>
                   </div>
 
@@ -234,12 +234,12 @@ export function BenefitsSection() {
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: detailIndex * 0.1 }}
-                          className={`rounded-lg bg-white/80 p-4 shadow-md backdrop-blur-sm
+                          className={`rounded-lg bg-white/80 dark:bg-gray-800/80 p-4 shadow-md backdrop-blur-sm
                             ${phase.status === 'completed' ? 'border-l-4 border-green-500' :
                               phase.status === 'current' ? 'border-l-4 border-primary-500' :
                               'border-l-4 border-gray-400'}`}
                         >
-                          <p className="text-sm text-gray-600">{detail}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">{detail}</p>
                         </motion.div>
                       ))}
                     </div>

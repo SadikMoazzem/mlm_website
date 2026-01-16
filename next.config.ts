@@ -13,6 +13,45 @@ const nextConfig: NextConfig = {
     // Don't fail build on ESLint warnings/errors
     ignoreDuringBuilds: true,
   },
+  webpack: (config) => {
+    // Handle pdfjs-dist canvas dependency (not needed in browser)
+    config.resolve.alias.canvas = false;
+    return config;
+  },
+  async redirects() {
+    return [
+      {
+        source: '/how-we-integrate',
+        destination: '/for-masjids',
+        permanent: true, // 301 redirect
+      },
+      // Redirect /solutions to /for-masjids
+      // but keep /solutions/* pages - they're still valid
+      {
+        source: '/solutions',
+        destination: '/for-masjids',
+        permanent: true,
+      },
+      // Legacy route redirects to unified location page
+      {
+        source: '/prayer-times/:city',
+        destination: '/location/:city',
+        permanent: true, // 301 redirect for SEO
+      },
+      // Redirect /masjids/:city to /location/:city EXCEPT for special pages
+      // Use regex to exclude 'finder' and 'near' which are actual pages
+      {
+        source: '/masjids/:city((?!finder|near)[^/]+)',
+        destination: '/location/:city',
+        permanent: true,
+      },
+      {
+        source: '/masjids/:city/:area',
+        destination: '/location/:area',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {

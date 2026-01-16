@@ -227,6 +227,17 @@ export default function NearPage({ params, searchParams }: NearPageProps) {
             <>
               {masjids.length > 0 ? (
                 <>
+                  {/* Add Masjid Link - shown when results exist */}
+                  <div className="mb-6 text-center">
+                    <Link
+                      href="/add-masjid"
+                      className="inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Can&apos;t find your masjid? Add it here
+                    </Link>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                     {masjids.map((masjid) => (
                       <div key={masjid.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
@@ -381,18 +392,29 @@ export default function NearPage({ params, searchParams }: NearPageProps) {
                     We couldn&apos;t find any masjids within {radius}km of {getLocationTitle()}.
                   </p>
                   <div className="space-y-4">
-                    <button
-                      onClick={() => setRadius(radius + 5)}
-                      className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors mr-4"
-                    >
-                      Expand search to {radius + 5}km
-                    </button>
-                    <Link
-                      href="/masjids"
-                      className="inline-block bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      Browse all cities
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                      <button
+                        onClick={() => setRadius(radius + 5)}
+                        className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+                      >
+                        Expand search to {radius + 5}km
+                      </button>
+                      <Link
+                        href="/add-masjid"
+                        className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+                      >
+                        <Plus className="w-5 h-5" />
+                        Add Your Masjid
+                      </Link>
+                    </div>
+                    <div>
+                      <Link
+                        href="/masjids"
+                        className="inline-block bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Browse all cities
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}

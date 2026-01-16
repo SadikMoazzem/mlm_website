@@ -3,12 +3,43 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Shield, MapPin, BarChart3, Database, Lock } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "Is my location stored by MyLocalMasjid?",
+    answer: "No. Your location is never stored on our servers. Location is used only on your device to calculate prayer times and find nearby masjids. When finding nearby masjids, we send coordinates to our API but don't log or store them. Background location (if enabled) stays on your device for widgets and notifications. You can use manual location or disable location entirely."
+  },
+  {
+    question: "What analytics does MyLocalMasjid collect?",
+    answer: "We collect optional, anonymous usage analytics to improve the app, including which screens are viewed, app crashes and errors, and general usage patterns. We do NOT collect your location, personal information, IP addresses, or device identifiers. You can disable analytics anytime in Settings → Privacy → Anonymous Usage Analytics, and the app works exactly the same with analytics off."
+  },
+  {
+    question: "What data is stored on my phone by the app?",
+    answer: "The app stores data locally on your device for offline access: prayer times (3-5 weeks of cached times), settings (your preferences like calculation method and notifications), masjid data (your selected home masjid and cached nearby masjids), and location (last known location if auto location enabled). All this data stays on your device and is never sent to our servers."
+  },
+  {
+    question: "Do I need to create an account to use MyLocalMasjid?",
+    answer: "No. The app works fully without any account or login. We don't collect your name, email, phone number, or any personal information. You're completely anonymous to us."
+  },
+  {
+    question: "What is the feedback ID used for?",
+    answer: "When you submit feedback about masjid data, we generate a random ID stored on your device to help prevent duplicate submissions. It's a random string with no personal information, cannot be used to identify you or track you, and is only used for feedback management."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function PrivacyFAQPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"
@@ -225,5 +256,6 @@ export default function PrivacyFAQPage() {
         </div>
       </motion.article>
     </main>
+    </>
   );
 }

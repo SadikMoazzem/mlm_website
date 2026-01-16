@@ -10,9 +10,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Legacy HSL variables for compatibility
         border: "hsl(var(--border))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
+        // New theme-aware color system
+        bg: {
+          primary: 'var(--background-primary)',
+          secondary: 'var(--background-secondary)',
+          card: 'var(--background-card)',
+        },
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
+          accent: 'var(--text-accent)',
+        },
+        btn: {
+          primary: 'var(--button-primary)',
+          'primary-hover': 'var(--button-primary-hover)',
+        },
+
+        // Keep existing primary scale for backwards compatibility
         primary: {
           DEFAULT: '#1D8A77',
           50: '#E8F5F3',

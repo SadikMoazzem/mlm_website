@@ -3,12 +3,47 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Bell, BellOff, Settings, Battery, Smartphone, CheckCircle } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "How do I enable prayer notifications in the MyLocalMasjid app?",
+    answer: "Open the app and go to Settings, tap Notifications, ensure the main toggle is ON, check that individual prayers (Fajr, Dhuhr, etc.) are enabled, and use the Test Notification button to verify it's working."
+  },
+  {
+    question: "How do I grant notification permissions on iPhone?",
+    answer: "Open Settings on your iPhone, scroll to MyLocalMasjid, tap Notifications, enable Allow Notifications, and enable Time Sensitive if available."
+  },
+  {
+    question: "How do I grant notification permissions on Android?",
+    answer: "Open Settings, tap Apps then MyLocalMasjid, tap Notifications, enable All notifications, and set importance to High or Urgent."
+  },
+  {
+    question: "Why do I need to disable battery optimization on Android?",
+    answer: "Battery optimization is the most common cause of missed notifications on Android. It can prevent the app from running in the background. To disable it: Open Settings → Apps → MyLocalMasjid → Battery, then select Unrestricted or Don't optimize. The exact steps vary by phone manufacturer."
+  },
+  {
+    question: "How do I allow notifications when Do Not Disturb is on?",
+    answer: "On iPhone: Go to Settings → Focus → Do Not Disturb → Apps → Add MyLocalMasjid to allowed apps. On Android: Go to Settings → Sound → Do Not Disturb → Exceptions → Add MyLocalMasjid."
+  },
+  {
+    question: "How can I test if prayer notifications are working?",
+    answer: "After making changes, open the app and go to Settings → Notifications, tap Test Notification, and you should receive a test notification within a few seconds. If it still doesn't work, try restarting your phone."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function NotificationsNotWorkingPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"
@@ -242,5 +277,6 @@ export default function NotificationsNotWorkingPage() {
         </div>
       </motion.article>
     </main>
+    </>
   );
 }

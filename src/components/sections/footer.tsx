@@ -17,26 +17,24 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 )
 
 const navigation = {
-  solutions: [
-    { name: 'Admin Portal', href: '/solutions/admin' },
-    { name: 'Masjid Website', href: '/solutions/website' },
-    { name: 'Mobile App', href: '/solutions/app' },
+  forYou: [
+    { name: 'Find Masjids', href: '/masjids' },
+    { name: 'Prayer Times', href: '/prayer-times' },
+    { name: 'Download App', href: '/download' },
+    { name: 'Masjid Directory', href: '/masjid-directory' },
+    { name: 'FAQ', href: '/faq' },
+  ],
+  forMasjids: [
+    { name: 'Get Started', href: '/register' },
+    { name: 'Admin Portal', href: 'https://admin.mylocalmasjid.com' },
+    { name: 'For Masjids', href: '/for-masjids' },
+    { name: 'Our Journey', href: '/journey' },
     { name: 'Pricing', href: '/pricing' },
   ],
   company: [
-    { name: 'Our Journey', href: '/journey' },
-    { name: 'How we integrate', href: '/how-we-integrate' },
-    { name: 'Masjid Directory A-Z', href: '/masjid-directory' },
-    { name: 'Register Your Masjid', href: '/register' },
-  ],
-  support: [
     { name: 'Contact', href: '/contact' },
-    { name: 'Report an Issue', href: '/report' },
-    { name: 'Submit Prayer Times', href: '/add-prayer-times' },
-  ],
-  legal: [
-    { name: 'Terms & Conditions', href: '/terms' },
     { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
   ],
   social: [
     { name: 'Twitter', href: 'https://twitter.com/mlmasjid', icon: Twitter },
@@ -51,7 +49,7 @@ const navigation = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-100 bg-gray-50">
+    <footer className="border-t border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
       <div className="container mx-auto max-w-8xl px-6 py-12 lg:py-16">
         <div className="grid gap-12 lg:grid-cols-5">
           {/* Brand */}
@@ -64,12 +62,12 @@ export function Footer() {
                 height={48}
                 className="h-12 w-auto"
               />
-              <span className="text-2xl font-bold text-gray-900">
-                My<span className="text-primary-600">Local</span>Masjid
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                My<span className="text-primary-600 dark:text-primary-400">Local</span>Masjid
               </span>
             </Link>
-            <p className="mt-2 text-sm text-gray-500">Est. 2020</p>
-            <p className="mt-4 max-w-md text-gray-600">
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Est. 2020</p>
+            <p className="mt-4 max-w-md text-gray-600 dark:text-gray-300">
               Empowering Masjids with modern technology to better serve their communities
               and enhance the spiritual experience.
             </p>
@@ -77,15 +75,15 @@ export function Footer() {
 
           {/* Navigation - Updated to 3 columns */}
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:col-span-3">
-            {/* Column 1: Solutions */}
+            {/* Column 1: For You */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Solutions</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">For You</h3>
               <ul className="mt-4 space-y-3">
-                {navigation.solutions.map((item) => (
+                {navigation.forYou.map((item) => (
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      className="flex items-center gap-2 text-sm leading-6 text-gray-600 hover:text-primary-600"
+                      className="text-base text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
                     >
                       {item.name}
                     </Link>
@@ -94,13 +92,13 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Column 2: Company */}
+            {/* Column 2: For Masjids */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Company</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">For Masjids</h3>
               <ul className="mt-4 space-y-3">
-                {navigation.company.map((item) => (
+                {navigation.forMasjids.map((item) => (
                   <li key={item.name}>
-                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600">
+                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400">
                       {item.name}
                     </Link>
                   </li>
@@ -108,24 +106,13 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Column 3: Support & Legal */}
+            {/* Column 3: Company */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Support</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Company</h3>
               <ul className="mt-4 space-y-3">
-                {navigation.support.map((item) => (
+                {navigation.company.map((item) => (
                   <li key={item.name}>
-                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <h3 className="mt-8 text-sm font-semibold uppercase tracking-wider text-gray-500">Legal</h3>
-              <ul className="mt-4 space-y-3">
-                {navigation.legal.map((item) => (
-                  <li key={item.name}>
-                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600">
+                    <Link href={item.href} className="text-base text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400">
                       {item.name}
                     </Link>
                   </li>
@@ -135,11 +122,11 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section - Legal links will be removed from here */}
-        <div className="mt-12 border-t border-gray-100 pt-8">
+        {/* Bottom Section */}
+        <div className="mt-12 border-t border-gray-100 pt-8 dark:border-gray-800">
           <div className="flex flex-col-reverse items-center justify-between gap-8 lg:flex-row">
             {/* Copyright & Company Number - moved to appear first in flex-col-reverse for small screens */}
-            <div className="text-center text-sm text-gray-500 lg:text-left">
+            <div className="text-center text-sm text-gray-500 dark:text-gray-400 lg:text-left">
               <p>&copy; {new Date().getFullYear()} MyLocalMasjid. All rights reserved.</p>
               <p className="mt-1">Company Number: 16453040</p>
             </div>
@@ -152,7 +139,7 @@ export function Footer() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-primary-600"
+                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
                   >
                     <item.icon className="h-4 w-4 flex-shrink-0" />
                     <span>{item.name}</span>
@@ -166,7 +153,7 @@ export function Footer() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-gray-400 hover:text-primary-600 transition-colors"
+                    className="text-gray-400 hover:text-primary-600 transition-colors dark:text-gray-500 dark:hover:text-primary-400"
                     aria-label={item.name}
                   >
                     <item.icon className="h-5 w-5" />

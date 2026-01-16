@@ -24,7 +24,8 @@ export function ComprehensiveSolutionSection() {
     {
       icon: LayoutDashboard,
       title: 'Admin Portal',
-      link: '/solutions/admin',
+      link: 'https://admin.mylocalmasjid.com',
+      externalLink: true,
       subtitle: 'Complete management platform for your masjid',
       description: 'Streamline your masjid administration with our intuitive platform designed for ease of use.',
       forMasjid: [
@@ -60,8 +61,8 @@ export function ComprehensiveSolutionSection() {
     {
       icon: Globe,
       title: 'Masjid Website',
-      link: '/solutions/website',
-      demoLink: 'https://masjid-demo.mylocalmasjid.com',
+      link: 'https://masjid-demo.mylocalmasjid.com',
+      externalLink: true,
       subtitle: 'Beautiful, responsive web presence',
       description: 'Provide your community with a modern, mobile-friendly website featuring essential information and services.',
       forMasjid: [
@@ -97,7 +98,7 @@ export function ComprehensiveSolutionSection() {
     {
       icon: Smartphone,
       title: 'All-in-One MyLocalMasjid App',
-      link: '/solutions/app',
+      link: '/download',
       subtitle: 'Connect with your masjid on mobile',
       description: 'Access prayer times, events, and masjid information conveniently from your smartphone.',
       isCommunityOnly: true,
@@ -191,27 +192,13 @@ export function ComprehensiveSolutionSection() {
                       viewport={{ once: true }}
                       transition={{ delay: 0.3 }}
                     >
-                      <Link href={solution.link} className="inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-base font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg">
-                        Learn More
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Link>
-                    </motion.div>
-                  )}
-                  
-                  {solution.demoLink && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4 }}
-                    >
-                      <Link 
-                        href={solution.demoLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-full bg-white border border-primary-600 px-6 py-3 text-base font-semibold text-primary-600 transition-all hover:bg-primary-50 hover:shadow-lg"
+                      <Link
+                        href={solution.link}
+                        target={solution.externalLink ? '_blank' : undefined}
+                        rel={solution.externalLink ? 'noopener noreferrer' : undefined}
+                        className="inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-base font-semibold text-white transition-all hover:bg-primary-700 hover:shadow-lg"
                       >
-                        View Demo
+                        {solution.externalLink ? (solution.title === 'Admin Portal' ? 'Try Admin Portal' : 'View Demo') : 'Learn More'}
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
                     </motion.div>

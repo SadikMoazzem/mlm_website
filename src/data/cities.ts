@@ -39,17 +39,17 @@ export const cities: City[] = [
         latitude: 51.5074,
         longitude: -0.1278,
         radius_km: 3,
-        masjid_count: 25,
+        masjid_count: 35,
         description: "Heart of London including Westminster, City of London, Holborn"
       },
       {
         id: "east-london",
         name: "East London",
-        city_id: "london", 
+        city_id: "london",
         latitude: 51.5388,
         longitude: -0.0180,
         radius_km: 5,
-        masjid_count: 89,
+        masjid_count: 151,
         description: "Tower Hamlets, Newham, Hackney, Waltham Forest, Whitechapel"
       },
       {
@@ -59,27 +59,27 @@ export const cities: City[] = [
         latitude: 51.4875,
         longitude: -0.3269,
         radius_km: 4,
-        masjid_count: 67,
+        masjid_count: 14,
         description: "Ealing, Hounslow, Hillingdon, Hammersmith, Southall"
       },
       {
-        id: "north-london", 
+        id: "north-london",
         name: "North London",
         city_id: "london",
         latitude: 51.5673,
         longitude: -0.1424,
         radius_km: 4,
-        masjid_count: 43,
+        masjid_count: 21,
         description: "Camden, Islington, Barnet, Enfield, Finsbury Park"
       },
       {
         id: "south-london",
-        name: "South London", 
+        name: "South London",
         city_id: "london",
         latitude: 51.4236,
         longitude: -0.0878,
         radius_km: 5,
-        masjid_count: 21,
+        masjid_count: 29,
         description: "Southwark, Lambeth, Croydon, Merton, Tooting"
       }
     ]
@@ -99,7 +99,7 @@ export const cities: City[] = [
         latitude: 52.4862,
         longitude: -1.8904,
         radius_km: 2,
-        masjid_count: 15,
+        masjid_count: 20,
         description: "City Centre, Jewellery Quarter, Digbeth"
       },
       {
@@ -109,7 +109,7 @@ export const cities: City[] = [
         latitude: 52.4675,
         longitude: -1.8567,
         radius_km: 2,
-        masjid_count: 28,
+        masjid_count: 60,
         description: "Small Heath, Bordesley Green, Alum Rock"
       },
       {
@@ -119,7 +119,7 @@ export const cities: City[] = [
         latitude: 52.4542,
         longitude: -1.8567,
         radius_km: 2,
-        masjid_count: 22,
+        masjid_count: 50,
         description: "Sparkhill, Sparkbrook, Balsall Heath"
       },
       {
@@ -129,7 +129,7 @@ export const cities: City[] = [
         latitude: 52.5067,
         longitude: -1.8567,
         radius_km: 2,
-        masjid_count: 18,
+        masjid_count: 14,
         description: "Aston, Nechells, Lozells"
       },
       {
@@ -139,7 +139,7 @@ export const cities: City[] = [
         latitude: 52.5167,
         longitude: -1.9267,
         radius_km: 2,
-        masjid_count: 6,
+        masjid_count: 21,
         description: "Handsworth, Handsworth Wood"
       }
     ]
@@ -159,17 +159,17 @@ export const cities: City[] = [
         latitude: 53.4808,
         longitude: -2.2426,
         radius_km: 2,
-        masjid_count: 8,
+        masjid_count: 13,
         description: "City Centre, Northern Quarter, Ancoats"
       },
       {
         id: "longsight",
-        name: "Longsight & Levenshulme", 
+        name: "Longsight & Levenshulme",
         city_id: "manchester",
         latitude: 53.4467,
         longitude: -2.1967,
         radius_km: 2,
-        masjid_count: 15,
+        masjid_count: 18,
         description: "Longsight, Levenshulme, Gorton"
       },
       {
@@ -179,7 +179,7 @@ export const cities: City[] = [
         latitude: 53.5067,
         longitude: -2.2367,
         radius_km: 2,
-        masjid_count: 12,
+        masjid_count: 11,
         description: "Cheetham Hill, Crumpsall"
       },
       {
@@ -189,7 +189,7 @@ export const cities: City[] = [
         latitude: 53.4467,
         longitude: -2.2267,
         radius_km: 2,
-        masjid_count: 18,
+        masjid_count: 17,
         description: "Rusholme, Fallowfield, Moss Side"
       },
       {
@@ -199,7 +199,7 @@ export const cities: City[] = [
         latitude: 53.4967,
         longitude: -2.1867,
         radius_km: 3,
-        masjid_count: 14,
+        masjid_count: 3,
         description: "Oldham Road, Collyhurst, Miles Platting"
       }
     ]
@@ -219,7 +219,7 @@ export const cities: City[] = [
         latitude: 53.7960,
         longitude: -1.7594,
         radius_km: 2,
-        masjid_count: 8,
+        masjid_count: 54,
         description: "City Centre, Little Germany"
       },
       {
@@ -229,7 +229,7 @@ export const cities: City[] = [
         latitude: 53.8067,
         longitude: -1.7694,
         radius_km: 2,
-        masjid_count: 15,
+        masjid_count: 44,
         description: "Manningham, Oak Lane"
       },
       {
@@ -239,7 +239,7 @@ export const cities: City[] = [
         latitude: 53.7867,
         longitude: -1.7394,
         radius_km: 2,
-        masjid_count: 12,
+        masjid_count: 32,
         description: "Girlington, Barkerend, Laisterdyke"
       },
       {
@@ -249,7 +249,7 @@ export const cities: City[] = [
         latitude: 53.8671,
         longitude: -1.9069,
         radius_km: 3,
-        masjid_count: 10,
+        masjid_count: 8,
         description: "Keighley town and surrounding areas"
       }
     ]
@@ -269,7 +269,7 @@ export const cities: City[] = [
         latitude: 52.6369,
         longitude: -1.1398,
         radius_km: 2,
-        masjid_count: 12,
+        masjid_count: 29,
         description: "City Centre, Cultural Quarter"
       },
       {
@@ -279,7 +279,7 @@ export const cities: City[] = [
         latitude: 52.6169,
         longitude: -1.1198,
         radius_km: 2,
-        masjid_count: 16,
+        masjid_count: 28,
         description: "Highfields, Spinney Hills, Stoneygate"
       },
       {
@@ -309,7 +309,7 @@ export const cities: City[] = [
         latitude: 51.4816,
         longitude: -3.1791,
         radius_km: 2,
-        masjid_count: 8,
+        masjid_count: 20,
         description: "City Centre, Cardiff Bay, Cathays"
       },
       {
@@ -319,7 +319,7 @@ export const cities: City[] = [
         latitude: 51.4716,
         longitude: -3.2091,
         radius_km: 2,
-        masjid_count: 12,
+        masjid_count: 7,
         description: "Riverside, Canton, Grangetown"
       },
       {
@@ -329,7 +329,7 @@ export const cities: City[] = [
         latitude: 51.4916,
         longitude: -3.1591,
         radius_km: 2,
-        masjid_count: 6,
+        masjid_count: 9,
         description: "Roath, Plasnewydd, Adamsdown"
       }
     ]
@@ -349,7 +349,7 @@ export const cities: City[] = [
         latitude: 51.6214,
         longitude: -3.9436,
         radius_km: 2,
-        masjid_count: 4,
+        masjid_count: 2,
         description: "City Centre, Marina, SA1"
       },
       {
@@ -379,7 +379,7 @@ export const cities: City[] = [
         latitude: 51.5842,
         longitude: -2.9977,
         radius_km: 2,
-        masjid_count: 3,
+        masjid_count: 9,
         description: "City Centre, Pill, Docks"
       },
       {
@@ -389,7 +389,7 @@ export const cities: City[] = [
         latitude: 51.5742,
         longitude: -2.9777,
         radius_km: 2,
-        masjid_count: 4,
+        masjid_count: 9,
         description: "Pillgwenlly, Lliswerry, Victoria"
       }
     ]
@@ -409,7 +409,7 @@ export const cities: City[] = [
         latitude: 55.8642,
         longitude: -4.2518,
         radius_km: 2,
-        masjid_count: 6,
+        masjid_count: 10,
         description: "City Centre, Merchant City, Calton"
       },
       {
@@ -419,7 +419,7 @@ export const cities: City[] = [
         latitude: 55.8342,
         longitude: -4.2518,
         radius_km: 3,
-        masjid_count: 12,
+        masjid_count: 15,
         description: "Gorbals, Pollokshields, Strathbungo"
       },
       {
@@ -429,7 +429,7 @@ export const cities: City[] = [
         latitude: 55.8542,
         longitude: -4.2118,
         radius_km: 3,
-        masjid_count: 8,
+        masjid_count: 3,
         description: "Dennistoun, Bridgeton, Parkhead"
       }
     ]
@@ -449,7 +449,7 @@ export const cities: City[] = [
         latitude: 55.9533,
         longitude: -3.1883,
         radius_km: 2,
-        masjid_count: 4,
+        masjid_count: 8,
         description: "Old Town, New Town, Grassmarket"
       },
       {
@@ -459,7 +459,7 @@ export const cities: City[] = [
         latitude: 55.9733,
         longitude: -3.1683,
         radius_km: 2,
-        masjid_count: 3,
+        masjid_count: 4,
         description: "Leith, Pilrig, Easter Road"
       },
       {
@@ -469,7 +469,7 @@ export const cities: City[] = [
         latitude: 55.9333,
         longitude: -3.1883,
         radius_km: 3,
-        masjid_count: 5,
+        masjid_count: 11,
         description: "Newington, Marchmont, Bruntsfield"
       }
     ]
@@ -489,7 +489,7 @@ export const cities: City[] = [
         latitude: 56.4620,
         longitude: -2.9707,
         radius_km: 2,
-        masjid_count: 2,
+        masjid_count: 5,
         description: "City Centre, Waterfront, West End"
       },
       {
@@ -499,7 +499,7 @@ export const cities: City[] = [
         latitude: 56.4720,
         longitude: -2.9607,
         radius_km: 2,
-        masjid_count: 3,
+        masjid_count: 4,
         description: "Hilltown, Stobswell, Lochee"
       }
     ]
@@ -522,4 +522,12 @@ export function formatCitySlug(name: string): string {
 
 export function formatAreaSlug(name: string): string {
   return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+}
+
+export function getAllAreaIds(): string[] {
+  return cities.flatMap(city => city.areas.map(area => area.id))
+}
+
+export function getAllCityIds(): string[] {
+  return cities.map(city => city.id)
 }

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { MasjidRedirectClient } from './MasjidRedirectClient'
 import { generateMetadata } from './metadata'
 import { getMasjidById } from '@/lib/masjid-service'
+import { generateBreadcrumbSchema } from '@/lib/schema-utils'
 
 export { generateMetadata }
 
@@ -150,7 +151,19 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
     })),
     "keywords": `prayer times, ${masjidData.name}, ${masjidData.location?.city || ''} masjid, jamaat times, salah times, fajr, dhuhr, asr, maghrib, isha, jummah, special prayers`
   } : null
-  
+
+  // Generate breadcrumb structured data
+  const displayName = masjidData?.name || masjidName
+  const breadcrumbData = masjidData ? generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Masjids', url: '/masjids' },
+    ...(masjidData.location?.city ? [{
+      name: masjidData.location.city,
+      url: `/location/${masjidData.location.city.toLowerCase().replace(/\s+/g, '-')}`
+    }] : []),
+    { name: displayName, url: `/masjid/${id}/${name}` }
+  ]) : null
+
   return (
     <>
       {/* Structured Data for SEO */}
@@ -160,7 +173,15 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       )}
-      
+
+      {/* Breadcrumb Structured Data */}
+      {breadcrumbData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+        />
+      )}
+
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
         <div className="container mx-auto px-4 py-8 lg:py-16">
           <Suspense fallback={<div>Loading...</div>}>

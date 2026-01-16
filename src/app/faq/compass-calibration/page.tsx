@@ -3,12 +3,39 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Compass, RotateCcw, AlertTriangle, CheckCircle, Smartphone } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "How do I calibrate the Qibla compass?",
+    answer: "Hold your phone flat (screen facing up), then move it in a figure-8 pattern several times by rotating your wrist to draw a figure-8 in the air. Repeat 3-5 times until the accuracy indicator shows 'Good' or 'Excellent'. For best results, do this outdoors away from metal objects and electronics."
+  },
+  {
+    question: "What do the different accuracy levels mean?",
+    answer: "Excellent means ±0-5° accuracy (highly reliable), Good means ±5-10° (reliable for prayer), Fair means ±10-15° (consider recalibrating), Poor means ±15-30° (calibration recommended), and Unstable/Uncalibrated means >30° accuracy (calibration required before use)."
+  },
+  {
+    question: "Why is my compass inaccurate?",
+    answer: "The compass uses your phone's magnetic sensor which can be affected by metal objects nearby (keys, watches, jewelry, belt buckles), electronic devices (laptops, tablets, speakers), being indoors (metal in walls, electrical wiring), or phone cases with magnets. Try moving away from these sources and recalibrating outdoors."
+  },
+  {
+    question: "What are the best practices for accurate Qibla direction?",
+    answer: "Go outdoors or near a window for initial calibration, remove magnetic cases before using the compass, step away from electronics and metal objects, keep your phone level when reading the direction, and recalibrate daily or when accuracy drops."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function CompassCalibrationPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"
@@ -230,5 +257,6 @@ export default function CompassCalibrationPage() {
         </div>
       </motion.article>
     </main>
+    </>
   );
 }

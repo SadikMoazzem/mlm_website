@@ -25,15 +25,15 @@ export default function EmbedSelector({ baseUrl, masjidId }: { baseUrl: string; 
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <label className="text-sm font-medium text-gray-700">Style</label>
-          <div className="text-sm text-gray-500">Choose how the widget appears on your site</div>
+          <label className="text-sm font-medium text-text-primary">Style</label>
+          <div className="text-sm text-text-secondary">Choose how the widget appears on your site</div>
         </div>
-        <div role="tablist" aria-label="Widget style selector" className="inline-flex bg-white rounded-full p-1 shadow-sm">
+        <div role="tablist" aria-label="Widget style selector" className="inline-flex bg-bg-card dark:bg-gray-800 rounded-full p-1 shadow-sm border border-primary-500/10">
           <button
             role="tab"
             aria-selected={variant === 'default'}
             onClick={() => setVariant('default')}
-            className={`px-5 py-2 rounded-full text-base font-semibold transition transform ${variant === 'default' ? 'bg-primary-600 text-white shadow-lg scale-102' : 'text-gray-700'}`}
+            className={`px-5 py-2 rounded-full text-base font-semibold transition transform ${variant === 'default' ? 'bg-primary-600 text-white shadow-lg scale-102' : 'text-text-primary hover:bg-bg-secondary'}`}
           >
             Default
           </button>
@@ -41,7 +41,7 @@ export default function EmbedSelector({ baseUrl, masjidId }: { baseUrl: string; 
             role="tab"
             aria-selected={variant === 'compact'}
             onClick={() => setVariant('compact')}
-            className={`px-5 py-2 rounded-full text-base font-semibold transition transform ${variant === 'compact' ? 'bg-primary-600 text-white shadow-lg scale-102' : 'text-gray-700'}`}
+            className={`px-5 py-2 rounded-full text-base font-semibold transition transform ${variant === 'compact' ? 'bg-primary-600 text-white shadow-lg scale-102' : 'text-text-primary hover:bg-bg-secondary'}`}
           >
             Compact
           </button>
@@ -49,14 +49,14 @@ export default function EmbedSelector({ baseUrl, masjidId }: { baseUrl: string; 
             role="tab"
             aria-selected={variant === 'card'}
             onClick={() => setVariant('card')}
-            className={`px-5 py-2 rounded-full text-base font-semibold transition transform ${variant === 'card' ? 'bg-primary-600 text-white shadow-lg scale-102' : 'text-gray-700'}`}
+            className={`px-5 py-2 rounded-full text-base font-semibold transition transform ${variant === 'card' ? 'bg-primary-600 text-white shadow-lg scale-102' : 'text-text-primary hover:bg-bg-secondary'}`}
           >
             Card
           </button>
         </div>
       </div>
 
-      <div className="rounded overflow-hidden border border-gray-100 shadow-sm">
+      <div className="rounded overflow-hidden border border-primary-500/10 dark:border-primary-500/20 shadow-sm">
         <motion.div
           layout
           initial={false}
@@ -67,14 +67,14 @@ export default function EmbedSelector({ baseUrl, masjidId }: { baseUrl: string; 
             scale: 1,
           }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
-          className="border-t rounded-b overflow-hidden flex items-center justify-center bg-white will-change-auto relative"
+          className="border-t rounded-b overflow-hidden flex items-center justify-center bg-bg-card will-change-auto relative"
           style={{ overflow: 'hidden', marginLeft: variant === 'card' ? 'auto' : undefined, marginRight: variant === 'card' ? 'auto' : undefined }}
         >
           {!loaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-bg-secondary z-10">
               <div className="flex flex-col items-center gap-2">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-600" />
-                <div className="text-sm text-gray-500">Loading preview…</div>
+                <div className="text-sm text-text-secondary">Loading preview…</div>
               </div>
             </div>
           )}

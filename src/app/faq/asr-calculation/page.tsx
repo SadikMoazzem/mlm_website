@@ -3,12 +3,38 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Sun, BookOpen } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "Why are there two different Asr time calculation methods?",
+    answer: "Islamic scholars have different interpretations of when Asr prayer time begins, based on hadith about the Prophet's (peace be upon him) prayer times. The Standard method (used by Shafi'i, Maliki, and Hanbali schools) says Asr begins when an object's shadow equals its length, while the Hanafi method says it begins when the shadow is twice its length. Both interpretations are valid and have strong scholarly backing."
+  },
+  {
+    question: "What is the practical difference between Standard and Hanafi Asr times?",
+    answer: "The Hanafi Asr time is typically 45 to 60 minutes later than the Standard time, depending on your location and the time of year. For example, in London during summer, Standard Asr might be at 5:15 PM while Hanafi Asr is at 6:05 PM."
+  },
+  {
+    question: "Which Asr calculation method should I choose?",
+    answer: "Choose the method that matches your madhab (school of thought) or what your local masjid follows. If you follow the Hanafi school, select 'Hanafi' in settings. If you follow Shafi'i, Maliki, or Hanbali, select 'Standard'. If unsure, check what your local masjid uses and follow that."
+  },
+  {
+    question: "How do I change the Asr calculation method in the app?",
+    answer: "Go to Settings, tap Prayer Times, find Asr Calculation and select either Standard or Hanafi according to your preference or madhab."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function AsrCalculationPage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"

@@ -88,20 +88,14 @@ export default function HowWeIntegratePage() {
             <li>Announcements and contact info</li>
           </ul>
           <div className="mt-4">
-            <a href="/solutions/website" aria-label="Learn more about Masjid websites" className="text-sm font-semibold text-primary-600 underline inline-flex items-center gap-2">
-              Learn more about Masjid websites
-              <ArrowRight className="h-4 w-4" />
+            <a
+              href={demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-full bg-gradient-to-r from-primary-600 to-primary-500 text-white px-5 py-2.5 font-semibold shadow hover:from-primary-700 hover:to-primary-600 transition"
+            >
+              View example website
             </a>
-            <div className="mt-3">
-              <a
-                href={demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-full bg-gradient-to-r from-primary-600 to-primary-500 text-white px-5 py-2.5 font-semibold shadow hover:from-primary-700 hover:to-primary-600 transition"
-              >
-                View example
-              </a>
-            </div>
           </div>
         </div>
         <div className="p-6 bg-white rounded-3xl ring-1 ring-primary-50 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition duration-200 overflow-hidden">
@@ -114,8 +108,8 @@ export default function HowWeIntegratePage() {
             <li>Live updates from your system</li>
           </ul>
           <div className="mt-4">
-            <a href="/solutions/website#embed" aria-label="Learn more about embedding widgets" className="text-sm font-semibold text-primary-600 underline inline-flex items-center gap-2">
-              Learn more about embedding widgets
+            <a href="#contact" className="text-sm font-semibold text-primary-600 underline inline-flex items-center gap-2">
+              Contact us for integration help
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
@@ -151,8 +145,8 @@ export default function HowWeIntegratePage() {
               <li>Announcements & event rotation</li>
               <li>Plug-and-play iframe option for displays</li>
             </ul>
-            <a href="/solutions/website#embed" className="text-primary-600 font-semibold inline-flex items-center gap-2">
-              Learn more about masjid screens <ArrowRight className="h-4 w-4" />
+            <a href="#contact" className="text-primary-600 font-semibold inline-flex items-center gap-2">
+              Contact us for more info <ArrowRight className="h-4 w-4" />
             </a>
             <div className="mt-2 text-sm text-yellow-600 font-semibold">Coming soon</div>
           </div>

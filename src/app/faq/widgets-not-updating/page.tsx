@@ -2,13 +2,44 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, LayoutGrid, RefreshCw, Smartphone, Battery, Clock } from 'lucide-react';
+import { ArrowLeft, LayoutGrid, RefreshCw, Smartphone, Clock } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "How do I force refresh my prayer time widget?",
+    answer: "Open the MyLocalMasjid app, pull down on the main screen to refresh, and wait a few seconds for the widget to update."
+  },
+  {
+    question: "How do I fix widget issues on iPhone?",
+    answer: "Try these steps: 1) Remove and re-add the widget (long-press widget, tap Remove Widget, then long-press home screen and add it again), 2) Check that Background App Refresh is ON for MyLocalMasjid in Settings → General → Background App Refresh, 3) Check Low Power Mode (it can prevent widget updates), and 4) After app updates, iOS sometimes requires re-adding widgets."
+  },
+  {
+    question: "How do I fix widget issues on Android?",
+    answer: "The most common cause is battery optimization. Go to Settings → Apps → MyLocalMasjid → Battery and select Unrestricted or Don't optimize. You can also try: removing and re-adding the widget, checking Data Saver settings to ensure unrestricted data usage, and clearing app cache (Settings → Apps → MyLocalMasjid → Storage → Clear Cache)."
+  },
+  {
+    question: "How far ahead do widgets show prayer times?",
+    answer: "Widgets display data from the app's cache: location-based times show approximately 5 weeks of cached data, and masjid-based times show approximately 3 weeks of cached data. Open the app at least once a week to keep widget data fresh."
+  },
+  {
+    question: "What should I do if my widget still won't update?",
+    answer: "Try these final steps: 1) Restart your phone to reset widget processes, 2) Update the app to the latest version, and 3) If needed, uninstall and reinstall the app, then re-add the widget."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function WidgetsNotUpdatingPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"
@@ -241,5 +272,6 @@ export default function WidgetsNotUpdatingPage() {
         </div>
       </motion.article>
     </main>
+    </>
   );
 }

@@ -3,12 +3,39 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Users, ExternalLink, Sun, Moon, Building2 } from 'lucide-react';
+import { generateFAQSchema } from '@/lib/faq-schema';
+
+const faqs = [
+  {
+    question: "Why do Fajr times differ in London?",
+    answer: "Fajr begins at true dawn when light first appears on the horizon. Different calculation methods use different angles to determine when this occurs, leading to variations of up to 20-30 minutes. In London, many masjids follow the times set by Hizbul Ulama, which are based on careful observation and scholarly consensus. These may differ from times calculated by apps using standard astronomical formulas."
+  },
+  {
+    question: "What is the London Unified Prayer Timetable?",
+    answer: "The London Unified Prayer Timetable is a common timetable agreed upon by several mosques and Islamic centres in London for prayer start times. This ensures Muslims across London can pray together at consistent times. Fajr is based on Hizbul Ulama's work reflecting local observation, Sunrise is from the Nautical Almanac Office with 3 minutes taken off for safety, and other prayers are standardised across participating masjids."
+  },
+  {
+    question: "Should I follow my app or my local masjid for Fajr time?",
+    answer: "We recommend following your local masjid. Unity in prayer is important in Islam. When your community prays together at the same time, you strengthen the bonds of brotherhood and sisterhood. The scholarly difference in calculating Fajr is valid - both times fall within acceptable Islamic parameters - but choosing to pray with your community demonstrates the importance of jamaa'ah (congregational prayer) and unity."
+  },
+  {
+    question: "How does MyLocalMasjid help with London Fajr times?",
+    answer: "When you're in London around Fajr time, our app will prompt you with the option to switch to East London Mosque times, which follow the London Unified Timetable. This means your Fajr time will match most London masjids, you can wake up knowing you're praying with your community, and your fasting times will align with local announcements."
+  }
+];
+
+const faqSchema = generateFAQSchema(faqs);
 
 export default function LondonFajrTimesPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
-      {/* Header */}
-      <motion.div
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white px-4">
+        {/* Header */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-3xl pt-24 pb-8"
@@ -192,5 +219,6 @@ export default function LondonFajrTimesPage() {
         </div>
       </motion.article>
     </main>
+    </>
   );
 }

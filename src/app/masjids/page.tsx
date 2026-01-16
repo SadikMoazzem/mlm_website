@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { MapPin, Users, Clock, ChevronRight } from 'lucide-react'
+import { MapPin, Users, Clock, ChevronRight, Building2, Map } from 'lucide-react'
 import { cities } from '@/data/cities'
 import LocationSearch from '@/components/search/LocationSearch'
 
@@ -47,87 +47,100 @@ export const metadata: Metadata = {
 export const revalidate = 604800
 
 export default function MasjidsByLocationPage() {
-
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-6 py-12 lg:py-20">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-16">
-            <h1 className="text-5xl lg:text-7xl font-light text-emerald-800 mb-6 tracking-tight">
-              Find Masjids by Location
+    <div className="min-h-screen bg-bg-primary">
+      <div className="container mx-auto px-4 sm:px-6 py-8 lg:py-16">
+        <div className="max-w-4xl mx-auto">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 mb-6">
+              <Building2 className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-light text-text-primary mb-4 tracking-tight">
+              Find Masjids
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-lg text-text-secondary max-w-2xl mx-auto font-light leading-relaxed">
               Discover masjids and Islamic centers in popular UK cities. Find prayer times, facilities, and connect with your local Muslim community.
             </p>
-            <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-gray-600">
-              <div className="flex items-center">
-                <MapPin className="w-5 h-5 mr-2 text-emerald-600" />
+          </div>
+
+          {/* Search Section */}
+          <div className="bg-bg-card rounded-2xl p-6 sm:p-8 shadow-sm border border-[var(--border)] mb-8">
+            <LocationSearch
+              placeholder="Search for a location to find nearby masjids..."
+              className="w-full"
+            />
+            <p className="text-center text-text-muted text-sm mt-3">
+              Search for any UK location to find masjids within 15km radius
+            </p>
+
+            {/* Quick Links */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-6">
+              <Link
+                href="/masjids/finder"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition-colors"
+              >
+                <Map className="w-5 h-5" />
+                Map View
+              </Link>
+              <Link
+                href="/masjid-directory"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-bg-primary hover:bg-bg-secondary text-text-primary rounded-xl font-medium transition-colors border border-[var(--border)]"
+              >
+                A-Z Directory
+              </Link>
+              <Link
+                href="/add-masjid"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-bg-primary hover:bg-bg-secondary text-text-primary rounded-xl font-medium transition-colors border border-[var(--border)]"
+              >
+                Add a Masjid
+              </Link>
+            </div>
+          </div>
+
+          {/* Stats Bar */}
+          <div className="bg-bg-card rounded-2xl p-4 shadow-sm border border-[var(--border)] mb-8">
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-sm text-text-secondary">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <span>{cities.length} Cities</span>
               </div>
-              <div className="flex items-center">
-                <Users className="w-5 h-5 mr-2 text-emerald-600" />
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <span>England, Wales & Scotland</span>
               </div>
-              <div className="flex items-center">
-                <Clock className="w-5 h-5 mr-2 text-emerald-600" />
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <span>Live Prayer Times</span>
               </div>
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="mb-12">
-            <div className="max-w-2xl mx-auto">
-              <LocationSearch 
-                placeholder="Search for a location to find nearby masjids..."
-                className="w-full"
-              />
-              <p className="text-center text-gray-500 text-sm mt-3">
-                Search for any UK location to find masjids within 15km radius
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="mb-12 text-center">
-            <div className="inline-flex items-center space-x-4 bg-emerald-50 rounded-full px-6 py-3">
-              <span className="text-sm font-medium text-emerald-800">Quick Access:</span>
-              <Link 
-                href="/masjid-directory" 
-                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium hover:underline"
-              >
-                A-Z Directory
-              </Link>
-              <span className="text-emerald-300">•</span>
-              <Link 
-                href="/add-prayer-times" 
-                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium hover:underline"
-              >
-                Add Your Masjid
-              </Link>
-            </div>
-          </div>
-
           {/* Cities Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {cities.map((city) => (
-              <CityCard key={city.id} city={city} />
-            ))}
+          <div className="bg-bg-card rounded-2xl p-6 sm:p-8 shadow-sm border border-[var(--border)] mb-8">
+            <h3 className="font-medium text-text-primary mb-6 text-center">
+              Browse by City
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {cities.map((city) => (
+                <CityCard key={city.id} city={city} />
+              ))}
+            </div>
           </div>
 
-          {/* Coming Soon Notice */}
-          <div className="mt-16 text-center bg-gray-50 rounded-2xl p-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">More Cities Coming Soon</h2>
-            <p className="text-gray-600 mb-6">
-              We're expanding our coverage to include more cities across the UK and internationally. 
-              Don't see your city? Help us grow by adding your local masjid.
+          {/* Coming Soon CTA */}
+          <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 sm:p-8 text-white text-center">
+            <h3 className="text-xl font-semibold mb-2">
+              More Cities Coming Soon
+            </h3>
+            <p className="text-primary-100 mb-6 max-w-md mx-auto">
+              We&apos;re expanding our coverage across the UK and internationally. Help us grow by adding your local masjid.
             </p>
             <Link
-              href="/add-prayer-times"
-              className="inline-flex items-center bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+              href="/add-masjid"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-primary-700 rounded-xl font-medium hover:bg-primary-50 transition-colors"
             >
-              Add Your Masjid
+              Add a Masjid
             </Link>
           </div>
         </div>
@@ -149,30 +162,24 @@ interface CityCardProps {
 
 function CityCard({ city }: CityCardProps) {
   return (
-    <Link href={`/masjids/${city.id}`}>
-      <div className="group bg-white border border-gray-200 hover:border-emerald-300 rounded-xl p-6 hover:shadow-lg transition-all duration-200 cursor-pointer">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold text-emerald-800 group-hover:text-emerald-600 transition-colors">
-              {city.name}
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">{city.areas.length} areas • {city.country}</p>
-          </div>
-          <div className="text-right">
-            <div className="text-sm font-medium text-emerald-600">{city.country}</div>
-          </div>
+    <Link
+      href={`/location/${city.id}`}
+      className="flex items-center justify-between p-3 bg-bg-primary rounded-xl border border-[var(--border)] hover:border-primary-300 dark:hover:border-primary-700 transition-colors group"
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+          <MapPin className="w-5 h-5 text-primary-600 dark:text-primary-400" />
         </div>
-        
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center text-sm text-gray-600">
-            <MapPin className="w-4 h-4 mr-1 text-emerald-600" />
-            <span>Browse areas</span>
-          </div>
-          <div className="text-emerald-600 group-hover:text-emerald-700 transition-colors">
-            <ChevronRight className="w-5 h-5" />
-          </div>
+        <div className="min-w-0">
+          <p className="font-medium text-text-primary group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate">
+            {city.name}
+          </p>
+          <p className="text-sm text-text-muted truncate">
+            {city.areas.length} areas
+          </p>
         </div>
       </div>
+      <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex-shrink-0" />
     </Link>
   )
 }
