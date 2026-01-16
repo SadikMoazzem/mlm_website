@@ -12,12 +12,14 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Throttle helper to limit function calls
-function throttle<T extends (...args: unknown[]) => void>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function throttle<T extends (...args: any[]) => void>(
   func: T,
   limit: number
 ): T {
   let inThrottle = false;
-  return ((...args: unknown[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return ((...args: any[]) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
@@ -62,7 +64,7 @@ export interface MasjidFinderMapProps {
   /** Callback when a marker is clicked */
   onMarkerClick?: (masjidId: string) => void;
   /** Callback when map stops moving */
-  onMapIdle?: (center: Coordinates, visibleMasjids: MasjidFeature[]) => void;
+  onMapIdle?: (center: Coordinates, visibleMasjids: MasjidFeature[], zoom: number) => void;
   /** Callback when user interacts with the map (pan/zoom) */
   onMapInteraction?: () => void;
   /** Additional CSS classes */
@@ -106,8 +108,8 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
     // Throttled version of onMapIdle to prevent excessive calls
     const throttledOnMapIdle = useMemo(() => {
       if (!onMapIdle) return null;
-      return throttle((mapCenter: Coordinates, masjids: MasjidFeature[]) => {
-        onMapIdle(mapCenter, masjids);
+      return throttle((mapCenter: Coordinates, masjids: MasjidFeature[], currentZoom: number) => {
+        onMapIdle(mapCenter, masjids, currentZoom);
       }, 300); // Only call at most every 300ms
     }, [onMapIdle]);
 
@@ -220,7 +222,7 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
                 16, 0.1,
               ],
               'icon-allow-overlap': true,
-              'icon-ignore-placement': false,
+              'icon-ignore-placement': true,
             },
             paint: {
               'icon-opacity': 1,
@@ -270,7 +272,8 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
               const visibleMasjids = queryVisibleMasjids();
               throttledOnMapIdle(
                 { latitude: mapCenter.lat, longitude: mapCenter.lng },
-                visibleMasjids
+                visibleMasjids,
+                map.getZoom()
               );
             }
           }, 500);
@@ -317,7 +320,8 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
           const visibleMasjids = queryVisibleMasjids();
           throttledOnMapIdle(
             { latitude: mapCenter.lat, longitude: mapCenter.lng },
-            visibleMasjids
+            visibleMasjids,
+            map.getZoom()
           );
         }
       });

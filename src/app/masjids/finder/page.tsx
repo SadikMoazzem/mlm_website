@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useRef, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { ZoomIn } from 'lucide-react';
 import MapLoadingSkeleton from './components/MapLoadingSkeleton';
 import { BackButton } from './components/BackButton';
 import { LocationSearch } from './components/LocationSearch';
@@ -13,6 +14,9 @@ import { DesktopSidebar } from './components/DesktopSidebar';
 import { useFinderStore } from './store/useFinderStore';
 import type { MasjidFinderMapHandle } from './components/MasjidFinderMap';
 import type { Coordinates, MasjidFeature } from './types';
+
+// Threshold below which we show "zoom in" message
+const ZOOM_THRESHOLD = 10;
 
 const MasjidFinderMap = dynamic(
   () => import('./components/MasjidFinderMap'),
@@ -75,9 +79,9 @@ export default function MasjidFinderPage() {
     }
   }, [setSelectedMasjidId]);
 
-  // Handle map idle - update visible masjids
-  const handleMapIdle = useCallback((newCenter: Coordinates, masjids: MasjidFeature[]) => {
-    setCenter(newCenter);
+  // Handle map idle - update visible masjids and zoom
+  const handleMapIdle = useCallback((newCenter: Coordinates, masjids: MasjidFeature[], newZoom: number) => {
+    setCenter(newCenter, newZoom);
     setVisibleMasjids(masjids);
   }, [setCenter, setVisibleMasjids]);
 
@@ -123,6 +127,16 @@ export default function MasjidFinderPage() {
         <div className="absolute bottom-[220px] lg:bottom-4 right-4 z-10">
           <GPSButton />
         </div>
+
+        {/* Zoom in to view more message */}
+        {zoom < ZOOM_THRESHOLD && (
+          <div className="absolute top-24 lg:top-4 left-1/2 lg:left-auto lg:right-1/2 transform -translate-x-1/2 lg:translate-x-0 z-10">
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+              <ZoomIn className="w-4 h-4" />
+              <span>Zoom in to view more masjids</span>
+            </div>
+          </div>
+        )}
 
         {/* Mobile Masjid List Panel - hidden on desktop */}
         <div className="lg:hidden">
