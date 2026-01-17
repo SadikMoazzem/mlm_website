@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, Star, Users, Bell, Clock, Car, Navigation } from 'lucide-react'
+import { MapPin, Star, Users, Bell, Car, Navigation } from 'lucide-react'
 import StoreButton from '@/components/elements/StoreButton'
 import { FindNearMeButton } from '@/components/elements/FindNearMeButton'
 
@@ -42,7 +42,7 @@ export function ConsumerHero() {
               transition={{ delay: 0.2 }}
               className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-600 dark:text-text-secondary lg:mx-0"
             >
-              Find accurate prayer times and local masjids, instantly
+              Accurate prayer times and masjids near you
             </motion.p>
 
             {/* CTAs */}
@@ -129,7 +129,7 @@ export function ConsumerHero() {
                 {/* Screen Container */}
                 <div className="relative w-full h-full bg-black rounded-[2.7rem] overflow-hidden">
                   <Image
-                    src="/images/screenshots/main_asr.jpeg"
+                    src="/images/screenshots/main_magrib.jpeg"
                     alt="MyLocalMasjid Mobile App"
                     width={320}
                     height={690}
