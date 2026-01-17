@@ -13,9 +13,10 @@ export const TILESET_URL = `mapbox://${TILESET_ID}`;
 export const LAYER_IDS = {
   SOURCE: 'masjids-source',
   SOURCE_LAYER: 'masjids',
-  POINTS: 'masjid-points',      // CircleLayer for halls
-  SYMBOLS: 'masjid-symbols',    // SymbolLayer for masjids
-  LABELS: 'masjid-labels',      // Text labels for halls
+  POINTS: 'masjid-points',      // Hidden CircleLayer for click detection
+  SYMBOLS: 'masjid-symbols',    // SymbolLayer for masjids (mosque icon)
+  HALLS: 'hall-points',         // CircleLayer for halls (dots)
+  LABELS: 'masjid-labels',      // Text labels
 } as const;
 
 // Marker colors
@@ -36,8 +37,8 @@ export const MARKER_COLORS = {
 
 // Default map settings
 export const MAP_DEFAULTS = {
-  center: [-2, 54.5] as [number, number],  // UK center [lng, lat]
-  zoom: 6,
+  center: [-0.1276, 51.5074] as [number, number],  // London center [lng, lat]
+  zoom: 11,
   minZoom: 5,
   maxZoom: 18,
   labelZoom: 14,  // Zoom level at which labels appear

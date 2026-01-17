@@ -134,7 +134,7 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
 
       try {
         const features = map.queryRenderedFeatures({
-          layers: [LAYER_IDS.POINTS, LAYER_IDS.SYMBOLS],
+          layers: [LAYER_IDS.POINTS, LAYER_IDS.SYMBOLS, LAYER_IDS.HALLS],
         });
 
         const masjidMap = new Map<string, MasjidFeature>();
@@ -204,12 +204,13 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
             url: TILESET_URL,
           });
 
-          // Symbol layer for all masjids with the mosque icon
+          // Symbol layer for masjids (non-halls) with the mosque icon
           map.addLayer({
             id: LAYER_IDS.SYMBOLS,
             type: 'symbol',
             source: LAYER_IDS.SOURCE,
             'source-layer': LAYER_IDS.SOURCE_LAYER,
+            filter: ['!=', ['get', 'type'], 'hall'],
             layout: {
               'icon-image': 'mosque-icon',
               'icon-size': [
@@ -226,6 +227,29 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
             },
             paint: {
               'icon-opacity': 1,
+            },
+          });
+
+          // Circle layer for halls (dots)
+          map.addLayer({
+            id: LAYER_IDS.HALLS,
+            type: 'circle',
+            source: LAYER_IDS.SOURCE,
+            'source-layer': LAYER_IDS.SOURCE_LAYER,
+            filter: ['==', ['get', 'type'], 'hall'],
+            paint: {
+              'circle-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                8, 3,
+                12, 5,
+                14, 7,
+                16, 9,
+              ],
+              'circle-color': MARKER_COLORS.light.circle,
+              'circle-stroke-color': MARKER_COLORS.light.circleStroke,
+              'circle-stroke-width': 2,
             },
           });
 
@@ -307,6 +331,21 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
         map.getCanvas().style.cursor = '';
       });
 
+      // Handle clicks on halls layer
+      map.on('click', LAYER_IDS.HALLS, (e) => {
+        if (e.features && e.features[0]?.properties?.id && onMarkerClick) {
+          onMarkerClick(e.features[0].properties.id);
+        }
+      });
+
+      // Change cursor on halls hover
+      map.on('mouseenter', LAYER_IDS.HALLS, () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      map.on('mouseleave', LAYER_IDS.HALLS, () => {
+        map.getCanvas().style.cursor = '';
+      });
+
       // Handle map movement
       map.on('movestart', () => {
         if (onMapInteraction) {
@@ -357,18 +396,33 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
       const map = mapRef.current;
       if (!map || !isInitializedRef.current) return;
 
-      // Apply filter to all layers
-      const filter = filterExpression || ['literal', true];
+      // Base filter for user-specified criteria
+      const userFilter = filterExpression || ['literal', true];
 
       try {
+        // POINTS layer gets just the user filter (used for click detection)
         if (map.getLayer(LAYER_IDS.POINTS)) {
-          map.setFilter(LAYER_IDS.POINTS, filter as mapboxgl.FilterSpecification);
+          map.setFilter(LAYER_IDS.POINTS, userFilter as mapboxgl.FilterSpecification);
         }
+        // SYMBOLS layer: exclude halls AND apply user filter
         if (map.getLayer(LAYER_IDS.SYMBOLS)) {
-          map.setFilter(LAYER_IDS.SYMBOLS, filter as mapboxgl.FilterSpecification);
+          map.setFilter(LAYER_IDS.SYMBOLS, [
+            'all',
+            ['!=', ['get', 'type'], 'hall'],
+            userFilter,
+          ] as mapboxgl.FilterSpecification);
         }
+        // HALLS layer: only halls AND apply user filter
+        if (map.getLayer(LAYER_IDS.HALLS)) {
+          map.setFilter(LAYER_IDS.HALLS, [
+            'all',
+            ['==', ['get', 'type'], 'hall'],
+            userFilter,
+          ] as mapboxgl.FilterSpecification);
+        }
+        // LABELS layer gets just the user filter
         if (map.getLayer(LAYER_IDS.LABELS)) {
-          map.setFilter(LAYER_IDS.LABELS, filter as mapboxgl.FilterSpecification);
+          map.setFilter(LAYER_IDS.LABELS, userFilter as mapboxgl.FilterSpecification);
         }
       } catch (error) {
         console.error('[MasjidFinderMap] Error applying filter:', error);
@@ -403,6 +457,32 @@ const MasjidFinderMap = forwardRef<MasjidFinderMapHandle, MasjidFinderMapProps>(
               12, 0.05,
               14, 0.07,
               16, 0.1,
+            ],
+          ]);
+        }
+
+        // Update halls circle radius based on selection (make selected hall larger)
+        if (map.getLayer(LAYER_IDS.HALLS)) {
+          map.setPaintProperty(LAYER_IDS.HALLS, 'circle-radius', [
+            'case',
+            ['==', ['get', 'id'], selectedMasjidId || ''],
+            [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              8, 5,
+              12, 8,
+              14, 11,
+              16, 14,
+            ],
+            [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              8, 3,
+              12, 5,
+              14, 7,
+              16, 9,
             ],
           ]);
         }

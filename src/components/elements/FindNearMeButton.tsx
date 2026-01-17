@@ -50,14 +50,14 @@ export function FindNearMeButton() {
                 accuracy: position.coords.accuracy
               })
               
-              // Navigate to near page with coordinates
+              // Navigate to finder/map view with coordinates at street level zoom
               const searchParams = new URLSearchParams({
-                query: 'you',
-                source: 'geolocation',
-                radius: '15'
+                lat: latitude.toString(),
+                lng: longitude.toString(),
+                zoom: '13'
               })
-              
-              router.push(`/masjids/near/${latitude}/${longitude}?${searchParams.toString()}`)
+
+              router.push(`/masjids/finder?${searchParams.toString()}`)
               setIsLoading(false)
             },
             (error) => {
